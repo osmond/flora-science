@@ -15,6 +15,15 @@ Flora-Science is a plant care companion built with [Next.js](https://nextjs.org/
    pnpm install
    ```
 
+## 🔑 Environment Variables
+Copy `.env.example` to `.env` and set the following:
+
+```bash
+PLANT_ID_API_KEY=your_api_key_here
+```
+
+This key is used to fetch species name suggestions from Plant.id.
+
 ## 🛠 Development Commands
 | Command | Description |
 | ------- | ----------- |
