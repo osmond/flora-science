@@ -5,6 +5,7 @@ import { useState, useEffect } from "react"
 import { LayoutGrid, List } from "lucide-react"
 import RoomCard from "@/components/RoomCard"
 import RoomSkeleton from "@/components/RoomSkeleton"
+import RoomModal from "@/components/RoomModal"
 import { getLastSync } from "@/lib/utils"
 import { getRooms, type Room } from "@/lib/api"
 
@@ -18,6 +19,7 @@ export default function RoomsPage() {
   const [sortBy, setSortBy] = useState<SortBy>("name")
   const [view, setView] = useState<"grid" | "list">("grid")
   const [selectedTags, setSelectedTags] = useState<string[]>([])
+  const [activeRoom, setActiveRoom] = useState<Room | null>(null)
 
   useEffect(() => {
     async function loadRooms() {
@@ -136,14 +138,14 @@ export default function RoomsPage() {
       ) : view === "grid" ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredRooms.map((r) => (
-            <Link key={r.id} href={`/rooms/${r.id}`} className="block">
-              <RoomCard
-                name={r.name}
-                avgHydration={r.avgHydration}
-                tasksDue={r.tasksDue}
-                tags={r.tags}
-              />
-            </Link>
+            <RoomCard
+              key={r.id}
+              name={r.name}
+              avgHydration={r.avgHydration}
+              tasksDue={r.tasksDue}
+              tags={r.tags}
+              onClick={() => setActiveRoom(r)}
+            />
           ))}
         </div>
       ) : (
@@ -177,6 +179,9 @@ export default function RoomsPage() {
       )}
 
       <footer className="text-xs text-gray-400 mt-6">Last sync: {getLastSync()}</footer>
+      {activeRoom && (
+        <RoomModal room={activeRoom} onClose={() => setActiveRoom(null)} />
+      )}
     </main>
   )
 }

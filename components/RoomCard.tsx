@@ -1,16 +1,28 @@
+"use client"
+
 type RoomCardProps = {
   name: string
   avgHydration: number
   tasksDue: number
   tags: string[]
+  onClick?: () => void
 }
 
-export default function RoomCard({ name, avgHydration, tasksDue, tags }: RoomCardProps) {
+export default function RoomCard({
+  name,
+  avgHydration,
+  tasksDue,
+  tags,
+  onClick,
+}: RoomCardProps) {
   const pct = Math.max(0, Math.min(100, Math.round(avgHydration)))
   const barColor = pct < 30 ? 'bg-red-500' : pct < 60 ? 'bg-yellow-500' : 'bg-flora-leaf'
   const badgeColor = tasksDue > 0 ? 'bg-red-500 text-white' : 'bg-flora-leaf text-white'
   return (
-    <div className="h-full flex flex-col justify-between rounded-lg border border-gray-200 dark:border-gray-700 p-4 shadow-sm hover:shadow-md transition bg-white dark:bg-gray-800">
+    <div
+      className="h-full flex flex-col justify-between rounded-lg border border-gray-200 dark:border-gray-700 p-4 shadow-sm hover:shadow-md transition bg-white dark:bg-gray-800 cursor-pointer"
+      onClick={onClick}
+    >
       <h3 className="font-semibold text-gray-900 dark:text-gray-100">{name}</h3>
       {tags.length > 0 && (
         <div className="mt-1 flex flex-wrap gap-1">
