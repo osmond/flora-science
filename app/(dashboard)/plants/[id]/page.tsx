@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import Image from "next/image"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 import Lightbox from "@/components/Lightbox"
 import { Droplet, Sprout, FileText } from "lucide-react"
 import { getHydrationProgress } from "@/components/PlantCard"
@@ -51,6 +51,7 @@ const EVENT_TYPES = {
 function PlantDetailContent({ params }: { params: { id: string } }) {
   const [plant, setPlant] = useState<Plant | null>(null)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const progress = getHydrationProgress(plant?.hydration ?? 0)
   const [waterOpen, setWaterOpen] = useState(false)
   const [fertilizeOpen, setFertilizeOpen] = useState(false)
@@ -120,23 +121,28 @@ function PlantDetailContent({ params }: { params: { id: string } }) {
     toast("Note added")
   }
 
-  useEffect(() => {
-    async function loadPlant() {
-      try {
-        const res = await fetch(`/api/plants/${params.id}`)
-        if (res.ok) {
-          setPlant(await res.json())
-        } else {
-          setPlant(null)
-        }
-      } catch (error) {
+  const loadPlant = useCallback(async () => {
+    setLoading(true)
+    setError(null)
+    try {
+      const res = await fetch(`/api/plants/${params.id}`)
+      if (res.ok) {
+        setPlant(await res.json())
+      } else {
         setPlant(null)
-      } finally {
-        setLoading(false)
+        setError(`Error ${res.status}`)
       }
+    } catch (err) {
+      setPlant(null)
+      setError(err instanceof Error ? err.message : String(err))
+    } finally {
+      setLoading(false)
     }
-    loadPlant()
   }, [params.id])
+
+  useEffect(() => {
+    loadPlant()
+  }, [loadPlant])
 
   return (
     <main className="flex-1 bg-white dark:bg-gray-900">
@@ -149,8 +155,23 @@ function PlantDetailContent({ params }: { params: { id: string } }) {
           <PlantDetailSkeleton />
         ) : !plant ? (
           <div className="rounded-lg border p-6 dark:border-gray-700">
-            <h2 className="text-xl font-bold">Plant not found</h2>
-            <p className="text-sm text-gray-500 mt-1">ID: {params.id}</p>
+            {error ? (
+              <>
+                <h2 className="text-xl font-bold">Failed to load plant</h2>
+                <p className="text-sm text-gray-500 mt-1">{error}</p>
+                <button
+                  onClick={loadPlant}
+                  className="mt-4 inline-block px-3 py-1 border rounded hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800"
+                >
+                  Retry
+                </button>
+              </>
+            ) : (
+              <>
+                <h2 className="text-xl font-bold">Plant not found</h2>
+                <p className="text-sm text-gray-500 mt-1">ID: {params.id}</p>
+              </>
+            )}
           </div>
         ) : (
           <>
