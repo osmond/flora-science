@@ -5,6 +5,7 @@ describe('RoomCard', () => {
   it('renders room info with hydration progress and tasks badge', () => {
     render(
       <RoomCard
+        id="living-room"
         name="Living Room"
         avgHydration={70.2}
         tasksDue={3}
@@ -22,5 +23,6 @@ describe('RoomCard', () => {
     expect(screen.getByText('3')).toBeInTheDocument()
     expect(screen.getByText('indoor')).toBeInTheDocument()
     expect(screen.getByText('bright')).toBeInTheDocument()
+    expect(screen.getByRole('checkbox')).toBeInTheDocument()
   })
 })

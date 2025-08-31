@@ -7,7 +7,7 @@ import RoomCard from "@/components/RoomCard"
 import RoomSkeleton from "@/components/RoomSkeleton"
 import RoomModal from "@/components/RoomModal"
 import { getLastSync } from "@/lib/utils"
-import { getRooms, type Room } from "@/lib/api"
+import { getRooms, deleteRooms, moveRooms, type Room } from "@/lib/api"
 
 export default function RoomsPage() {
   type SortBy = "name" | "hydration" | "tasks"
@@ -20,6 +20,7 @@ export default function RoomsPage() {
   const [view, setView] = useState<"grid" | "list">("grid")
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [activeRoom, setActiveRoom] = useState<Room | null>(null)
+  const [selectedRoomIds, setSelectedRoomIds] = useState<string[]>([])
 
   useEffect(() => {
     async function loadRooms() {
@@ -60,6 +61,31 @@ export default function RoomsPage() {
     setSelectedTags((prev) =>
       prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
     )
+  }
+
+  function toggleRoomSelection(id: string, selected: boolean) {
+    setSelectedRoomIds((prev) =>
+      selected ? [...prev, id] : prev.filter((r) => r !== id)
+    )
+  }
+
+  async function handleBulkDelete() {
+    try {
+      await deleteRooms(selectedRoomIds)
+      setRooms((prev) => prev.filter((r) => !selectedRoomIds.includes(r.id)))
+      setSelectedRoomIds([])
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  async function handleBulkMove() {
+    try {
+      await moveRooms(selectedRoomIds)
+      setSelectedRoomIds([])
+    } catch (e) {
+      console.error(e)
+    }
   }
 
   return (
@@ -120,6 +146,24 @@ export default function RoomsPage() {
         </div>
       )}
 
+      {selectedRoomIds.length > 0 && (
+        <div className="mb-4 flex items-center gap-2 rounded bg-gray-100 dark:bg-gray-700 p-2">
+          <span className="text-sm">{selectedRoomIds.length} selected</span>
+          <button
+            onClick={handleBulkDelete}
+            className="text-sm text-red-600"
+          >
+            Delete
+          </button>
+          <button
+            onClick={handleBulkMove}
+            className="text-sm text-blue-600"
+          >
+            Move
+          </button>
+        </div>
+      )}
+
       {isLoading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {Array.from({ length: 6 }).map((_, i) => (
@@ -140,11 +184,14 @@ export default function RoomsPage() {
           {filteredRooms.map((r) => (
             <RoomCard
               key={r.id}
+              id={r.id}
               name={r.name}
               avgHydration={r.avgHydration}
               tasksDue={r.tasksDue}
               tags={r.tags}
               onClick={() => setActiveRoom(r)}
+              selected={selectedRoomIds.includes(r.id)}
+              onSelect={toggleRoomSelection}
             />
           ))}
         </div>
@@ -153,6 +200,7 @@ export default function RoomsPage() {
           <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
             <thead>
               <tr>
+                <th className="px-3 py-2"></th>
                 <th className="px-3 py-2 text-left text-sm font-semibold">Room</th>
                 <th className="px-3 py-2 text-left text-sm font-semibold">Hydration</th>
                 <th className="px-3 py-2 text-left text-sm font-semibold">Tasks</th>
@@ -161,6 +209,13 @@ export default function RoomsPage() {
             <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
               {filteredRooms.map((r) => (
                 <tr key={r.id}>
+                  <td className="px-3 py-2">
+                    <input
+                      type="checkbox"
+                      checked={selectedRoomIds.includes(r.id)}
+                      onChange={(e) => toggleRoomSelection(r.id, e.target.checked)}
+                    />
+                  </td>
                   <td className="px-3 py-2">
                     <Link
                       href={`/rooms/${r.id}`}
