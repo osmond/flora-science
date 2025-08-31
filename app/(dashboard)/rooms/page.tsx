@@ -1,23 +1,31 @@
+'use client'
+
 import Link from "next/link"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import RoomCard from "@/components/RoomCard"
 import { getLastSync } from "@/lib/utils"
-
-type Room = {
-  id: string
-  name: string
-  avgHydration: number
-  tasksDue: number
-}
-
-const rooms: Room[] = [
-  { id: "living-room", name: "Living Room", avgHydration: 72, tasksDue: 2 },
-  { id: "bedroom", name: "Bedroom", avgHydration: 65, tasksDue: 1 },
-  { id: "office", name: "Office", avgHydration: 82, tasksDue: 0 },
-]
+import { getRooms, type Room } from "@/lib/api"
 
 export default function RoomsPage() {
+  const [rooms, setRooms] = useState<Room[]>([])
   const [searchTerm, setSearchTerm] = useState("")
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    async function loadRooms() {
+      try {
+        const data = await getRooms()
+        setRooms(data)
+      } catch (err) {
+        setError("Failed to load rooms")
+      } finally {
+        setLoading(false)
+      }
+    }
+    loadRooms()
+  }, [])
+
   return (
     <main className="flex-1 p-6">
       <div className="mb-4 flex items-center justify-between">
@@ -35,7 +43,11 @@ export default function RoomsPage() {
         className="mb-4 p-2 border rounded w-full"
       />
 
-      {rooms.length === 0 ? (
+      {loading ? (
+        <p>Loading rooms...</p>
+      ) : error ? (
+        <p className="text-red-500">{error}</p>
+      ) : rooms.length === 0 ? (
         <div className="mt-8 text-center">
           <p className="mb-4">No rooms yet</p>
           <Link href="/rooms/new" className="text-blue-500 underline">
