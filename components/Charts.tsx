@@ -13,6 +13,8 @@ import {
   RadialBar,
   BarChart,
   Bar,
+  ComposedChart,
+
 } from "recharts"
 import { aggregateCareByMonth, CareEvent } from "@/lib/seasonal-trends"
 import { calculateNutrientAvailability } from "@/lib/plant-metrics"
@@ -115,6 +117,30 @@ export function CareTrendsChart({ events }: { events: CareEvent[] }) {
   )
 }
 
+export interface WaterBalanceDatum {
+  date: string
+  et0: number
+  water: number
+}
+
+export function WaterBalanceChart({ data }: { data: WaterBalanceDatum[] }) {
+  return (
+    <ResponsiveContainer width="100%" height={250}>
+      <ComposedChart data={data}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="date" />
+        <YAxis />
+        <Tooltip />
+        <Legend />
+        <Bar dataKey="water" fill="#3b82f6" name="Water (mm)" />
+        <Line
+          type="monotone"
+          dataKey="et0"
+          stroke="#f59e0b"
+          name="ET₀ (mm)"
+        />
+      </ComposedChart>
+
 export function NutrientLevelChart({
   lastFertilized,
   nutrientLevel = 100,
@@ -147,6 +173,7 @@ export function NutrientLevelChart({
         <Legend />
         <Line type="monotone" dataKey="level" stroke="#16a34a" name="Nutrients (%)" />
       </LineChart>
+
     </ResponsiveContainer>
   )
 }
