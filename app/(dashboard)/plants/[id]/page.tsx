@@ -48,7 +48,7 @@ const EVENT_TYPES = {
   },
 } as const
 
-function PlantDetailContent({ params }: { params: { id: string } }) {
+export function PlantDetailContent({ params }: { params: { id: string } }) {
   const [plant, setPlant] = useState<Plant | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -175,16 +175,24 @@ function PlantDetailContent({ params }: { params: { id: string } }) {
           </div>
         ) : (
           <>
-            <section className="flex flex-col md:flex-row gap-4 md:gap-6 items-center md:items-start">
-              <Image
-                src={plant.photos[0]}
-                alt={plant.nickname}
-                width={800}
-                height={600}
-                sizes="(max-width: 768px) 100vw, 50vw"
-                className="w-full md:w-1/2 rounded-xl border object-cover max-h-72"
-                loading="lazy"
-              />
+
+            <section className="flex flex-col md:flex-row gap-6 items-center md:items-start">
+              {plant.photos && plant.photos.length > 0 ? (
+                <Image
+                  src={plant.photos[0]}
+                  alt={plant.nickname}
+                  width={800}
+                  height={600}
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="w-full md:w-1/2 rounded-xl border object-cover max-h-72"
+                  loading="lazy"
+                />
+              ) : (
+                <div className="w-full md:w-1/2 rounded-xl border flex items-center justify-center bg-gray-100 dark:bg-gray-800 max-h-72">
+                  <span className="text-gray-500 dark:text-gray-400">No photo</span>
+                </div>
+              )}
+
               <div className="space-y-2 md:w-1/2 text-center md:text-left">
                 <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{plant.nickname}</h1>
                 <p className="italic text-gray-500">{plant.species}</p>
@@ -257,7 +265,7 @@ function PlantDetailContent({ params }: { params: { id: string } }) {
 
               <section>
                 <h2 className="text-lg font-semibold mb-3">Timeline</h2>
-                {plant.events.length === 0 ? (
+                {!plant.events || plant.events.length === 0 ? (
                   <p className="text-sm text-gray-500 dark:text-gray-400">No activity yet.</p>
                 ) : (
                   <ul className="space-y-2">
@@ -292,12 +300,16 @@ function PlantDetailContent({ params }: { params: { id: string } }) {
 
             <section>
               <h2 className="text-lg font-semibold mb-3">Gallery</h2>
-              <Lightbox
-                images={plant.photos.map((src, i) => ({
-                  src,
-                  alt: `${plant.nickname} photo ${i + 1}`,
-                }))}
-              />
+              {plant.photos && plant.photos.length > 0 ? (
+                <Lightbox
+                  images={plant.photos.map((src, i) => ({
+                    src,
+                    alt: `${plant.nickname} photo ${i + 1}`,
+                  }))}
+                />
+              ) : (
+                <p className="text-sm text-gray-500 dark:text-gray-400">No photos available.</p>
+              )}
             </section>
           </>
         )}
