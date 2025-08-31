@@ -1,16 +1,24 @@
 "use client"
 import { PlusCircle, Sun, Moon } from "lucide-react"
 import { useTheme } from "@/hooks/useTheme"
+import { format } from "date-fns"
 
-export default function Header() {
+interface HeaderProps {
+  plantsCount: number
+  avgHydration: number
+  tasksDue: number
+}
+
+export default function Header({ plantsCount, avgHydration, tasksDue }: HeaderProps) {
   const { theme, toggleTheme } = useTheme()
+  const currentDate = format(new Date(), "EEEE, MMM d")
 
   return (
     <header className="backdrop-blur bg-white/80 dark:bg-gray-900/80 sticky top-0 z-10 p-4 flex items-center justify-between shadow-sm">
       <div>
-        <p className="text-sm text-gray-600 dark:text-gray-400">Friday, Aug 29</p>
+        <p className="text-sm text-gray-600 dark:text-gray-400">{currentDate}</p>
         <p className="font-medium text-gray-800 dark:text-gray-100">
-          4 plants · Avg hydration <span className="font-semibold text-flora-leaf">72%</span> · 2 tasks due today
+          {plantsCount} plants · Avg hydration <span className="font-semibold text-flora-leaf">{avgHydration}%</span> · {tasksDue} tasks due today
         </p>
       </div>
       <div className="flex items-center gap-3">
