@@ -5,26 +5,26 @@ Flora-Science is a plant care companion designed for **clarity**, **low-friction
 ---
 
 ## ✅ Phase 0 – Foundations
-- [ ] Next.js app structure (`/app`)
-- [ ] Tailwind 
-- [ ] Sidebar navigation + Header
-- [ ] Mock data for Today + Rooms views
+- [x] Next.js app structure (`/app`)
+- [x] Tailwind 
+- [x] Sidebar navigation + Header
+- [x] Mock data for Today + Rooms views
 
 ---
 
 ## 🌱 Phase 1 – Core Views
-- [ ] **Today View**
+- [x] **Today View**
   - Show all plants due today
   - Hydration, fertilizing, and notes at a glance
-- [ ] **Rooms View**
+- [x] **Rooms View**
   - Group plants by room
   - Show average hydration + tasks due
-- [ ] **Plant Detail View**
+- [x] **Plant Detail View**
   - Hero image + nickname/species
   - Quick Stats (hydration, last watered, next due)
   - Timeline of events (water, fertilize, notes, photos)
   - Gallery of plant photos
-- [ ] **Room Detail View**
+- [x] **Room Detail View**
   - Show all plants in room
   - Room-level stats
 
@@ -50,7 +50,7 @@ Flora-Science is a plant care companion designed for **clarity**, **low-friction
 
 ## 🌳 Phase 4 – Polish
 - [ ] Refined UI polish (animations, micro-interactions)
-- [ ] Dark mode
+- [x] Dark mode
 - [ ] Mobile-first layout
 - [ ] Onboarding flow for new users
 

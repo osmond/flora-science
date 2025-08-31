@@ -9,13 +9,14 @@ type Plant = {
   species: string
   status: string
   hydration: number
+  note?: string
 }
 
 const plants: Plant[] = [
-  { id: "1", nickname: "Delilah", species: "Monstera deliciosa", status: "Water overdue", hydration: 72 },
-  { id: "2", nickname: "Sunny", species: "Sansevieria trifasciata", status: "Fine", hydration: 90 },
-  { id: "3", nickname: "Ivy", species: "Epipremnum aureum", status: "Due today", hydration: 70 },
-  { id: "4", nickname: "Figgy", species: "Ficus lyrata", status: "Fertilize suggested", hydration: 75 },
+  { id: "1", nickname: "Delilah", species: "Monstera deliciosa", status: "Water overdue", hydration: 72, note: "Needs water" },
+  { id: "2", nickname: "Sunny", species: "Sansevieria trifasciata", status: "Fine", hydration: 90, note: "Loves bright light" },
+  { id: "3", nickname: "Ivy", species: "Epipremnum aureum", status: "Due today", hydration: 70, note: "Trailing nicely" },
+  { id: "4", nickname: "Figgy", species: "Ficus lyrata", status: "Fertilize suggested", hydration: 75, note: "New growth" },
 ]
 
 export default function TodayPage() {
@@ -34,6 +35,7 @@ export default function TodayPage() {
               species={p.species}
               status={p.status}
               hydration={p.hydration}
+              note={p.note}
             />
           </Link>
         ))}
