@@ -15,5 +15,7 @@ describe('Header', () => {
     expect(document.documentElement.classList.contains('dark')).toBe(false)
     await userEvent.click(toggle)
     expect(document.documentElement.classList.contains('dark')).toBe(true)
+    await userEvent.click(toggle)
+    expect(document.documentElement.classList.contains('dark')).toBe(false)
   })
 })
