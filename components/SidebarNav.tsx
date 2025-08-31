@@ -1,20 +1,9 @@
 "use client"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import {
-  Sprout,
-  Calendar,
-  Home,
-  FlaskConical,
-  Notebook,
-} from "lucide-react"
+import { Sprout } from "lucide-react"
 
-const navItems = [
-  { href: "/", label: "Today", icon: Calendar },
-  { href: "/rooms", label: "Rooms", icon: Home },
-  { href: "/science", label: "Science Panel", icon: FlaskConical },
-  { href: "/notebook", label: "Lab Notebook", icon: Notebook },
-]
+import { navItems } from "./navItems"
 
 export default function SidebarNav() {
   const pathname = usePathname()
@@ -37,7 +26,7 @@ export default function SidebarNav() {
               aria-current={active ? "page" : undefined}
               aria-label={label}
             >
-              <Icon className="h-5 w-5 mr-2" />
+              <Icon className="h-5 w-5 mr-2" aria-hidden="true" />
               {label}
             </Link>
           )

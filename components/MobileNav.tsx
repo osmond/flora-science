@@ -1,14 +1,8 @@
 "use client"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Calendar, Home, FlaskConical, Notebook } from "lucide-react"
 
-const navItems = [
-  { href: "/", label: "Today", icon: Calendar },
-  { href: "/rooms", label: "Rooms", icon: Home },
-  { href: "/science", label: "Science", icon: FlaskConical },
-  { href: "/notebook", label: "Notebook", icon: Notebook },
-]
+import { navItems } from "./navItems"
 
 export default function MobileNav() {
   const pathname = usePathname()
