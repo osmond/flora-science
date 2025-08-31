@@ -34,8 +34,15 @@ export default function RoomCard({
       : 'bg-red-500 text-white'
   return (
     <div
-      className="relative h-full flex flex-col justify-between rounded-lg border border-gray-200 dark:border-gray-700 p-4 shadow-sm hover:shadow-md transition bg-white dark:bg-gray-800 cursor-pointer"
+      tabIndex={0}
+      className="relative h-full flex flex-col justify-between rounded-lg border border-gray-200 dark:border-gray-700 p-4 shadow-sm hover:shadow-md transition bg-white dark:bg-gray-800 cursor-pointer focus:outline-none focus:ring-2 focus:ring-flora-leaf focus:ring-offset-2"
       onClick={onClick}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault()
+          onClick?.()
+        }
+      }}
     >
       <input
         type="checkbox"

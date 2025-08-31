@@ -1,8 +1,9 @@
 'use client'
 
 import Link from "next/link"
-import { useState, useEffect } from "react"
-import { LayoutGrid, List } from "lucide-react"
+import { useState, useEffect, useRef } from "react"
+import { useRouter } from "next/navigation"
+import { HelpCircle, LayoutGrid, List } from "lucide-react"
 import RoomCard from "@/components/RoomCard"
 import RoomSkeleton from "@/components/RoomSkeleton"
 import RoomModal from "@/components/RoomModal"
@@ -27,6 +28,8 @@ export default function RoomsPage() {
   const [activeRoom, setActiveRoom] = useState<Room | null>(null)
   const [selectedRoomIds, setSelectedRoomIds] = useState<string[]>([])
   const [showAddRoomTip, setShowAddRoomTip] = useState(false)
+  const searchInputRef = useRef<HTMLInputElement>(null)
+  const router = useRouter()
 
   useEffect(() => {
     async function loadRooms() {
@@ -43,6 +46,26 @@ export default function RoomsPage() {
     }
     loadRooms()
   }, [])
+
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "n") {
+        e.preventDefault()
+        router.push("/rooms/new")
+      }
+      if (
+        e.key === "/" &&
+        !(e.target instanceof HTMLInputElement) &&
+        !(e.target instanceof HTMLTextAreaElement)
+      ) {
+        e.preventDefault()
+        searchInputRef.current?.focus()
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [router])
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -124,7 +147,28 @@ export default function RoomsPage() {
   return (
     <main className="flex-1 p-6">
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-xl font-bold">My Rooms</h2>
+        <div className="flex items-center gap-2">
+          <h2 className="text-xl font-bold">My Rooms</h2>
+          <Tooltip
+            content={
+              <div className="text-left">
+                <p>
+                  <kbd className="font-semibold">Ctrl+N</kbd> Create room
+                </p>
+                <p>
+                  <kbd className="font-semibold">/</kbd> Focus search
+                </p>
+              </div>
+            }
+          >
+            <button
+              className="text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-flora-leaf focus:ring-offset-2"
+              aria-label="Keyboard shortcuts"
+            >
+              <HelpCircle className="h-4 w-4" />
+            </button>
+          </Tooltip>
+        </div>
         <Tooltip
           content="Click here to add a room"
           open={showAddRoomTip}
@@ -137,7 +181,7 @@ export default function RoomsPage() {
         >
           <Link
             href="/rooms/new"
-            className="text-sm text-blue-500 hover:underline"
+            className="text-sm text-blue-500 hover:underline focus:outline-none focus:ring-2 focus:ring-flora-leaf focus:ring-offset-2"
             onClick={() => {
               localStorage.setItem("addRoomTipDismissed", "true")
               setShowAddRoomTip(false)
@@ -150,16 +194,17 @@ export default function RoomsPage() {
 
       <div className="mb-4 flex flex-wrap items-center gap-2">
         <input
+          ref={searchInputRef}
           type="text"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           placeholder="Search rooms…"
-          className="p-2 border rounded flex-1"
+          className="p-2 border rounded flex-1 focus:outline-none focus:ring-2 focus:ring-flora-leaf"
         />
         <select
           value={sortBy}
           onChange={(e) => setSortBy(e.target.value as SortBy)}
-          className="p-2 border rounded"
+          className="p-2 border rounded focus:outline-none focus:ring-2 focus:ring-flora-leaf"
         >
           <option value="name">Name</option>
           <option value="hydration">Hydration</option>
@@ -168,14 +213,14 @@ export default function RoomsPage() {
         <div className="flex border rounded overflow-hidden">
           <button
             onClick={() => setView("grid")}
-            className={`p-2 ${view === "grid" ? "bg-gray-200 dark:bg-gray-700 text-flora-leaf" : "text-gray-500"}`}
+            className={`p-2 ${view === "grid" ? "bg-gray-200 dark:bg-gray-700 text-flora-leaf" : "text-gray-500"} focus:outline-none focus:ring-2 focus:ring-flora-leaf`}
             aria-label="Grid view"
           >
             <LayoutGrid className="h-4 w-4" aria-hidden="true" />
           </button>
           <button
             onClick={() => setView("list")}
-            className={`p-2 border-l ${view === "list" ? "bg-gray-200 dark:bg-gray-700 text-flora-leaf" : "text-gray-500"}`}
+            className={`p-2 border-l ${view === "list" ? "bg-gray-200 dark:bg-gray-700 text-flora-leaf" : "text-gray-500"} focus:outline-none focus:ring-2 focus:ring-flora-leaf`}
             aria-label="List view"
           >
             <List className="h-4 w-4" aria-hidden="true" />
@@ -189,7 +234,7 @@ export default function RoomsPage() {
             <button
               key={tag}
               onClick={() => toggleTag(tag)}
-              className={`px-2 py-1 rounded-full text-xs border ${selectedTags.includes(tag) ? 'bg-flora-leaf text-white border-flora-leaf' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-600'}`}
+              className={`px-2 py-1 rounded-full text-xs border ${selectedTags.includes(tag) ? 'bg-flora-leaf text-white border-flora-leaf' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-600'} focus:outline-none focus:ring-2 focus:ring-flora-leaf`}
             >
               {tag}
             </button>
@@ -202,13 +247,13 @@ export default function RoomsPage() {
           <span className="text-sm">{selectedRoomIds.length} selected</span>
           <button
             onClick={handleBulkDelete}
-            className="text-sm text-red-600"
+            className="text-sm text-red-600 focus:outline-none focus:ring-2 focus:ring-flora-leaf focus:ring-offset-2"
           >
             Delete
           </button>
           <button
             onClick={handleBulkMove}
-            className="text-sm text-blue-600"
+            className="text-sm text-blue-600 focus:outline-none focus:ring-2 focus:ring-flora-leaf focus:ring-offset-2"
           >
             Move
           </button>
@@ -290,7 +335,7 @@ export default function RoomsPage() {
           <button
             onClick={loadMore}
             disabled={isLoadingMore}
-            className="px-4 py-2 text-sm border rounded"
+            className="px-4 py-2 text-sm border rounded focus:outline-none focus:ring-2 focus:ring-flora-leaf focus:ring-offset-2 disabled:opacity-50"
           >
             {isLoadingMore ? 'Loading...' : 'Load more'}
           </button>
