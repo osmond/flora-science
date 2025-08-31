@@ -3,6 +3,7 @@ type PlantCardProps = {
   species: string
   status: string
   hydration: number
+  tasksDue?: number
   note?: string
 }
 
@@ -11,10 +12,13 @@ export default function PlantCard({
   species,
   status,
   hydration,
+  tasksDue = 0,
   note,
 }: PlantCardProps) {
   // simple % formatting guard
   const pct = Math.max(0, Math.min(100, Math.round(hydration)))
+  const barColor = pct < 30 ? 'bg-red-500' : pct < 60 ? 'bg-yellow-500' : 'bg-flora-leaf'
+  const badgeColor = tasksDue > 0 ? 'bg-red-500 text-white' : 'bg-flora-leaf text-white'
 
   return (
     <div className="rounded-lg border border-gray-200 dark:border-gray-700 p-4 shadow-sm hover:shadow-md transition bg-white dark:bg-gray-800">
@@ -23,7 +27,30 @@ export default function PlantCard({
       </h3>
       <p className="text-sm text-gray-700 dark:text-gray-300">{status}</p>
       {note && <p className="text-xs text-gray-600 dark:text-gray-400">{note}</p>}
-      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Hydration: {pct}%</p>
+      <div
+        className="w-full bg-gray-200 rounded-full h-2 mt-2"
+        role="progressbar"
+        aria-valuenow={pct}
+        aria-valuemin={0}
+        aria-valuemax={100}
+      >
+        <div
+          className={`h-2 rounded-full ${barColor}`}
+          style={{ width: `${pct}%` }}
+        />
+      </div>
+      <div className="flex items-center justify-between mt-2">
+        <p className="text-xs text-gray-500 dark:text-gray-400">Hydration: {pct}%</p>
+        <div className="flex items-center gap-1">
+          <span className="text-xs text-gray-500 dark:text-gray-400">Tasks</span>
+          <span
+            className={`text-xs font-semibold px-2 py-0.5 rounded-full ${badgeColor}`}
+            aria-label={`${tasksDue} tasks due`}
+          >
+            {tasksDue}
+          </span>
+        </div>
+      </div>
     </div>
   )
 }
