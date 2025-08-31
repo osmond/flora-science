@@ -1,3 +1,8 @@
+'use client'
+
+import { motion } from 'framer-motion'
+import { cardVariants, hover, tap, defaultTransition } from '@/lib/motion'
+
 type PlantCardProps = {
   nickname: string
   species: string
@@ -25,7 +30,16 @@ export default function PlantCard({
   const badgeColor = tasksDue > 0 ? 'bg-red-500 text-white' : 'bg-flora-leaf text-white'
 
   return (
-    <div className="rounded-lg border border-gray-200 dark:border-gray-700 p-4 shadow-sm hover:shadow-md transition bg-white dark:bg-gray-800">
+    <motion.div
+      className="rounded-lg border border-gray-200 dark:border-gray-700 p-4 shadow-sm hover:shadow-md transition bg-white dark:bg-gray-800"
+      variants={cardVariants}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      whileHover={hover}
+      whileTap={tap}
+      transition={defaultTransition}
+    >
       <h3 className="font-semibold text-gray-900 dark:text-gray-100">
         {nickname} <span className="italic text-gray-500 dark:text-gray-400">— {species}</span>
       </h3>
@@ -55,6 +69,7 @@ export default function PlantCard({
           </span>
         </div>
       </div>
-    </div>
+    </motion.div>
   )
 }
+

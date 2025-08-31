@@ -1,5 +1,8 @@
 "use client"
 
+import { motion } from 'framer-motion'
+import { cardVariants, hover, tap, defaultTransition } from '@/lib/motion'
+
 type RoomCardProps = {
   id: string
   name: string
@@ -33,7 +36,7 @@ export default function RoomCard({
       ? 'bg-yellow-500 text-gray-800'
       : 'bg-red-500 text-white'
   return (
-    <div
+    <motion.div
       tabIndex={0}
       className="relative h-full flex flex-col justify-between rounded-lg border border-gray-200 dark:border-gray-700 p-4 shadow-sm hover:shadow-md transition bg-white dark:bg-gray-800 cursor-pointer focus:outline-none focus:ring-2 focus:ring-flora-leaf focus:ring-offset-2"
       onClick={onClick}
@@ -43,6 +46,13 @@ export default function RoomCard({
           onClick?.()
         }
       }}
+      variants={cardVariants}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      whileHover={hover}
+      whileTap={tap}
+      transition={defaultTransition}
     >
       <input
         type="checkbox"
@@ -94,6 +104,6 @@ export default function RoomCard({
           </span>
         </div>
       </div>
-    </div>
+    </motion.div>
   )
 }

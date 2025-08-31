@@ -146,7 +146,7 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
 
   return (
     <main className="flex-1 bg-white dark:bg-gray-900">
-      <div className="p-6 space-y-6">
+      <div className="p-4 md:p-6 space-y-4 md:space-y-6">
         <Link href="/" className="inline-block px-3 py-1 border rounded hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800">
           ← Back to Today
         </Link>
@@ -175,6 +175,7 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
           </div>
         ) : (
           <>
+
             <section className="flex flex-col md:flex-row gap-6 items-center md:items-start">
               {plant.photos && plant.photos.length > 0 ? (
                 <Image
@@ -191,6 +192,7 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
                   <span className="text-gray-500 dark:text-gray-400">No photo</span>
                 </div>
               )}
+
               <div className="space-y-2 md:w-1/2 text-center md:text-left">
                 <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{plant.nickname}</h1>
                 <p className="italic text-gray-500">{plant.species}</p>
@@ -198,22 +200,25 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
                   <button
                     onClick={handleWater}
                     aria-label="Water plant"
-                    className="px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-blue-500 dark:hover:bg-blue-600"
+                    className="flex items-center px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-blue-500 dark:hover:bg-blue-600"
                   >
+                    <Droplet className="h-4 w-4 mr-1" />
                     Water
                   </button>
                   <button
                     onClick={handleFertilize}
                     aria-label="Fertilize plant"
-                    className="px-3 py-1 rounded bg-green-600 text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 dark:bg-green-500 dark:hover:bg-green-600"
+                    className="flex items-center px-3 py-1 rounded bg-green-600 text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 dark:bg-green-500 dark:hover:bg-green-600"
                   >
+                    <Sprout className="h-4 w-4 mr-1" />
                     Fertilize
                   </button>
                   <button
                     onClick={handleAddNote}
                     aria-label="Add note to plant"
-                    className="px-3 py-1 rounded bg-purple-600 text-white hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:bg-purple-500 dark:hover:bg-purple-600"
+                    className="flex items-center px-3 py-1 rounded bg-purple-600 text-white hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:bg-purple-500 dark:hover:bg-purple-600"
                   >
+                    <FileText className="h-4 w-4 mr-1" />
                     Add Note
                   </button>
                 </div>
@@ -241,7 +246,7 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
               </div>
             </section>
 
-            <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
               {[
                 { label: "Status", value: plant.status },
                 { label: "Hydration", value: `${plant.hydration}%` },
