@@ -1,4 +1,5 @@
 import NotebookEntry from "@/components/NotebookEntry"
+import { Sprout } from "lucide-react"
 
 export default function NotebookPage() {
   return (
@@ -14,12 +15,12 @@ export default function NotebookPage() {
 
       <div className="mt-6 space-y-4">
         <NotebookEntry
-          icon="🌱"
+          icon={<Sprout className="h-4 w-4" />}
           note="Observation: New leaf unfurled on Delilah (*Monstera deliciosa*)"
           date="Aug 28, 2025"
         />
         <NotebookEntry
-          icon="🐛"
+          icon={<span>🐛</span>}
           note="Pest check on Sunny (*Sansevieria trifasciata*) — none found"
           date="Aug 27, 2025"
         />

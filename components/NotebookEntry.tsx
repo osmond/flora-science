@@ -1,5 +1,7 @@
+import type { ReactNode } from "react"
+
 type Props = {
-  icon: string
+  icon: ReactNode
   note: string
   date: string
 }
@@ -7,7 +9,12 @@ type Props = {
 export default function NotebookEntry({ icon, note, date }: Props) {
   return (
     <div className="p-4 border rounded-lg">
-      <p className="text-sm">{icon} {note}</p>
+      <p className="text-sm">
+        <span aria-hidden className="mr-1">
+          {icon}
+        </span>
+        {note}
+      </p>
       <p className="text-xs text-gray-500">{date}</p>
     </div>
   )
