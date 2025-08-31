@@ -10,6 +10,7 @@ import PlantDetailSkeleton from "./PlantDetailSkeleton"
 import WaterModal from "@/components/WaterModal"
 import FertilizeModal from "@/components/FertilizeModal"
 import NoteModal from "@/components/NoteModal"
+import { ToastProvider, useToast } from "@/components/Toast"
 
 interface PlantEvent {
   id: number
@@ -47,13 +48,14 @@ const EVENT_TYPES = {
   },
 } as const
 
-export default function PlantDetailPage({ params }: { params: { id: string } }) {
+function PlantDetailContent({ params }: { params: { id: string } }) {
   const [plant, setPlant] = useState<Plant | null>(null)
   const [loading, setLoading] = useState(true)
   const progress = getHydrationProgress(plant?.hydration ?? 0)
   const [waterOpen, setWaterOpen] = useState(false)
   const [fertilizeOpen, setFertilizeOpen] = useState(false)
   const [noteOpen, setNoteOpen] = useState(false)
+  const toast = useToast()
 
   function handleWater() {
     setWaterOpen(true)
@@ -65,6 +67,57 @@ export default function PlantDetailPage({ params }: { params: { id: string } }) 
 
   function handleAddNote() {
     setNoteOpen(true)
+  }
+
+  function handleWaterSubmit(amount: string) {
+    const date = new Date().toLocaleDateString()
+    const amt = Number(amount)
+    setPlant((prev) =>
+      prev
+        ? {
+            ...prev,
+            hydration: Math.min(100, prev.hydration + (isNaN(amt) ? 0 : amt)),
+            lastWatered: date,
+            events: [
+              ...prev.events,
+              { id: Date.now(), type: "water", date },
+            ],
+          }
+        : prev
+    )
+    toast("Water added")
+  }
+
+  function handleFertilizeSubmit(type: string) {
+    const date = new Date().toLocaleDateString()
+    setPlant((prev) =>
+      prev
+        ? {
+            ...prev,
+            events: [
+              ...prev.events,
+              { id: Date.now(), type: "fertilize", date },
+            ],
+          }
+        : prev
+    )
+    toast("Fertilizer added")
+  }
+
+  function handleNoteSubmit(note: string) {
+    const date = new Date().toLocaleDateString()
+    setPlant((prev) =>
+      prev
+        ? {
+            ...prev,
+            events: [
+              ...prev.events,
+              { id: Date.now(), type: "note", date, note },
+            ],
+          }
+        : prev
+    )
+    toast("Note added")
   }
 
   useEffect(() => {
@@ -224,18 +277,26 @@ export default function PlantDetailPage({ params }: { params: { id: string } }) 
       <WaterModal
         isOpen={waterOpen}
         onClose={() => setWaterOpen(false)}
-        onSubmit={(amount) => alert(`Watered: ${amount}ml`)}
+        onSubmit={handleWaterSubmit}
       />
       <FertilizeModal
         isOpen={fertilizeOpen}
         onClose={() => setFertilizeOpen(false)}
-        onSubmit={(type) => alert(`Fertilized with ${type}`)}
+        onSubmit={handleFertilizeSubmit}
       />
       <NoteModal
         isOpen={noteOpen}
         onClose={() => setNoteOpen(false)}
-        onSubmit={(note) => alert(`Note added: ${note}`)}
+        onSubmit={handleNoteSubmit}
       />
     </main>
+  )
+}
+
+export default function PlantDetailPage({ params }: { params: { id: string } }) {
+  return (
+    <ToastProvider>
+      <PlantDetailContent params={params} />
+    </ToastProvider>
   )
 }
