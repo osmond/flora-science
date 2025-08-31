@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { useState, useEffect } from "react"
+import { LayoutGrid, List } from "lucide-react"
 import RoomCard from "@/components/RoomCard"
 import RoomSkeleton from "@/components/RoomSkeleton"
 import { getLastSync } from "@/lib/utils"
@@ -15,6 +16,7 @@ export default function RoomsPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [sortBy, setSortBy] = useState<SortBy>("name")
+  const [view, setView] = useState<"grid" | "list">("grid")
 
   useEffect(() => {
     async function loadRooms() {
@@ -42,6 +44,10 @@ export default function RoomsPage() {
     }
   })
 
+  const filteredRooms = sortedRooms.filter((r) =>
+    r.name.toLowerCase().includes(searchTerm.toLowerCase())
+  )
+
   return (
     <main className="flex-1 p-6">
       <div className="mb-4 flex items-center justify-between">
@@ -51,7 +57,7 @@ export default function RoomsPage() {
         </Link>
       </div>
 
-      <div className="mb-4 flex gap-2">
+      <div className="mb-4 flex flex-wrap items-center gap-2">
         <input
           type="text"
           value={searchTerm}
@@ -68,6 +74,22 @@ export default function RoomsPage() {
           <option value="hydration">Hydration</option>
           <option value="tasks">Tasks</option>
         </select>
+        <div className="flex border rounded overflow-hidden">
+          <button
+            onClick={() => setView("grid")}
+            className={`p-2 ${view === "grid" ? "bg-gray-200 dark:bg-gray-700 text-flora-leaf" : "text-gray-500"}`}
+            aria-label="Grid view"
+          >
+            <LayoutGrid className="h-4 w-4" aria-hidden="true" />
+          </button>
+          <button
+            onClick={() => setView("list")}
+            className={`p-2 border-l ${view === "list" ? "bg-gray-200 dark:bg-gray-700 text-flora-leaf" : "text-gray-500"}`}
+            aria-label="List view"
+          >
+            <List className="h-4 w-4" aria-hidden="true" />
+          </button>
+        </div>
       </div>
 
       {isLoading ? (
@@ -85,19 +107,45 @@ export default function RoomsPage() {
             Create a room
           </Link>
         </div>
-      ) : (
+      ) : view === "grid" ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {sortedRooms
-            .filter((r) => r.name.toLowerCase().includes(searchTerm.toLowerCase()))
-            .map((r) => (
-              <Link key={r.id} href={`/rooms/${r.id}`} className="block">
-                <RoomCard
-                  name={r.name}
-                  avgHydration={r.avgHydration}
-                  tasksDue={r.tasksDue}
-                />
-              </Link>
-            ))}
+          {filteredRooms.map((r) => (
+            <Link key={r.id} href={`/rooms/${r.id}`} className="block">
+              <RoomCard
+                name={r.name}
+                avgHydration={r.avgHydration}
+                tasksDue={r.tasksDue}
+              />
+            </Link>
+          ))}
+        </div>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead>
+              <tr>
+                <th className="px-3 py-2 text-left text-sm font-semibold">Room</th>
+                <th className="px-3 py-2 text-left text-sm font-semibold">Hydration</th>
+                <th className="px-3 py-2 text-left text-sm font-semibold">Tasks</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+              {filteredRooms.map((r) => (
+                <tr key={r.id}>
+                  <td className="px-3 py-2">
+                    <Link
+                      href={`/rooms/${r.id}`}
+                      className="text-blue-500 hover:underline"
+                    >
+                      {r.name}
+                    </Link>
+                  </td>
+                  <td className="px-3 py-2">{Math.round(r.avgHydration)}%</td>
+                  <td className="px-3 py-2">{r.tasksDue}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
 
