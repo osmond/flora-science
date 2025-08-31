@@ -28,6 +28,16 @@ const config: Config = {
         lg: "1.125rem",
         xl: "1.25rem",
         "2xl": "1.5rem",
+        h1: "2rem",
+        h2: "1.5rem",
+      },
+      spacing: {
+        "13": "3.25rem",
+        "18": "4.5rem",
+      },
+      fontFamily: {
+        sans: ["var(--font-sans)", "sans-serif"],
+        heading: ["var(--font-heading)", "serif"],
       },
     },
   },

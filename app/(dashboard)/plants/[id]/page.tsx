@@ -57,7 +57,7 @@ export default function PlantDetailPage({ params }: { params: { id: string } }) 
 
   return (
     <main className="flex-1 bg-white dark:bg-gray-900">
-      <div className="p-6 space-y-6">
+      <div className="p-13 space-y-13">
         <Link href="/" className="inline-block px-3 py-1 border rounded hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800">
           ← Back to Today
         </Link>
@@ -76,7 +76,7 @@ export default function PlantDetailPage({ params }: { params: { id: string } }) 
                 className="w-full md:w-1/2 rounded-xl border object-cover max-h-72"
               />
               <div className="space-y-2 md:w-1/2 text-center md:text-left">
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{plant.nickname}</h1>
+                <h1 className="text-3xl font-heading font-bold text-gray-900 dark:text-white">{plant.nickname}</h1>
                 <p className="italic text-gray-500">{plant.species}</p>
                 <div className="flex flex-wrap justify-center md:justify-start gap-2 text-sm">
                   <span className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full font-medium">{plant.status}</span>
@@ -106,7 +106,7 @@ export default function PlantDetailPage({ params }: { params: { id: string } }) 
             </section>
 
             <section>
-              <h2 className="text-lg font-semibold mb-3">Timeline</h2>
+              <h2 className="text-lg font-heading font-semibold mb-13">Timeline</h2>
               <ul className="space-y-2">
                 {plant.events.map((e) => (
                   <li
@@ -127,7 +127,7 @@ export default function PlantDetailPage({ params }: { params: { id: string } }) 
             </section>
 
             <section>
-              <h2 className="text-lg font-semibold mb-3">Gallery</h2>
+              <h2 className="text-lg font-heading font-semibold mb-13">Gallery</h2>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {plant.photos.map((src, i) => (
                   <img
