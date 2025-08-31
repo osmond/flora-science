@@ -59,9 +59,7 @@ export default function PlantDetailPage({ params }: { params: { id: string } }) 
 
   return (
     <div className="flex min-h-screen">
-      <aside className="w-56 border-r bg-gray-50 dark:bg-gray-900 dark:border-gray-700">
-        <SidebarNav />
-      </aside>
+      <SidebarNav />
       <main className="flex-1 bg-white dark:bg-gray-900">
         <Header />
 
