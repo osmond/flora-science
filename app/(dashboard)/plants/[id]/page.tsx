@@ -27,6 +27,21 @@ export default function PlantDetailPage({ params }: { params: { id: string } }) 
   const [loading, setLoading] = useState(true)
   const progress = getHydrationProgress(plant?.hydration ?? 0)
 
+  function handleWater() {
+    alert("Water plant")
+  }
+
+  function handleFertilize() {
+    alert("Fertilize plant")
+  }
+
+  function handleAddNote() {
+    const note = prompt("Add a note for this plant:")
+    if (note) {
+      alert(`Note added: ${note}`)
+    }
+  }
+
   useEffect(() => {
     async function loadPlant() {
       try {
@@ -73,6 +88,29 @@ export default function PlantDetailPage({ params }: { params: { id: string } }) 
               <div className="space-y-2 md:w-1/2 text-center md:text-left">
                 <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{plant.nickname}</h1>
                 <p className="italic text-gray-500">{plant.species}</p>
+                <div className="flex flex-wrap justify-center md:justify-start gap-2 mt-2">
+                  <button
+                    onClick={handleWater}
+                    aria-label="Water plant"
+                    className="px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-blue-500 dark:hover:bg-blue-600"
+                  >
+                    Water
+                  </button>
+                  <button
+                    onClick={handleFertilize}
+                    aria-label="Fertilize plant"
+                    className="px-3 py-1 rounded bg-green-600 text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 dark:bg-green-500 dark:hover:bg-green-600"
+                  >
+                    Fertilize
+                  </button>
+                  <button
+                    onClick={handleAddNote}
+                    aria-label="Add note to plant"
+                    className="px-3 py-1 rounded bg-purple-600 text-white hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:bg-purple-500 dark:hover:bg-purple-600"
+                  >
+                    Add Note
+                  </button>
+                </div>
                 <div className="flex flex-wrap justify-center md:justify-start gap-2 text-sm">
                   <span className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full font-medium">{plant.status}</span>
                 </div>
