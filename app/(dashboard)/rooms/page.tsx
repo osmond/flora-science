@@ -1,5 +1,3 @@
-"use client"
-
 import Link from "next/link"
 import RoomCard from "@/components/RoomCard"
 import { getLastSync } from "@/lib/utils"
