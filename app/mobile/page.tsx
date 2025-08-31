@@ -10,8 +10,8 @@ export default function MobileHome() {
       </header>
 
       <div className="mt-4 space-y-4">
-        <PlantCard nickname="Delilah" species="Monstera deliciosa" status="💧 Overdue" />
-        <PlantCard nickname="Sunny" species="Sansevieria trifasciata" status="✓ Fine" />
+        <PlantCard nickname="Delilah" species="Monstera deliciosa" status="💧 Overdue" hydration={72} />
+        <PlantCard nickname="Sunny" species="Sansevieria trifasciata" status="✓ Fine" hydration={90} />
       </div>
 
       <Footer />

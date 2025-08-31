@@ -2,7 +2,6 @@
 
 import Link from "next/link"
 import RoomCard from "@/components/RoomCard"
-import SidebarNav from "@/components/SidebarNav"
 
 type Room = {
   id: string
@@ -19,21 +18,18 @@ const rooms: Room[] = [
 
 export default function RoomsPage() {
   return (
-    <div className="flex">
-      <SidebarNav />
-      <main className="flex-1 p-6">
-        <h2 className="text-xl font-bold mb-4">My Rooms</h2>
+    <main className="flex-1 p-6">
+      <h2 className="text-xl font-bold mb-4">My Rooms</h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {rooms.map((r) => (
-            <Link key={r.id} href={`/rooms/${r.id}`} className="block">
-              <RoomCard name={r.name} avgHydration={r.avgHydration} tasksDue={r.tasksDue} />
-            </Link>
-          ))}
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {rooms.map((r) => (
+          <Link key={r.id} href={`/rooms/${r.id}`} className="block">
+            <RoomCard name={r.name} avgHydration={r.avgHydration} tasksDue={r.tasksDue} />
+          </Link>
+        ))}
+      </div>
 
-        <footer className="text-xs text-gray-400 mt-6">Last sync: 10:32 AM CDT</footer>
-      </main>
-    </div>
+      <footer className="text-xs text-gray-400 mt-6">Last sync: 10:32 AM CDT</footer>
+    </main>
   )
 }

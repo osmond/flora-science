@@ -2,7 +2,6 @@
 
 import Link from "next/link"
 import PlantCard from "@/components/PlantCard"
-import SidebarNav from "@/components/SidebarNav"
 
 type Plant = {
   id: string
@@ -22,30 +21,27 @@ const plants: Plant[] = [
 
 export default function TodayPage() {
   return (
-    <div className="flex">
-      <SidebarNav />
-      <main className="flex-1 p-6">
-        <header className="mb-4">
-          <h2 className="text-xl font-bold">Today</h2>
-          <p className="text-sm text-gray-500">4 plants · Avg hydration 72% · 2 tasks due today</p>
-        </header>
+    <main className="flex-1 p-6">
+      <header className="mb-4">
+        <h2 className="text-xl font-bold">Today</h2>
+        <p className="text-sm text-gray-500">4 plants · Avg hydration 72% · 2 tasks due today</p>
+      </header>
 
-        <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {plants.map((p) => (
-            <Link key={p.id} href={`/plants/${p.id}`} className="block">
-              <PlantCard
-                nickname={p.nickname}
-                species={p.species}
-                status={p.status}
-                hydration={p.hydration}
-                note={p.note}
-              />
-            </Link>
-          ))}
-        </section>
+      <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {plants.map((p) => (
+          <Link key={p.id} href={`/plants/${p.id}`} className="block">
+            <PlantCard
+              nickname={p.nickname}
+              species={p.species}
+              status={p.status}
+              hydration={p.hydration}
+              note={p.note}
+            />
+          </Link>
+        ))}
+      </section>
 
-        <footer className="text-xs text-gray-400 mt-6">Last sync: 10:32 AM CDT</footer>
-      </main>
-    </div>
+      <footer className="text-xs text-gray-400 mt-6">Last sync: 10:32 AM CDT</footer>
+    </main>
   )
 }

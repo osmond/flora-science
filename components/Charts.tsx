@@ -48,12 +48,7 @@ export function VPDGauge() {
         startAngle={180}
         endAngle={0}
       >
-        <RadialBar
-          minAngle={15}
-          background
-          clockWise
-          dataKey="value"
-        />
+        <RadialBar background dataKey="value" />
         <text
           x="50%"
           y="50%"
