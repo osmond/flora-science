@@ -1,10 +1,21 @@
 "use client"
 
 import {
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
-  RadialBarChart, RadialBar, BarChart, Bar
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
+  RadialBarChart,
+  RadialBar,
+  BarChart,
+  Bar,
 } from "recharts"
 import { aggregateCareByMonth, CareEvent } from "@/lib/seasonal-trends"
+import { calculateNutrientAvailability } from "@/lib/plant-metrics"
 
 // Dummy dataset for environment over 7 days
 const envData = [
@@ -100,6 +111,42 @@ export function CareTrendsChart({ events }: { events: CareEvent[] }) {
         <Bar dataKey="water" fill="#3b82f6" name="Water" />
         <Bar dataKey="fertilize" fill="#22c55e" name="Fertilize" />
       </BarChart>
+    </ResponsiveContainer>
+  )
+}
+
+export function NutrientLevelChart({
+  lastFertilized,
+  nutrientLevel = 100,
+}: {
+  lastFertilized: string
+  nutrientLevel?: number
+}) {
+  const today = new Date()
+  const data = Array.from({ length: 7 }).map((_, idx) => {
+    const d = new Date(today)
+    d.setDate(d.getDate() - (6 - idx))
+    const level = calculateNutrientAvailability(
+      lastFertilized,
+      nutrientLevel,
+      d
+    )
+    return {
+      day: d.toLocaleDateString(undefined, { month: "short", day: "numeric" }),
+      level,
+    }
+  })
+
+  return (
+    <ResponsiveContainer width="100%" height={250}>
+      <LineChart data={data}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="day" />
+        <YAxis domain={[0, 100]} />
+        <Tooltip />
+        <Legend />
+        <Line type="monotone" dataKey="level" stroke="#16a34a" name="Nutrients (%)" />
+      </LineChart>
     </ResponsiveContainer>
   )
 }
