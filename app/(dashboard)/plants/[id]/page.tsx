@@ -192,22 +192,25 @@ function PlantDetailContent({ params }: { params: { id: string } }) {
                   <button
                     onClick={handleWater}
                     aria-label="Water plant"
-                    className="px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-blue-500 dark:hover:bg-blue-600"
+                    className="flex items-center px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-blue-500 dark:hover:bg-blue-600"
                   >
+                    <Droplet className="h-4 w-4 mr-1" />
                     Water
                   </button>
                   <button
                     onClick={handleFertilize}
                     aria-label="Fertilize plant"
-                    className="px-3 py-1 rounded bg-green-600 text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 dark:bg-green-500 dark:hover:bg-green-600"
+                    className="flex items-center px-3 py-1 rounded bg-green-600 text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 dark:bg-green-500 dark:hover:bg-green-600"
                   >
+                    <Sprout className="h-4 w-4 mr-1" />
                     Fertilize
                   </button>
                   <button
                     onClick={handleAddNote}
                     aria-label="Add note to plant"
-                    className="px-3 py-1 rounded bg-purple-600 text-white hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:bg-purple-500 dark:hover:bg-purple-600"
+                    className="flex items-center px-3 py-1 rounded bg-purple-600 text-white hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:bg-purple-500 dark:hover:bg-purple-600"
                   >
+                    <FileText className="h-4 w-4 mr-1" />
                     Add Note
                   </button>
                 </div>
