@@ -147,12 +147,13 @@ export default function PlantDetailPage({ params }: { params: { id: string } }) 
                   aria-valuenow={progress.pct}
                   aria-valuemin={0}
                   aria-valuemax={100}
+                  aria-valuetext={`${progress.pct}% hydration`}
                 >
                   <div
                     className={`h-2 rounded-full ${progress.barColor}`}
                     style={{ width: `${progress.pct}%` }}
                   />
-                  <span className="sr-only">Hydration: {progress.pct}%</span>
+                  <span className="sr-only">{`${progress.pct}% hydration`}</span>
                 </div>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
                   Last watered: <strong>{plant.lastWatered}</strong> · Next due: <strong>{plant.nextDue}</strong>
