@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { useEffect, useState } from "react"
+import Lightbox from "@/components/Lightbox"
 import { Droplet, Sprout, FileText } from "lucide-react"
 import { getHydrationProgress } from "@/components/PlantCard"
 
@@ -203,16 +204,12 @@ export default function PlantDetailPage({ params }: { params: { id: string } }) 
 
             <section>
               <h2 className="text-lg font-semibold mb-3">Gallery</h2>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                {plant.photos.map((src, i) => (
-                  <img
-                    key={i}
-                    src={src}
-                    alt={`${plant.nickname} photo ${i + 1}`}
-                    className="rounded-lg border object-cover aspect-square transition-transform duration-300 hover:scale-105 dark:border-gray-700"
-                  />
-                ))}
-              </div>
+              <Lightbox
+                images={plant.photos.map((src, i) => ({
+                  src,
+                  alt: `${plant.nickname} photo ${i + 1}`,
+                }))}
+              />
             </section>
           </>
         )}
