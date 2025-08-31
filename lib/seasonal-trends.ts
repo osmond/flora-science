@@ -1,3 +1,5 @@
+import type { PlantEvent } from "./plants"
+
 const months = [
   "Jan",
   "Feb",
@@ -58,5 +60,19 @@ export function aggregateTaskCompletion(
   }
 
   return totals
+}
+
+export type DailyActivity = Record<string, Record<string, number>>
+
+export function generateDailyActivity(events: PlantEvent[]): DailyActivity {
+  const activity: DailyActivity = {}
+  for (const e of events) {
+    const d = new Date(e.date)
+    if (isNaN(d.getTime())) continue
+    const dateKey = d.toISOString().split("T")[0]
+    if (!activity[dateKey]) activity[dateKey] = {}
+    activity[dateKey][e.type] = (activity[dateKey][e.type] || 0) + 1
+  }
+  return activity
 }
 
