@@ -1,6 +1,7 @@
 'use client'
 
 import Link from "next/link"
+import Image from "next/image"
 import { useEffect, useState } from "react"
 import Lightbox from "@/components/Lightbox"
 import { Droplet, Sprout, FileText } from "lucide-react"
@@ -98,10 +99,14 @@ export default function PlantDetailPage({ params }: { params: { id: string } }) 
         ) : (
           <>
             <section className="flex flex-col md:flex-row gap-6 items-center md:items-start">
-              <img
+              <Image
                 src={plant.photos[0]}
                 alt={plant.nickname}
+                width={800}
+                height={600}
+                sizes="(max-width: 768px) 100vw, 50vw"
                 className="w-full md:w-1/2 rounded-xl border object-cover max-h-72"
+                loading="lazy"
               />
               <div className="space-y-2 md:w-1/2 text-center md:text-left">
                 <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{plant.nickname}</h1>
