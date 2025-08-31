@@ -231,36 +231,40 @@ function PlantDetailContent({ params }: { params: { id: string } }) {
               ))}
             </section>
 
-            <section>
-              <h2 className="text-lg font-semibold mb-3">Timeline</h2>
-              <ul className="space-y-2">
-                {plant.events.map((e) => {
-                  const type =
-                    EVENT_TYPES[e.type as keyof typeof EVENT_TYPES] ?? EVENT_TYPES.note
-                  const Icon = type.icon
-                  return (
-                    <li
-                      key={e.id}
-                      className="flex items-start gap-3 rounded-lg border p-3 bg-white dark:bg-gray-900 dark:border-gray-700"
-                    >
-                      <span className="w-16 text-xs font-medium text-gray-500">{e.date}</span>
-                      <span className="text-sm flex items-center gap-2">
-                        <span
-                          className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold ${type.color}`}
+              <section>
+                <h2 className="text-lg font-semibold mb-3">Timeline</h2>
+                {plant.events.length === 0 ? (
+                  <p className="text-sm text-gray-500 dark:text-gray-400">No activity yet.</p>
+                ) : (
+                  <ul className="space-y-2">
+                    {plant.events.map((e) => {
+                      const type =
+                        EVENT_TYPES[e.type as keyof typeof EVENT_TYPES] ?? EVENT_TYPES.note
+                      const Icon = type.icon
+                      return (
+                        <li
+                          key={e.id}
+                          className="flex items-start gap-3 rounded-lg border p-3 bg-white dark:bg-gray-900 dark:border-gray-700"
                         >
-                          <span aria-hidden="true">
-                            <Icon className="h-3 w-3" />
+                          <span className="w-16 text-xs font-medium text-gray-500">{e.date}</span>
+                          <span className="text-sm flex items-center gap-2">
+                            <span
+                              className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold ${type.color}`}
+                            >
+                              <span aria-hidden="true">
+                                <Icon className="h-3 w-3" />
+                              </span>
+                              <span aria-hidden="true">{type.label}</span>
+                              <span className="sr-only">{type.label}</span>
+                            </span>
+                            {e.type === "note" && e.note}
                           </span>
-                          <span aria-hidden="true">{type.label}</span>
-                          <span className="sr-only">{type.label}</span>
-                        </span>
-                        {e.type === "note" && e.note}
-                      </span>
-                    </li>
-                  )
-                })}
-              </ul>
-            </section>
+                        </li>
+                      )
+                    })}
+                  </ul>
+                )}
+              </section>
 
             <section>
               <h2 className="text-lg font-semibold mb-3">Gallery</h2>
