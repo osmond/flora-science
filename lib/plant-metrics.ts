@@ -58,6 +58,7 @@ export function waterBalanceSeries(
   })
 }
 
+}
 export const MS_PER_DAY = 1000 * 60 * 60 * 24
 
 export function calculateNutrientAvailability(
@@ -71,4 +72,57 @@ export function calculateNutrientAvailability(
   const decayed = Math.max(0, Math.min(100, nutrientLevel - diffDays * 2))
   return decayed
 
+}
+
+export interface StressInput {
+  /** Number of days a task is overdue. Negative values are treated as 0. */
+  overdueDays: number
+  /** Current hydration level as a percent 0-100 */
+  hydration: number
+  /** Ambient temperature in °C */
+  temperature: number
+  /** Daily light reading (arbitrary units, 0-100 recommended) */
+  light: number
+}
+
+export interface StressDatum {
+  date: string
+  stress: number
+}
+
+// Calculate a simple stress index on a 0-100 scale. Higher values indicate
+// greater plant stress. The formula is intentionally lightweight – it simply
+// normalises each factor to a 0-100 range and then combines them with weights.
+export function calculateStressIndex({
+  overdueDays,
+  hydration,
+  temperature,
+  light,
+}: StressInput): number {
+  // Overdue watering contributes up to 30 points. Each overdue day adds 10.
+  const overdueScore = Math.min(30, Math.max(0, overdueDays) * 10)
+
+  // Hydration is inverted: 100% hydration => 0 stress, 0% => 40 stress.
+  const hydrationScore = Math.min(40, Math.max(0, 40 * (1 - hydration / 100)))
+
+  // Temperature – assume an optimal temperature of 25°C. Each degree away adds
+  // 1.5 points up to a max of 15.
+  const tempScore = Math.min(15, Math.abs(temperature - 25) * 1.5)
+
+  // Light – assume an ideal reading of 50 (on a 0–100 scale). Each unit away
+  // adds 0.3 points up to 15.
+  const lightScore = Math.min(15, Math.abs(light - 50) * 0.3)
+
+  const total = overdueScore + hydrationScore + tempScore + lightScore
+  return Math.round(Math.max(0, Math.min(100, total)))
+}
+
+// Generate a series of stress index values for trend visualisation.
+export function stressTrend(
+  readings: (StressInput & { date: string })[],
+): StressDatum[] {
+  return readings.map((r) => ({
+    date: r.date,
+    stress: calculateStressIndex(r),
+  }))
 }

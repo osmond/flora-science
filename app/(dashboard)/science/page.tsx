@@ -5,8 +5,10 @@ import {
   TempHumidityChart,
   VPDGauge,
   WaterBalanceChart,
+  StressIndexGauge,
+  StressIndexChart,
 } from "@/components/Charts"
-import { waterBalanceSeries, WeatherDay, WaterEvent } from "@/lib/plant-metrics"
+import { waterBalanceSeries, WeatherDay, WaterEvent, stressTrend } from "@/lib/plant-metrics"
 import EnvRow from "@/components/EnvRow"
 import Footer from "@/components/Footer"
 
@@ -73,6 +75,19 @@ export default function SciencePanel() {
 
   const waterData = waterBalanceSeries(weather, events)
 
+  // Dummy stress readings for the last 7 days
+  const stressReadings = [
+    { date: "2024-08-21", overdueDays: 0, hydration: 80, temperature: 24, light: 55 },
+    { date: "2024-08-22", overdueDays: 0, hydration: 78, temperature: 25, light: 60 },
+    { date: "2024-08-23", overdueDays: 1, hydration: 70, temperature: 26, light: 50 },
+    { date: "2024-08-24", overdueDays: 2, hydration: 65, temperature: 27, light: 45 },
+    { date: "2024-08-25", overdueDays: 1, hydration: 68, temperature: 25, light: 48 },
+    { date: "2024-08-26", overdueDays: 0, hydration: 75, temperature: 24, light: 52 },
+    { date: "2024-08-27", overdueDays: 0, hydration: 77, temperature: 23, light: 55 },
+  ]
+  const stressData = stressTrend(stressReadings)
+  const currentStress = stressData[stressData.length - 1]?.stress ?? 0
+
   const toggleUnit = () => setTempUnit((u) => (u === "F" ? "C" : "F"))
 
   return (
@@ -106,6 +121,14 @@ export default function SciencePanel() {
       <section className="mt-4 md:mt-6">
         <h3 className="font-medium text-gray-800">Water Balance</h3>
         <WaterBalanceChart data={waterData} />
+      </section>
+
+      <section className="mt-4 md:mt-6">
+        <h3 className="font-medium text-gray-800">Plant Stress</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <StressIndexGauge value={currentStress} />
+          <StressIndexChart data={stressData} />
+        </div>
       </section>
 
       <Footer />

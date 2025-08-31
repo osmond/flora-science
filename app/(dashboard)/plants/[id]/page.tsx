@@ -11,8 +11,8 @@ import WaterModal from "@/components/WaterModal"
 import FertilizeModal from "@/components/FertilizeModal"
 import NoteModal from "@/components/NoteModal"
 import { ToastProvider, useToast } from "@/components/Toast"
-import { CareTrendsChart, NutrientLevelChart } from "@/components/Charts"
-import { calculateNutrientAvailability } from "@/lib/plant-metrics"
+import { CareTrendsChart, NutrientLevelChart, StressIndexGauge } from "@/components/Charts"
+import { calculateNutrientAvailability, calculateStressIndex } from "@/lib/plant-metrics"
 
 import { getWeatherForUser, type Weather } from "@/lib/weather"
 import { samplePlants } from "@/lib/plants"
@@ -395,6 +395,18 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
                   <p className="text-xl font-semibold text-gray-900 dark:text-white">{value}</p>
                 </div>
               ))}
+            </section>
+
+            <section>
+              <h2 className="text-lg font-semibold mb-3">Stress Level</h2>
+              <StressIndexGauge
+                value={calculateStressIndex({
+                  overdueDays: plant.status === "Water overdue" ? 1 : 0,
+                  hydration: plant.hydration,
+                  temperature: weather?.temperature ?? 25,
+                  light: 50,
+                })}
+              />
             </section>
 
             <section>
