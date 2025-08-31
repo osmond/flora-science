@@ -17,7 +17,12 @@ import {
 
 } from "recharts"
 import { aggregateCareByMonth, CareEvent } from "@/lib/seasonal-trends"
-import { calculateNutrientAvailability } from "@/lib/plant-metrics"
+import {
+  calculateNutrientAvailability,
+  calculateStressIndex,
+  stressTrend,
+  type StressDatum,
+} from "@/lib/plant-metrics"
 
 // Dummy dataset for environment over 7 days
 const envData = [
@@ -140,6 +145,55 @@ export function WaterBalanceChart({ data }: { data: WaterBalanceDatum[] }) {
           name="ET₀ (mm)"
         />
       </ComposedChart>
+    </ResponsiveContainer>
+  )
+}
+
+// Display a plant stress index as a radial gauge (0-100)
+export function StressIndexGauge({ value }: { value: number }) {
+  const data = [{ name: "Stress", value, fill: "#ef4444" }]
+  return (
+    <ResponsiveContainer width="100%" height={250}>
+      <RadialBarChart
+        cx="50%"
+        cy="50%"
+        innerRadius="80%"
+        outerRadius="100%"
+        barSize={20}
+        data={data}
+        startAngle={180}
+        endAngle={0}
+      >
+        <RadialBar minAngle={15} background clockWise dataKey="value" />
+        <text
+          x="50%"
+          y="50%"
+          textAnchor="middle"
+          dominantBaseline="middle"
+          className="text-lg fill-gray-700"
+        >
+          {value}
+        </text>
+      </RadialBarChart>
+    </ResponsiveContainer>
+  )
+}
+
+// Line chart for stress index trends
+export function StressIndexChart({ data }: { data: StressDatum[] }) {
+  return (
+    <ResponsiveContainer width="100%" height={250}>
+      <LineChart data={data}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="date" />
+        <YAxis domain={[0, 100]} />
+        <Tooltip />
+        <Legend />
+        <Line type="monotone" dataKey="stress" stroke="#ef4444" name="Stress" />
+      </LineChart>
+    </ResponsiveContainer>
+  )
+}
 
 export function NutrientLevelChart({
   lastFertilized,
