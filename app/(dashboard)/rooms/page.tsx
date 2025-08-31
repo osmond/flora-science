@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
-import { HelpCircle, LayoutGrid, List } from "lucide-react"
+import { AlertTriangle, HelpCircle, Home, LayoutGrid, List } from "lucide-react"
 import RoomCard from "@/components/RoomCard"
 import RoomSkeleton from "@/components/RoomSkeleton"
 import RoomModal from "@/components/RoomModal"
@@ -30,6 +30,9 @@ export default function RoomsPage() {
   const [showAddRoomTip, setShowAddRoomTip] = useState(false)
   const searchInputRef = useRef<HTMLInputElement>(null)
   const router = useRouter()
+
+  const totalRooms = rooms.length
+  const roomsNeedingAttention = rooms.filter((r) => r.status !== 'healthy').length
 
   useEffect(() => {
     async function loadRooms() {
@@ -146,6 +149,16 @@ export default function RoomsPage() {
 
   return (
     <main className="flex-1 p-6">
+      <div className="mb-4 flex gap-6 rounded-lg border border-gray-200 bg-gray-50 p-4 text-sm dark:border-gray-700 dark:bg-gray-800">
+        <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+          <Home className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+          <span>{totalRooms} rooms</span>
+        </div>
+        <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+          <AlertTriangle className="h-4 w-4 text-yellow-500 dark:text-yellow-400" />
+          <span>{roomsNeedingAttention} need attention</span>
+        </div>
+      </div>
       <div className="mb-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <h2 className="text-xl font-bold">My Rooms</h2>
