@@ -77,51 +77,73 @@ export default function PlantDetailPage({ params }: { params: { id: string } }) 
             </div>
           ) : (
             <>
-              <img
-                src={plant.photos[0]}
-                alt={plant.nickname}
-                className="w-full max-h-64 object-cover rounded-lg border dark:border-gray-700"
-              />
-              <header>
-                <h1 className="text-2xl font-bold">{plant.nickname}</h1>
-                <p className="italic text-gray-500">{plant.species}</p>
-              </header>
-
-              <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="rounded-lg border p-4 dark:border-gray-700">
-                  <p className="font-medium">Status</p>
-                  <p className="text-gray-700 dark:text-gray-300">{plant.status}</p>
-                </div>
-                <div className="rounded-lg border p-4 dark:border-gray-700">
-                  <p className="font-medium">Hydration</p>
-                  <p className="text-gray-700 dark:text-gray-300">{plant.hydration}%</p>
-                </div>
-                <div className="rounded-lg border p-4 dark:border-gray-700">
-                  <p className="font-medium">Last Watered</p>
-                  <p className="text-gray-700 dark:text-gray-300">{plant.lastWatered}</p>
-                </div>
-                <div className="rounded-lg border p-4 dark:border-gray-700">
-                  <p className="font-medium">Next Due</p>
-                  <p className="text-gray-700 dark:text-gray-300">{plant.nextDue}</p>
+              <section className="flex flex-col md:flex-row gap-6 items-center md:items-start">
+                <img
+                  src={plant.photos[0]}
+                  alt={plant.nickname}
+                  className="w-full md:w-1/2 rounded-xl border object-cover max-h-72"
+                />
+                <div className="space-y-2 md:w-1/2 text-center md:text-left">
+                  <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{plant.nickname}</h1>
+                  <p className="italic text-gray-500">{plant.species}</p>
+                  <div className="flex flex-wrap justify-center md:justify-start gap-2 text-sm">
+                    <span className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full font-medium">{plant.status}</span>
+                    <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full font-medium">Hydration: {plant.hydration}%</span>
+                  </div>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    Last watered: <strong>{plant.lastWatered}</strong> · Next due: <strong>{plant.nextDue}</strong>
+                  </p>
                 </div>
               </section>
 
+              <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                {[
+                  { label: "Status", value: plant.status },
+                  { label: "Hydration", value: `${plant.hydration}%` },
+                  { label: "Last Watered", value: plant.lastWatered },
+                  { label: "Next Due", value: plant.nextDue }
+                ].map(({ label, value }) => (
+                  <div
+                    key={label}
+                    className="rounded-xl border p-4 bg-gray-50 dark:bg-gray-800 dark:border-gray-700"
+                  >
+                    <p className="text-sm text-gray-500 dark:text-gray-400">{label}</p>
+                    <p className="text-xl font-semibold text-gray-900 dark:text-white">{value}</p>
+                  </div>
+                ))}
+              </section>
+
               <section>
-                <h2 className="font-semibold mb-2">Timeline</h2>
-                <ul className="space-y-2 text-sm">
+                <h2 className="text-lg font-semibold mb-3">Timeline</h2>
+                <ul className="space-y-2">
                   {plant.events.map((e) => (
-                    <li key={e.id} className="rounded border p-2 dark:border-gray-700">
-                      {e.date}: {e.type === "note" ? e.note : e.type === "water" ? "Watered" : "Fertilized"}
+                    <li
+                      key={e.id}
+                      className="flex items-start gap-3 rounded-lg border p-3 bg-white dark:bg-gray-900 dark:border-gray-700"
+                    >
+                      <span className="w-16 text-xs font-medium text-gray-500">{e.date}</span>
+                      <span className="text-sm">
+                        {e.type === "note"
+                          ? "📝 " + e.note
+                          : e.type === "water"
+                          ? "💧 Watered"
+                          : "🌿 Fertilized"}
+                      </span>
                     </li>
                   ))}
                 </ul>
               </section>
 
               <section>
-                <h2 className="font-semibold mb-2">Gallery</h2>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                <h2 className="text-lg font-semibold mb-3">Gallery</h2>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                   {plant.photos.map((src, i) => (
-                    <img key={i} src={src} alt={`${plant.nickname} photo ${i + 1}`} className="rounded-lg border dark:border-gray-700" />
+                    <img
+                      key={i}
+                      src={src}
+                      alt={`${plant.nickname} photo ${i + 1}`}
+                      className="rounded-lg border object-cover aspect-square transition-transform duration-300 hover:scale-105 dark:border-gray-700"
+                    />
                   ))}
                 </div>
               </section>
