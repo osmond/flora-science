@@ -2,8 +2,9 @@
 
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
-  RadialBarChart, RadialBar
+  RadialBarChart, RadialBar, BarChart, Bar
 } from "recharts"
+import { aggregateCareByMonth, CareEvent } from "@/lib/seasonal-trends"
 
 // Dummy dataset for environment over 7 days
 const envData = [
@@ -81,6 +82,24 @@ export function VPDGauge() {
           1.2 kPa
         </text>
       </RadialBarChart>
+    </ResponsiveContainer>
+  )
+}
+
+export function CareTrendsChart({ events }: { events: CareEvent[] }) {
+  const data = aggregateCareByMonth(events)
+
+  return (
+    <ResponsiveContainer width="100%" height={250}>
+      <BarChart data={data}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="month" />
+        <YAxis allowDecimals={false} />
+        <Tooltip />
+        <Legend />
+        <Bar dataKey="water" fill="#3b82f6" name="Water" />
+        <Bar dataKey="fertilize" fill="#22c55e" name="Fertilize" />
+      </BarChart>
     </ResponsiveContainer>
   )
 }

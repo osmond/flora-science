@@ -1,5 +1,6 @@
 import Link from "next/link"
 import PlantCard from "@/components/PlantCard"
+import { CareTrendsChart } from "@/components/Charts"
 
 const sampleRooms = {
   "living-room": {
@@ -9,6 +10,10 @@ const sampleRooms = {
     plants: [
       { id: "1", nickname: "Delilah", species: "Monstera deliciosa", status: "Water overdue", hydration: 72 },
       { id: "3", nickname: "Ivy", species: "Epipremnum aureum", status: "Due today", hydration: 70 }
+    ],
+    events: [
+      { type: "water", date: "2024-01-10" },
+      { type: "fertilize", date: "2024-02-12" }
     ]
   },
   "bedroom": {
@@ -17,6 +22,9 @@ const sampleRooms = {
     tasks: 1,
     plants: [
       { id: "2", nickname: "Sunny", species: "Sansevieria trifasciata", status: "Fine", hydration: 90 }
+    ],
+    events: [
+      { type: "water", date: "2024-03-05" }
     ]
   },
   "office": {
@@ -25,7 +33,8 @@ const sampleRooms = {
     tasks: 0,
     plants: [
       { id: "4", nickname: "Figgy", species: "Ficus lyrata", status: "Fertilize suggested", hydration: 75 }
-    ]
+    ],
+    events: []
   }
 }
 
@@ -61,6 +70,11 @@ export default function RoomDetailPage({ params }: { params: { id: string } }) {
                   </Link>
                 ))}
               </div>
+            </section>
+
+            <section>
+              <h2 className="font-semibold mb-2">Care Trends</h2>
+              <CareTrendsChart events={room.events ?? []} />
             </section>
           </>
         )}

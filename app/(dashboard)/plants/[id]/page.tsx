@@ -11,6 +11,7 @@ import WaterModal from "@/components/WaterModal"
 import FertilizeModal from "@/components/FertilizeModal"
 import NoteModal from "@/components/NoteModal"
 import { ToastProvider, useToast } from "@/components/Toast"
+import { CareTrendsChart } from "@/components/Charts"
 
 interface PlantEvent {
   id: number
@@ -253,6 +254,11 @@ function PlantDetailContent({ params }: { params: { id: string } }) {
                   <p className="text-xl font-semibold text-gray-900 dark:text-white">{value}</p>
                 </div>
               ))}
+            </section>
+
+            <section>
+              <h2 className="text-lg font-semibold mb-3">Care Trends</h2>
+              <CareTrendsChart events={plant.events} />
             </section>
 
               <section>
