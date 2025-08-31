@@ -5,6 +5,7 @@ import { useEffect, useState } from "react"
 import Lightbox from "@/components/Lightbox"
 import { Droplet, Sprout, FileText } from "lucide-react"
 import { getHydrationProgress } from "@/components/PlantCard"
+import PlantDetailSkeleton from "./PlantDetailSkeleton"
 
 interface PlantEvent {
   id: number
@@ -88,10 +89,7 @@ export default function PlantDetailPage({ params }: { params: { id: string } }) 
         </Link>
 
         {loading ? (
-          <div className="rounded-lg border p-6 dark:border-gray-700">
-            <h2 className="text-xl font-bold">Loading...</h2>
-            <p className="text-sm text-gray-500 mt-1">ID: {params.id}</p>
-          </div>
+          <PlantDetailSkeleton />
         ) : !plant ? (
           <div className="rounded-lg border p-6 dark:border-gray-700">
             <h2 className="text-xl font-bold">Plant not found</h2>
