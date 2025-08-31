@@ -17,6 +17,7 @@ export default function RoomsPage() {
   const [error, setError] = useState<string | null>(null)
   const [sortBy, setSortBy] = useState<SortBy>("name")
   const [view, setView] = useState<"grid" | "list">("grid")
+  const [selectedTags, setSelectedTags] = useState<string[]>([])
 
   useEffect(() => {
     async function loadRooms() {
@@ -44,9 +45,20 @@ export default function RoomsPage() {
     }
   })
 
-  const filteredRooms = sortedRooms.filter((r) =>
-    r.name.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredRooms = sortedRooms.filter(
+    (r) =>
+      r.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      (selectedTags.length === 0 ||
+        selectedTags.every((tag) => r.tags.includes(tag)))
   )
+
+  const allTags = Array.from(new Set(rooms.flatMap((r) => r.tags))).sort()
+
+  function toggleTag(tag: string) {
+    setSelectedTags((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+    )
+  }
 
   return (
     <main className="flex-1 p-6">
@@ -92,6 +104,20 @@ export default function RoomsPage() {
         </div>
       </div>
 
+      {allTags.length > 0 && (
+        <div className="mb-4 flex flex-wrap gap-2">
+          {allTags.map((tag) => (
+            <button
+              key={tag}
+              onClick={() => toggleTag(tag)}
+              className={`px-2 py-1 rounded-full text-xs border ${selectedTags.includes(tag) ? 'bg-flora-leaf text-white border-flora-leaf' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-600'}`}
+            >
+              {tag}
+            </button>
+          ))}
+        </div>
+      )}
+
       {isLoading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {Array.from({ length: 6 }).map((_, i) => (
@@ -115,6 +141,7 @@ export default function RoomsPage() {
                 name={r.name}
                 avgHydration={r.avgHydration}
                 tasksDue={r.tasksDue}
+                tags={r.tags}
               />
             </Link>
           ))}
