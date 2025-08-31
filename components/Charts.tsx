@@ -1,8 +1,19 @@
 "use client"
 
 import {
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
-  RadialBarChart, RadialBar, BarChart, Bar
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
+  RadialBarChart,
+  RadialBar,
+  BarChart,
+  Bar,
+  ComposedChart,
 } from "recharts"
 import { aggregateCareByMonth, CareEvent } from "@/lib/seasonal-trends"
 
@@ -100,6 +111,33 @@ export function CareTrendsChart({ events }: { events: CareEvent[] }) {
         <Bar dataKey="water" fill="#3b82f6" name="Water" />
         <Bar dataKey="fertilize" fill="#22c55e" name="Fertilize" />
       </BarChart>
+    </ResponsiveContainer>
+  )
+}
+
+export interface WaterBalanceDatum {
+  date: string
+  et0: number
+  water: number
+}
+
+export function WaterBalanceChart({ data }: { data: WaterBalanceDatum[] }) {
+  return (
+    <ResponsiveContainer width="100%" height={250}>
+      <ComposedChart data={data}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="date" />
+        <YAxis />
+        <Tooltip />
+        <Legend />
+        <Bar dataKey="water" fill="#3b82f6" name="Water (mm)" />
+        <Line
+          type="monotone"
+          dataKey="et0"
+          stroke="#f59e0b"
+          name="ET₀ (mm)"
+        />
+      </ComposedChart>
     </ResponsiveContainer>
   )
 }
