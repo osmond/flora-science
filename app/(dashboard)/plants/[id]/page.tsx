@@ -230,7 +230,9 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
       const res = await fetch(`/api/plants/${params.id}/care-plan`)
       if (res.ok) {
         const data = await res.json()
-        setPlant((prev) => (prev ? { ...prev, carePlan: data.carePlan } : prev))
+        setPlant((prev) =>
+          prev && !prev.carePlan ? { ...prev, carePlan: data.carePlan } : prev
+        )
       } else {
         setCarePlanError(`Error ${res.status}`)
       }
@@ -246,10 +248,11 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
   }, [loadPlant])
 
   useEffect(() => {
-    if (plant) {
+    if (plant && !plant.carePlan) {
       loadCarePlan()
     }
-  }, [plant, loadCarePlan])
+    // Only depend on plant id to avoid repeated fetches when carePlan updates
+  }, [plant?.id, loadCarePlan])
 
   return (
     <main className="flex-1 bg-white dark:bg-gray-900">
