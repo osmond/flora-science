@@ -140,6 +140,9 @@ export function WaterBalanceChart({ data }: { data: WaterBalanceDatum[] }) {
           name="ET₀ (mm)"
         />
       </ComposedChart>
+    </ResponsiveContainer>
+  )
+}
 
 export function NutrientLevelChart({
   lastFertilized,
