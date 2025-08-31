@@ -22,6 +22,7 @@ import Footer from "@/components/Footer"
 export default function SciencePanel() {
   const readings = { temperature: 75, humidity: 52, vpd: 1.2 }
   const [tempUnit, setTempUnit] = useState<"F" | "C">("F")
+  const [wateringInterval, setWateringInterval] = useState(7)
 
   const weather: WeatherDay[] = [
     {
@@ -74,24 +75,30 @@ export default function SciencePanel() {
       windSpeed: 1.7,
     },
   ]
+  const simulatedEvents: WaterEvent[] = weather
+    .filter((_, idx) => idx % wateringInterval === 0)
+    .map((day) => ({ date: day.date, amount: 5 }))
 
-  const events: WaterEvent[] = [
-    { date: "2024-08-22", amount: 5 },
-    { date: "2024-08-25", amount: 5 },
-  ]
+  const waterData = waterBalanceSeries(weather, simulatedEvents)
 
-  const waterData = waterBalanceSeries(weather, events)
-
-  // Dummy stress readings for the last 7 days
-  const stressReadings = [
-    { date: "2024-08-21", overdueDays: 0, hydration: 80, temperature: 24, light: 55 },
-    { date: "2024-08-22", overdueDays: 0, hydration: 78, temperature: 25, light: 60 },
-    { date: "2024-08-23", overdueDays: 1, hydration: 70, temperature: 26, light: 50 },
-    { date: "2024-08-24", overdueDays: 2, hydration: 65, temperature: 27, light: 45 },
-    { date: "2024-08-25", overdueDays: 1, hydration: 68, temperature: 25, light: 48 },
-    { date: "2024-08-26", overdueDays: 0, hydration: 75, temperature: 24, light: 52 },
-    { date: "2024-08-27", overdueDays: 0, hydration: 77, temperature: 23, light: 55 },
-  ]
+  const eventDates = new Set(simulatedEvents.map((e) => e.date))
+  let cumulativeHydration = 0
+  let lastWateredIndex = 0
+  const stressReadings = waterData.map((d, idx) => {
+    if (eventDates.has(d.date)) lastWateredIndex = idx
+    cumulativeHydration = Math.max(0, cumulativeHydration + d.water - d.et0)
+    const hydration = Math.min(100, cumulativeHydration)
+    const daysSinceWater = idx - lastWateredIndex
+    const overdueDays = Math.max(0, daysSinceWater - wateringInterval)
+    const dayWeather = weather[idx]
+    return {
+      date: d.date,
+      overdueDays,
+      hydration,
+      temperature: dayWeather.temperature,
+      light: dayWeather.solarRadiation,
+    }
+  })
   const stressData = stressTrend(stressReadings)
   const currentStress = stressData[stressData.length - 1]?.stress ?? 0
 
@@ -136,6 +143,23 @@ export default function SciencePanel() {
 
       <section className="mt-4 md:mt-6">
         <h3 className="font-medium text-gray-800">Water Balance</h3>
+        <div className="flex items-center gap-2 mb-2">
+          <label
+            htmlFor="watering-interval"
+            className="text-sm text-gray-700"
+          >
+            Watering Interval: {wateringInterval} days
+          </label>
+          <input
+            id="watering-interval"
+            type="range"
+            min={1}
+            max={14}
+            value={wateringInterval}
+            onChange={(e) => setWateringInterval(parseInt(e.target.value))}
+            className="flex-1"
+          />
+        </div>
         <WaterBalanceChart data={waterData} />
       </section>
 
