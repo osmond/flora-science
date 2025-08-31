@@ -15,10 +15,10 @@ export async function GET(
     const prompt = `Provide a detailed weekly care plan for a ${plant.species} named ${plant.nickname}.`
 
     if (!apiKey) {
-      return NextResponse.json(
-        { error: 'OpenAI API key not configured' },
-        { status: 500 }
-      )
+      plant.carePlan =
+        plant.carePlan ||
+        'Set OPENAI_API_KEY to enable AI-generated care plans.'
+      return NextResponse.json({ carePlan: plant.carePlan })
     }
 
     try {
