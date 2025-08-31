@@ -16,16 +16,33 @@ const envData = [
   { day: "Sun", temp: 75, rh: 56 },
 ]
 
-export function TempHumidityChart() {
+export function TempHumidityChart({
+  tempUnit = "F",
+}: {
+  tempUnit?: "F" | "C"
+}) {
+  const data =
+    tempUnit === "F"
+      ? envData
+      : envData.map((d) => ({
+          ...d,
+          temp: ((d.temp - 32) * 5) / 9,
+        }))
+
   return (
     <ResponsiveContainer width="100%" height={250}>
-      <LineChart data={envData}>
+      <LineChart data={data}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="day" />
         <YAxis />
         <Tooltip />
         <Legend />
-        <Line type="monotone" dataKey="temp" stroke="#f87171" name="Temp (°F)" />
+        <Line
+          type="monotone"
+          dataKey="temp"
+          stroke="#f87171"
+          name={tempUnit === "F" ? "Temp (°F)" : "Temp (°C)"}
+        />
         <Line type="monotone" dataKey="rh" stroke="#60a5fa" name="RH (%)" />
       </LineChart>
     </ResponsiveContainer>
