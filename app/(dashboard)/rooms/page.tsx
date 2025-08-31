@@ -1,30 +1,38 @@
-"use client"
-
 import Link from "next/link"
 import RoomCard from "@/components/RoomCard"
+import { supabase, Room } from "@/lib/supabase"
 
-type Room = {
-  id: string
-  name: string
-  avgHydration: number
-  tasksDue: number
-}
+export default async function RoomsPage() {
+  const { data: rooms, error } = await supabase.from("rooms").select("*")
 
-const rooms: Room[] = [
-  { id: "living-room", name: "Living Room", avgHydration: 72, tasksDue: 2 },
-  { id: "bedroom", name: "Bedroom", avgHydration: 65, tasksDue: 1 },
-  { id: "office", name: "Office", avgHydration: 82, tasksDue: 0 },
-]
+  if (error) {
+    return (
+      <main className="flex-1 p-6">
+        <p className="text-red-500">Failed to load rooms: {error.message}</p>
+      </main>
+    )
+  }
 
-export default function RoomsPage() {
+  if (!rooms) {
+    return (
+      <main className="flex-1 p-6">
+        <p>Loading...</p>
+      </main>
+    )
+  }
+
   return (
     <main className="flex-1 p-6">
       <h2 className="text-xl font-bold mb-4">My Rooms</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {rooms.map((r) => (
+        {rooms.map((r: Room) => (
           <Link key={r.id} href={`/rooms/${r.id}`} className="block">
-            <RoomCard name={r.name} avgHydration={r.avgHydration} tasksDue={r.tasksDue} />
+            <RoomCard
+              name={r.name}
+              avgHydration={r.avg_hydration || 0}
+              tasksDue={r.tasks_due || 0}
+            />
           </Link>
         ))}
       </div>
