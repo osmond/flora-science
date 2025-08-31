@@ -12,8 +12,8 @@ export default function SciencePanel() {
   const toggleUnit = () => setTempUnit((u) => (u === "F" ? "C" : "F"))
 
   return (
-    <main className="flex-1 p-6">
-      <header className="backdrop-blur bg-white/80 sticky top-0 z-10 p-4 flex items-center justify-between shadow-sm">
+    <main className="flex-1 p-4 md:p-6">
+      <header className="backdrop-blur bg-white/80 sticky top-0 z-10 p-4 md:p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 shadow-sm">
         <h2 className="font-semibold text-xl">Science Panel</h2>
         <button
           onClick={toggleUnit}
@@ -23,7 +23,7 @@ export default function SciencePanel() {
         </button>
       </header>
 
-      <section className="mt-6">
+      <section className="mt-4 md:mt-6">
         <h3 className="font-medium text-gray-800">Environment Data</h3>
         <EnvRow
           temperature={readings.temperature}
@@ -34,7 +34,7 @@ export default function SciencePanel() {
         <TempHumidityChart tempUnit={tempUnit} />
       </section>
 
-      <section className="mt-6">
+      <section className="mt-4 md:mt-6">
         <h3 className="font-medium text-gray-800">VPD Gauge</h3>
         <VPDGauge />
       </section>
