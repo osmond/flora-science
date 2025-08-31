@@ -1,28 +1,42 @@
 "use client"
 
 type RoomCardProps = {
+  id: string
   name: string
   avgHydration: number
   tasksDue: number
   tags: string[]
   onClick?: () => void
+  selected?: boolean
+  onSelect?: (id: string, selected: boolean) => void
 }
 
 export default function RoomCard({
+  id,
   name,
   avgHydration,
   tasksDue,
   tags,
   onClick,
+  selected,
+  onSelect,
 }: RoomCardProps) {
   const pct = Math.max(0, Math.min(100, Math.round(avgHydration)))
   const barColor = pct < 30 ? 'bg-red-500' : pct < 60 ? 'bg-yellow-500' : 'bg-flora-leaf'
   const badgeColor = tasksDue > 0 ? 'bg-red-500 text-white' : 'bg-flora-leaf text-white'
   return (
     <div
-      className="h-full flex flex-col justify-between rounded-lg border border-gray-200 dark:border-gray-700 p-4 shadow-sm hover:shadow-md transition bg-white dark:bg-gray-800 cursor-pointer"
+      className="relative h-full flex flex-col justify-between rounded-lg border border-gray-200 dark:border-gray-700 p-4 shadow-sm hover:shadow-md transition bg-white dark:bg-gray-800 cursor-pointer"
       onClick={onClick}
     >
+      <input
+        type="checkbox"
+        className="absolute top-2 left-2"
+        checked={selected}
+        onChange={(e) => onSelect?.(id, e.target.checked)}
+        onClick={(e) => e.stopPropagation()}
+        aria-label="Select room"
+      />
       <h3 className="font-semibold text-gray-900 dark:text-gray-100">{name}</h3>
       {tags.length > 0 && (
         <div className="mt-1 flex flex-wrap gap-1">
