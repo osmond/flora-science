@@ -56,6 +56,7 @@ export function waterBalanceSeries(
       .reduce((sum, e) => sum + e.amount, 0)
     return { date: w.date, et0, water }
   })
+}
 
 }
 export const MS_PER_DAY = 1000 * 60 * 60 * 24

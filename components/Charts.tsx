@@ -195,6 +195,7 @@ export function StressIndexChart({ data }: { data: StressDatum[] }) {
   )
 }
 
+
 export function NutrientLevelChart({
   lastFertilized,
   nutrientLevel = 100,
