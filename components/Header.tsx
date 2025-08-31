@@ -1,14 +1,9 @@
 "use client"
 import { PlusCircle, Sun, Moon } from "lucide-react"
-import { useState, useEffect } from "react"
+import { useTheme } from "@/hooks/useTheme"
 
 export default function Header() {
-  const [dark, setDark] = useState(false)
-
-  useEffect(() => {
-    const root = document.documentElement
-    root.classList.toggle("dark", dark)
-  }, [dark])
+  const { theme, toggleTheme } = useTheme()
 
   return (
     <header className="backdrop-blur bg-white/80 dark:bg-gray-900/80 sticky top-0 z-10 p-4 flex items-center justify-between shadow-sm">
@@ -23,10 +18,10 @@ export default function Header() {
           <PlusCircle className="w-4 h-4" /> Add
         </button>
         <button
-          onClick={() => setDark(!dark)}
+          onClick={toggleTheme}
           className="p-2 rounded-lg border dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition"
         >
-          {dark ? <Moon className="w-5 h-5 text-gray-200" /> : <Sun className="w-5 h-5 text-yellow-500" />}
+          {theme === "dark" ? <Moon className="w-5 h-5 text-gray-200" /> : <Sun className="w-5 h-5 text-yellow-500" />}
         </button>
       </div>
     </header>
