@@ -12,9 +12,13 @@ import { getRooms, deleteRooms, moveRooms, type Room } from "@/lib/api"
 export default function RoomsPage() {
   type SortBy = "name" | "hydration" | "tasks"
 
+  const PAGE_SIZE = 2
   const [rooms, setRooms] = useState<Room[]>([])
+  const [page, setPage] = useState(1)
+  const [hasMore, setHasMore] = useState(true)
   const [searchTerm, setSearchTerm] = useState("")
   const [isLoading, setIsLoading] = useState(true)
+  const [isLoadingMore, setIsLoadingMore] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [sortBy, setSortBy] = useState<SortBy>("name")
   const [view, setView] = useState<"grid" | "list">("grid")
@@ -26,8 +30,9 @@ export default function RoomsPage() {
     async function loadRooms() {
       setIsLoading(true)
       try {
-        const data = await getRooms()
+        const data = await getRooms(1, PAGE_SIZE)
         setRooms(data)
+        setHasMore(data.length === PAGE_SIZE)
       } catch (err) {
         setError("Failed to load rooms")
       } finally {
@@ -85,6 +90,23 @@ export default function RoomsPage() {
       setSelectedRoomIds([])
     } catch (e) {
       console.error(e)
+    }
+  }
+
+  async function loadMore() {
+    const nextPage = page + 1
+    setIsLoadingMore(true)
+    try {
+      const data = await getRooms(nextPage, PAGE_SIZE)
+      setRooms((prev) => [...prev, ...data])
+      setPage(nextPage)
+      if (data.length < PAGE_SIZE) {
+        setHasMore(false)
+      }
+    } catch (err) {
+      setError("Failed to load rooms")
+    } finally {
+      setIsLoadingMore(false)
     }
   }
 
@@ -231,6 +253,18 @@ export default function RoomsPage() {
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {hasMore && !isLoading && (
+        <div className="mt-4 text-center">
+          <button
+            onClick={loadMore}
+            disabled={isLoadingMore}
+            className="px-4 py-2 text-sm border rounded"
+          >
+            {isLoadingMore ? 'Loading...' : 'Load more'}
+          </button>
         </div>
       )}
 

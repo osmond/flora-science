@@ -7,8 +7,12 @@ export type Room = {
   tags: string[]
 }
 
-export async function getRooms(): Promise<Room[]> {
-  const res = await fetch('/api/rooms')
+export async function getRooms(page = 1, limit = 10): Promise<Room[]> {
+  const params = new URLSearchParams({
+    page: page.toString(),
+    limit: limit.toString(),
+  })
+  const res = await fetch(`/api/rooms?${params.toString()}`)
   if (!res.ok) {
     throw new Error('Failed to fetch rooms')
   }
