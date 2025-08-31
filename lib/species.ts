@@ -11,16 +11,17 @@ export async function getSpeciesSuggestions(query: string): Promise<SpeciesSugge
     return []
   }
 
-  const token = process.env.TREFLE_TOKEN
-  if (!token) {
-    console.warn('TREFLE_TOKEN is not set')
+  const apiKey = process.env.PLANT_ID_API_KEY
+  if (!apiKey) {
+    console.warn('PLANT_ID_API_KEY is not set')
     return []
   }
 
-  const params = new URLSearchParams({ token, q })
-  const url = `https://trefle.io/api/v1/species/search?${params.toString()}`
+  const url = `https://api.plant.id/v3/names?query=${encodeURIComponent(q)}`
 
-  const res = await fetch(url)
+  const res = await fetch(url, {
+    headers: { 'Api-Key': apiKey },
+  })
   if (!res.ok) {
     throw new Error('Failed to fetch species suggestions')
   }
@@ -32,7 +33,7 @@ export async function getSpeciesSuggestions(query: string): Promise<SpeciesSugge
 
   return json.data.map((item: any) => ({
     id: String(item.id),
-    scientificName: item.scientific_name,
+    scientificName: item.name,
     commonName: item.common_name,
     imageUrl: item.image_url,
   }))
