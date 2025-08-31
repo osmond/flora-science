@@ -7,6 +7,7 @@ describe('RoomCard', () => {
       <RoomCard
         id="living-room"
         name="Living Room"
+        status="healthy"
         avgHydration={70.2}
         tasksDue={3}
         tags={['indoor', 'bright']}
@@ -21,6 +22,9 @@ describe('RoomCard', () => {
     expect(screen.getByText(/living room/i)).toBeInTheDocument()
     expect(screen.getByText(/Avg Hydration: 70%/i)).toBeInTheDocument()
     expect(screen.getByText('3')).toBeInTheDocument()
+    const statusBadge = screen.getByText(/healthy/i)
+    expect(statusBadge).toBeInTheDocument()
+    expect(statusBadge).toHaveClass('bg-green-500')
     expect(screen.getByText('indoor')).toBeInTheDocument()
     expect(screen.getByText('bright')).toBeInTheDocument()
     expect(screen.getByRole('checkbox')).toBeInTheDocument()

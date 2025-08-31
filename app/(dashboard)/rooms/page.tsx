@@ -186,6 +186,7 @@ export default function RoomsPage() {
               key={r.id}
               id={r.id}
               name={r.name}
+              status={r.status}
               avgHydration={r.avgHydration}
               tasksDue={r.tasksDue}
               tags={r.tags}

@@ -1,6 +1,7 @@
 export type Room = {
   id: string
   name: string
+  status: 'healthy' | 'needs_water' | 'warning'
   avgHydration: number
   tasksDue: number
   tags: string[]
