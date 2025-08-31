@@ -1,5 +1,4 @@
 import SidebarNav from "@/components/SidebarNav"
-import Header from "@/components/Header"
 import MobileNav from "@/components/MobileNav"
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -9,7 +8,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <SidebarNav />
       </div>
       <div className="flex-1 flex flex-col pb-16 md:pb-0">
-        <Header />
         {children}
       </div>
       <div className="md:hidden">
