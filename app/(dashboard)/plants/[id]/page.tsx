@@ -28,6 +28,7 @@ interface Plant {
   nextDue: string
   events: PlantEvent[]
   photos: string[]
+  carePlan?: string
 }
 
 const EVENT_TYPES = {
@@ -52,6 +53,8 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
   const [plant, setPlant] = useState<Plant | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [carePlanLoading, setCarePlanLoading] = useState(true)
+  const [carePlanError, setCarePlanError] = useState<string | null>(null)
   const progress = getHydrationProgress(plant?.hydration ?? 0)
   const [waterOpen, setWaterOpen] = useState(false)
   const [fertilizeOpen, setFertilizeOpen] = useState(false)
@@ -140,9 +143,33 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
     }
   }, [params.id])
 
+  const loadCarePlan = useCallback(async () => {
+    setCarePlanLoading(true)
+    setCarePlanError(null)
+    try {
+      const res = await fetch(`/api/plants/${params.id}/care-plan`)
+      if (res.ok) {
+        const data = await res.json()
+        setPlant((prev) => (prev ? { ...prev, carePlan: data.carePlan } : prev))
+      } else {
+        setCarePlanError(`Error ${res.status}`)
+      }
+    } catch (err) {
+      setCarePlanError(err instanceof Error ? err.message : String(err))
+    } finally {
+      setCarePlanLoading(false)
+    }
+  }, [params.id])
+
   useEffect(() => {
     loadPlant()
   }, [loadPlant])
+
+  useEffect(() => {
+    if (plant) {
+      loadCarePlan()
+    }
+  }, [plant, loadCarePlan])
 
   return (
     <main className="flex-1 bg-white dark:bg-gray-900">
@@ -261,6 +288,19 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
                   <p className="text-xl font-semibold text-gray-900 dark:text-white">{value}</p>
                 </div>
               ))}
+            </section>
+
+            <section>
+              <h2 className="text-lg font-semibold mb-3">Care Plan</h2>
+              {carePlanLoading ? (
+                <p className="text-sm text-gray-500 dark:text-gray-400">Generating care plan...</p>
+              ) : carePlanError ? (
+                <p className="text-sm text-red-500">{carePlanError}</p>
+              ) : plant.carePlan ? (
+                <p className="text-sm whitespace-pre-line text-gray-700 dark:text-gray-300">{plant.carePlan}</p>
+              ) : (
+                <p className="text-sm text-gray-500 dark:text-gray-400">No care plan available.</p>
+              )}
             </section>
 
               <section>
