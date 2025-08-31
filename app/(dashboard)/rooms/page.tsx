@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import RoomCard from "@/components/RoomCard"
+import { getLastSync } from "@/lib/utils"
 
 type Room = {
   id: string
@@ -29,7 +30,7 @@ export default function RoomsPage() {
         ))}
       </div>
 
-      <footer className="text-xs text-gray-400 mt-6">Last sync: 10:32 AM CDT</footer>
+      <footer className="text-xs text-gray-400 mt-6">Last sync: {getLastSync()}</footer>
     </main>
   )
 }
