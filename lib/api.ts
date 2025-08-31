@@ -3,6 +3,7 @@ export type Room = {
   name: string
   avgHydration: number
   tasksDue: number
+  tags: string[]
 }
 
 export async function getRooms(): Promise<Room[]> {
