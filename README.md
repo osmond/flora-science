@@ -20,9 +20,11 @@ Copy `.env.example` to `.env` and set the following:
 
 ```bash
 PLANT_ID_API_KEY=your_api_key_here
+OPENAI_API_KEY=your_openai_api_key_here
 ```
 
-This key is used to fetch species name suggestions from Plant.id.
+`PLANT_ID_API_KEY` fetches species name suggestions from Plant.id.
+`OPENAI_API_KEY` enables AI-generated care plans. Create one at https://platform.openai.com/account/api-keys.
 
 ## 🛠 Development Commands
 | Command | Description |
