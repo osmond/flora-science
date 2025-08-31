@@ -1,7 +1,6 @@
 "use client"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Sprout } from "lucide-react"
 import { motion } from "framer-motion"
 
 import { navItems } from "./navItems"
@@ -11,7 +10,6 @@ export default function SidebarNav() {
 
   return (
     <aside className="hidden md:block md:w-64 bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-950 border-r border-gray-200 dark:border-gray-700 p-6">
-      <Sprout className="w-6 h-6 mb-6 text-flora-leaf" aria-hidden="true" />
       <nav
         className="flex flex-col gap-3 text-sm text-gray-700 dark:text-gray-200"
         role="navigation"
