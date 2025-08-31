@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { useState, useEffect } from "react"
-import { LayoutGrid, List } from "lucide-react"
+import { LayoutGrid, List, Home, AlertTriangle } from "lucide-react"
 import RoomCard from "@/components/RoomCard"
 import RoomSkeleton from "@/components/RoomSkeleton"
 import RoomModal from "@/components/RoomModal"
@@ -72,6 +72,9 @@ export default function RoomsPage() {
   )
 
   const allTags = Array.from(new Set(rooms.flatMap((r) => r.tags))).sort()
+
+  const totalRooms = rooms.length
+  const roomsNeedingAttention = rooms.filter((r) => r.status !== "healthy").length
 
   function toggleTag(tag: string) {
     setSelectedTags((prev) =>
@@ -146,6 +149,17 @@ export default function RoomsPage() {
             Add Room
           </Link>
         </Tooltip>
+      </div>
+
+      <div className="mb-4 flex gap-4 rounded bg-gray-50 dark:bg-gray-800 p-3">
+        <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+          <Home className="h-4 w-4 text-flora-leaf" />
+          <span>{totalRooms} rooms</span>
+        </div>
+        <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+          <AlertTriangle className="h-4 w-4 text-yellow-500" />
+          <span>{roomsNeedingAttention} need attention</span>
+        </div>
       </div>
 
       <div className="mb-4 flex flex-wrap items-center gap-2">
