@@ -2,27 +2,15 @@ import Link from "next/link"
 import PlantCard from "@/components/PlantCard"
 import Footer from "@/components/Footer"
 import Header from "@/components/Header"
-
-type Plant = {
-  id: string
-  nickname: string
-  species: string
-  status: string
-  hydration: number
-  note?: string
-}
-
-const plants: Plant[] = [
-  { id: "1", nickname: "Delilah", species: "Monstera deliciosa", status: "Water overdue", hydration: 72, note: "Needs water" },
-  { id: "2", nickname: "Sunny", species: "Sansevieria trifasciata", status: "Fine", hydration: 90, note: "Loves bright light" },
-  { id: "3", nickname: "Ivy", species: "Epipremnum aureum", status: "Due today", hydration: 70, note: "Trailing nicely" },
-  { id: "4", nickname: "Figgy", species: "Ficus lyrata", status: "Fertilize suggested", hydration: 75, note: "New growth" },
-]
+import { samplePlants } from "@/lib/plants"
 
 export default function TodayPage() {
+  const plants = Object.entries(samplePlants)
   const plantsCount = plants.length
-  const avgHydration = Math.round(plants.reduce((sum, p) => sum + p.hydration, 0) / plantsCount)
-  const tasksDue = plants.filter((p) => p.status.toLowerCase().includes("due")).length
+  const avgHydration = Math.round(
+    plants.reduce((sum, [, p]) => sum + p.hydration, 0) / plantsCount
+  )
+  const tasksDue = plants.filter(([, p]) => p.status.toLowerCase().includes("due")).length
 
   return (
     <>
@@ -42,14 +30,13 @@ export default function TodayPage() {
           </header>
 
           <section className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {plants.map((p) => (
-              <Link key={p.id} href={`/plants/${p.id}`} className="block">
+            {plants.map(([id, p]) => (
+              <Link key={id} href={`/plants/${id}`} className="block">
                 <PlantCard
                   nickname={p.nickname}
                   species={p.species}
                   status={p.status}
                   hydration={p.hydration}
-                  note={p.note}
                 />
               </Link>
             ))}
