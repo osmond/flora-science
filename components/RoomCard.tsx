@@ -3,6 +3,7 @@
 type RoomCardProps = {
   id: string
   name: string
+  status: 'healthy' | 'needs_water' | 'warning'
   avgHydration: number
   tasksDue: number
   tags: string[]
@@ -14,6 +15,7 @@ type RoomCardProps = {
 export default function RoomCard({
   id,
   name,
+  status,
   avgHydration,
   tasksDue,
   tags,
@@ -24,6 +26,12 @@ export default function RoomCard({
   const pct = Math.max(0, Math.min(100, Math.round(avgHydration)))
   const barColor = pct < 30 ? 'bg-red-500' : pct < 60 ? 'bg-yellow-500' : 'bg-flora-leaf'
   const badgeColor = tasksDue > 0 ? 'bg-red-500 text-white' : 'bg-flora-leaf text-white'
+  const statusColor =
+    status === 'healthy'
+      ? 'bg-green-500 text-white'
+      : status === 'needs_water'
+      ? 'bg-yellow-500 text-gray-800'
+      : 'bg-red-500 text-white'
   return (
     <div
       className="relative h-full flex flex-col justify-between rounded-lg border border-gray-200 dark:border-gray-700 p-4 shadow-sm hover:shadow-md transition bg-white dark:bg-gray-800 cursor-pointer"
@@ -38,6 +46,11 @@ export default function RoomCard({
         aria-label="Select room"
       />
       <h3 className="font-semibold text-gray-900 dark:text-gray-100">{name}</h3>
+      <span
+        className={`absolute top-2 right-2 px-2 py-0.5 text-xs rounded-full capitalize ${statusColor}`}
+      >
+        {status.replace('_', ' ')}
+      </span>
       {tags.length > 0 && (
         <div className="mt-1 flex flex-wrap gap-1">
           {tags.map((tag) => (
