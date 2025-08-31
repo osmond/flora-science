@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { useEffect, useState } from "react"
+import { Droplet, Sprout, FileText } from "lucide-react"
 import { getHydrationProgress } from "@/components/PlantCard"
 
 interface PlantEvent {
@@ -21,6 +22,24 @@ interface Plant {
   events: PlantEvent[]
   photos: string[]
 }
+
+const EVENT_TYPES = {
+  water: {
+    label: "Watered",
+    color: "bg-blue-100 text-blue-700",
+    icon: Droplet,
+  },
+  fertilize: {
+    label: "Fertilized",
+    color: "bg-green-100 text-green-700",
+    icon: Sprout,
+  },
+  note: {
+    label: "Note",
+    color: "bg-purple-100 text-purple-700",
+    icon: FileText,
+  },
+} as const
 
 export default function PlantDetailPage({ params }: { params: { id: string } }) {
   const [plant, setPlant] = useState<Plant | null>(null)
@@ -154,21 +173,31 @@ export default function PlantDetailPage({ params }: { params: { id: string } }) 
             <section>
               <h2 className="text-lg font-semibold mb-3">Timeline</h2>
               <ul className="space-y-2">
-                {plant.events.map((e) => (
-                  <li
-                    key={e.id}
-                    className="flex items-start gap-3 rounded-lg border p-3 bg-white dark:bg-gray-900 dark:border-gray-700"
-                  >
-                    <span className="w-16 text-xs font-medium text-gray-500">{e.date}</span>
-                    <span className="text-sm">
-                      {e.type === "note"
-                        ? "📝 " + e.note
-                        : e.type === "water"
-                        ? "💧 Watered"
-                        : "🌿 Fertilized"}
-                    </span>
-                  </li>
-                ))}
+                {plant.events.map((e) => {
+                  const type =
+                    EVENT_TYPES[e.type as keyof typeof EVENT_TYPES] ?? EVENT_TYPES.note
+                  const Icon = type.icon
+                  return (
+                    <li
+                      key={e.id}
+                      className="flex items-start gap-3 rounded-lg border p-3 bg-white dark:bg-gray-900 dark:border-gray-700"
+                    >
+                      <span className="w-16 text-xs font-medium text-gray-500">{e.date}</span>
+                      <span className="text-sm flex items-center gap-2">
+                        <span
+                          className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold ${type.color}`}
+                        >
+                          <span aria-hidden="true">
+                            <Icon className="h-3 w-3" />
+                          </span>
+                          <span aria-hidden="true">{type.label}</span>
+                          <span className="sr-only">{type.label}</span>
+                        </span>
+                        {e.type === "note" && e.note}
+                      </span>
+                    </li>
+                  )
+                })}
               </ul>
             </section>
 
