@@ -1,6 +1,8 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { modalOverlayVariants, modalContentVariants, defaultTransition } from '@/lib/motion'
 
 interface ModalProps {
   isOpen: boolean
@@ -42,21 +44,33 @@ export default function Modal({ isOpen, onClose, children }: ModalProps) {
     return () => document.removeEventListener('keydown', onKeyDown)
   }, [isOpen, onClose])
 
-  if (!isOpen) return null
-
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-      role="dialog"
-      aria-modal="true"
-    >
-      <div
-        ref={dialogRef}
-        className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg max-w-sm w-full"
-      >
-        {children}
-      </div>
-    </div>
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+          role="dialog"
+          aria-modal="true"
+          variants={modalOverlayVariants}
+          initial="initial"
+          animate="animate"
+          exit="exit"
+          transition={defaultTransition}
+        >
+          <motion.div
+            ref={dialogRef}
+            className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg max-w-sm w-full"
+            variants={modalContentVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            transition={defaultTransition}
+          >
+            {children}
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   )
 }
 
