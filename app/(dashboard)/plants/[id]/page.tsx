@@ -11,7 +11,10 @@ import WaterModal from "@/components/WaterModal"
 import FertilizeModal from "@/components/FertilizeModal"
 import NoteModal from "@/components/NoteModal"
 import { ToastProvider, useToast } from "@/components/Toast"
+import { CareTrendsChart } from "@/components/Charts"
+
 import { getWeatherForUser, type Weather } from "@/lib/weather"
+
 
 interface PlantEvent {
   id: number
@@ -317,6 +320,10 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
             </section>
 
             <section>
+
+              <h2 className="text-lg font-semibold mb-3">Care Trends</h2>
+              <CareTrendsChart events={plant.events} />
+
               <h2 className="text-lg font-semibold mb-3">Care Plan</h2>
               {carePlanLoading ? (
                 <p className="text-sm text-gray-500 dark:text-gray-400">Generating care plan...</p>
@@ -327,6 +334,7 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
               ) : (
                 <p className="text-sm text-gray-500 dark:text-gray-400">No care plan available.</p>
               )}
+
             </section>
 
               <section>
