@@ -14,6 +14,7 @@ import { ToastProvider, useToast } from "@/components/Toast"
 import { CareTrendsChart } from "@/components/Charts"
 
 import { getWeatherForUser, type Weather } from "@/lib/weather"
+import { samplePlants } from "@/lib/plants"
 
 
 interface PlantEvent {
@@ -65,6 +66,7 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
   const [noteOpen, setNoteOpen] = useState(false)
   const toast = useToast()
   const [weather, setWeather] = useState<Weather | null>(null)
+  const [offline, setOffline] = useState(false)
 
   function calculateNextDue(lastWatered: string, w: Weather | null): string {
     const date = new Date(`${lastWatered} ${new Date().getFullYear()}`)
@@ -147,6 +149,7 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
   const loadPlant = useCallback(async () => {
     setLoading(true)
     setError(null)
+    setOffline(false)
     try {
       const res = await fetch(`/api/plants/${params.id}`)
       if (res.ok) {
@@ -165,12 +168,56 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
         )
         setPlant(data)
       } else {
-        setPlant(null)
-        setError(`Error ${res.status}`)
+        const sample = samplePlants[params.id as keyof typeof samplePlants]
+        if (sample) {
+          let w: Weather | null = null
+          try {
+            w = await getWeatherForUser()
+            setWeather(w)
+          } catch {
+            // ignore weather errors
+          }
+          const offlinePlant: Plant = {
+            ...sample,
+            events: (Array.isArray(sample.events) ? sample.events : []).filter(
+              (e: PlantEvent | null): e is PlantEvent =>
+                e !== null && e !== undefined && typeof e.id !== "undefined"
+            ),
+            nextDue: calculateNextDue(sample.lastWatered, w),
+          }
+          setPlant(offlinePlant)
+          setOffline(true)
+          setError(null)
+        } else {
+          setPlant(null)
+          setError(`Error ${res.status}`)
+        }
       }
     } catch (err) {
-      setPlant(null)
-      setError(err instanceof Error ? err.message : String(err))
+      const sample = samplePlants[params.id as keyof typeof samplePlants]
+      if (sample) {
+        let w: Weather | null = null
+        try {
+          w = await getWeatherForUser()
+          setWeather(w)
+        } catch {
+          // ignore weather errors
+        }
+        const offlinePlant: Plant = {
+          ...sample,
+          events: (Array.isArray(sample.events) ? sample.events : []).filter(
+            (e: PlantEvent | null): e is PlantEvent =>
+              e !== null && e !== undefined && typeof e.id !== "undefined"
+          ),
+          nextDue: calculateNextDue(sample.lastWatered, w),
+        }
+        setPlant(offlinePlant)
+        setOffline(true)
+        setError(null)
+      } else {
+        setPlant(null)
+        setError(err instanceof Error ? err.message : String(err))
+      }
     } finally {
       setLoading(false)
     }
@@ -210,6 +257,12 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
         <Link href="/" className="inline-block px-3 py-1 border rounded hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800">
           ← Back to Today
         </Link>
+
+        {offline && plant && (
+          <div className="rounded border border-yellow-300 bg-yellow-50 p-3 text-sm text-yellow-800">
+            Offline data. Changes may not be saved.
+          </div>
+        )}
 
         {loading ? (
           <PlantDetailSkeleton />
