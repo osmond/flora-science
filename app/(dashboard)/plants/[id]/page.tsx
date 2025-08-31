@@ -1,59 +1,47 @@
-import Link from "next/link"
+'use client'
 
-const samplePlants = {
-  "1": {
-    nickname: "Delilah",
-    species: "Monstera deliciosa",
-    status: "Water overdue",
-    hydration: 72,
-    lastWatered: "Aug 25",
-    nextDue: "Aug 30",
-    events: [
-      { id: 1, type: "water", date: "Aug 25" },
-      { id: 2, type: "note", date: "Aug 20", note: "New leaf unfurling" }
-    ],
-    photos: [
-      "https://placehold.co/800x400?text=Delilah",
-      "https://placehold.co/300x300?text=Delilah"
-    ]
-  },
-  "2": {
-    nickname: "Sunny",
-    species: "Sansevieria trifasciata",
-    status: "Fine",
-    hydration: 90,
-    lastWatered: "Aug 27",
-    nextDue: "Sep 5",
-    events: [{ id: 1, type: "water", date: "Aug 27" }],
-    photos: ["https://placehold.co/800x400?text=Sunny"]
-  },
-  "3": {
-    nickname: "Ivy",
-    species: "Epipremnum aureum",
-    status: "Due today",
-    hydration: 70,
-    lastWatered: "Aug 28",
-    nextDue: "Aug 29",
-    events: [{ id: 1, type: "water", date: "Aug 28" }],
-    photos: ["https://placehold.co/800x400?text=Ivy"]
-  },
-  "4": {
-    nickname: "Figgy",
-    species: "Ficus lyrata",
-    status: "Fertilize suggested",
-    hydration: 75,
-    lastWatered: "Aug 23",
-    nextDue: "Sep 2",
-    events: [
-      { id: 1, type: "fertilize", date: "Aug 15" },
-      { id: 2, type: "water", date: "Aug 23" }
-    ],
-    photos: ["https://placehold.co/800x400?text=Figgy"]
-  }
+import Link from "next/link"
+import { useEffect, useState } from "react"
+
+interface PlantEvent {
+  id: number
+  type: string
+  date: string
+  note?: string
+}
+
+interface Plant {
+  nickname: string
+  species: string
+  status: string
+  hydration: number
+  lastWatered: string
+  nextDue: string
+  events: PlantEvent[]
+  photos: string[]
 }
 
 export default function PlantDetailPage({ params }: { params: { id: string } }) {
-  const plant = samplePlants[params.id as keyof typeof samplePlants]
+  const [plant, setPlant] = useState<Plant | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function loadPlant() {
+      try {
+        const res = await fetch(`/api/plants/${params.id}`)
+        if (res.ok) {
+          setPlant(await res.json())
+        } else {
+          setPlant(null)
+        }
+      } catch (error) {
+        setPlant(null)
+      } finally {
+        setLoading(false)
+      }
+    }
+    loadPlant()
+  }, [params.id])
 
   return (
     <main className="flex-1 bg-white dark:bg-gray-900">
@@ -62,7 +50,12 @@ export default function PlantDetailPage({ params }: { params: { id: string } }) 
           ← Back to Today
         </Link>
 
-        {!plant ? (
+        {loading ? (
+          <div className="rounded-lg border p-6 dark:border-gray-700">
+            <h2 className="text-xl font-bold">Loading...</h2>
+            <p className="text-sm text-gray-500 mt-1">ID: {params.id}</p>
+          </div>
+        ) : !plant ? (
           <div className="rounded-lg border p-6 dark:border-gray-700">
             <h2 className="text-xl font-bold">Plant not found</h2>
             <p className="text-sm text-gray-500 mt-1">ID: {params.id}</p>
@@ -116,7 +109,7 @@ export default function PlantDetailPage({ params }: { params: { id: string } }) 
                     <span className="w-16 text-xs font-medium text-gray-500">{e.date}</span>
                     <span className="text-sm">
                       {e.type === "note"
-                        ? "📝 " + (e as any).note
+                        ? "📝 " + e.note
                         : e.type === "water"
                         ? "💧 Watered"
                         : "🌿 Fertilized"}
