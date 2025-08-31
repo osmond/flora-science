@@ -11,10 +11,16 @@ export default function TodayPage() {
     plants.reduce((sum, [, p]) => sum + p.hydration, 0) / plantsCount
   )
   const tasksDue = plants.filter(([, p]) => p.status.toLowerCase().includes("due")).length
+  const avgHydrationHistory = [65, 70, 68, 72, 75]
 
   return (
     <>
-      <Header plantsCount={plantsCount} avgHydration={avgHydration} tasksDue={tasksDue} />
+      <Header
+        plantsCount={plantsCount}
+        avgHydration={avgHydration}
+        tasksDue={tasksDue}
+        avgHydrationHistory={avgHydrationHistory}
+      />
       <main className="flex-1 p-4 md:p-6 pb-20 md:pb-6">
         <div className="max-w-7xl mx-auto">
           <header className="sticky top-0 z-10 backdrop-blur bg-white/70 dark:bg-gray-900/70 p-2 flex items-center justify-between md:hidden">
@@ -37,6 +43,7 @@ export default function TodayPage() {
                   species={p.species}
                   status={p.status}
                   hydration={p.hydration}
+                  hydrationHistory={[p.hydration - 5, p.hydration, Math.min(100, p.hydration + 5)]}
                 />
               </Link>
             ))}

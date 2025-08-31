@@ -8,7 +8,14 @@ describe('Header', () => {
   })
 
   it('toggles dark mode on button click', async () => {
-    render(<Header plantsCount={4} avgHydration={72} tasksDue={2} />)
+    render(
+      <Header
+        plantsCount={4}
+        avgHydration={72}
+        tasksDue={2}
+        avgHydrationHistory={[70, 72, 73]}
+      />
+    )
     const buttons = screen.getAllByRole('button')
     const toggle = buttons[1]
 

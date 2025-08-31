@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { cardVariants, hover, tap, defaultTransition } from '@/lib/motion'
+import Sparkline from './Sparkline'
 
 type PlantCardProps = {
   nickname: string
@@ -10,6 +11,7 @@ type PlantCardProps = {
   hydration: number
   tasksDue?: number
   note?: string
+  hydrationHistory?: number[]
 }
 
 export function getHydrationProgress(hydration: number) {
@@ -25,6 +27,7 @@ export default function PlantCard({
   hydration,
   tasksDue = 0,
   note,
+  hydrationHistory,
 }: PlantCardProps) {
   const { pct, barColor } = getHydrationProgress(hydration)
   const badgeColor = tasksDue > 0 ? 'bg-red-500 text-white' : 'bg-flora-leaf text-white'
@@ -58,7 +61,10 @@ export default function PlantCard({
         />
       </div>
       <div className="flex items-center justify-between mt-2">
-        <p className="text-xs text-gray-500 dark:text-gray-400">Hydration: {pct}%</p>
+        <div className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
+          Hydration: {pct}%
+          {hydrationHistory && <Sparkline data={hydrationHistory} />}
+        </div>
         <div className="flex items-center gap-1">
           <span className="text-xs text-gray-500 dark:text-gray-400">Tasks</span>
           <span
