@@ -30,8 +30,8 @@ export const samplePlants: Record<string, Plant> = {
       { id: 2, type: "note", date: "Aug 20", note: "New leaf unfurling" }
     ],
     photos: [
-      "https://placehold.co/800x400?text=Delilah",
-      "https://placehold.co/300x300?text=Delilah"
+      "https://placehold.co/800x400.png?text=Delilah",
+      "https://placehold.co/300x300.png?text=Delilah"
     ]
   },
   "2": {
@@ -42,7 +42,7 @@ export const samplePlants: Record<string, Plant> = {
     lastWatered: "Aug 27",
     nextDue: "Sep 5",
     events: [{ id: 1, type: "water", date: "Aug 27" }],
-    photos: ["https://placehold.co/800x400?text=Sunny"]
+    photos: ["https://placehold.co/800x400.png?text=Sunny"]
   },
   "3": {
     nickname: "Ivy",
@@ -52,7 +52,7 @@ export const samplePlants: Record<string, Plant> = {
     lastWatered: "Aug 28",
     nextDue: "Aug 29",
     events: [{ id: 1, type: "water", date: "Aug 28" }],
-    photos: ["https://placehold.co/800x400?text=Ivy"]
+    photos: ["https://placehold.co/800x400.png?text=Ivy"]
   },
   "4": {
     nickname: "Figgy",
@@ -65,6 +65,6 @@ export const samplePlants: Record<string, Plant> = {
       { id: 1, type: "fertilize", date: "Aug 15" },
       { id: 2, type: "water", date: "Aug 23" }
     ],
-    photos: ["https://placehold.co/800x400?text=Figgy"]
+    photos: ["https://placehold.co/800x400.png?text=Figgy"]
   }
 }
