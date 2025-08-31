@@ -9,7 +9,7 @@ export default function RoomCard({ name, avgHydration, tasksDue }: RoomCardProps
   const barColor = pct < 30 ? 'bg-red-500' : pct < 60 ? 'bg-yellow-500' : 'bg-flora-leaf'
   const badgeColor = tasksDue > 0 ? 'bg-red-500 text-white' : 'bg-flora-leaf text-white'
   return (
-    <div className="rounded-lg border border-gray-200 dark:border-gray-700 p-4 shadow-sm hover:shadow-md transition bg-white dark:bg-gray-800">
+    <div className="h-full flex flex-col justify-between rounded-lg border border-gray-200 dark:border-gray-700 p-4 shadow-sm hover:shadow-md transition bg-white dark:bg-gray-800">
       <h3 className="font-semibold text-gray-900 dark:text-gray-100">{name}</h3>
       <div
         className="w-full bg-gray-200 rounded-full h-2 mt-2"
