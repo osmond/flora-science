@@ -7,6 +7,12 @@ type PlantCardProps = {
   note?: string
 }
 
+export function getHydrationProgress(hydration: number) {
+  const pct = Math.max(0, Math.min(100, Math.round(hydration)))
+  const barColor = pct < 30 ? 'bg-red-500' : pct < 60 ? 'bg-yellow-500' : 'bg-flora-leaf'
+  return { pct, barColor }
+}
+
 export default function PlantCard({
   nickname,
   species,
@@ -15,9 +21,7 @@ export default function PlantCard({
   tasksDue = 0,
   note,
 }: PlantCardProps) {
-  // simple % formatting guard
-  const pct = Math.max(0, Math.min(100, Math.round(hydration)))
-  const barColor = pct < 30 ? 'bg-red-500' : pct < 60 ? 'bg-yellow-500' : 'bg-flora-leaf'
+  const { pct, barColor } = getHydrationProgress(hydration)
   const badgeColor = tasksDue > 0 ? 'bg-red-500 text-white' : 'bg-flora-leaf text-white'
 
   return (

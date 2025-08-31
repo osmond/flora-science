@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { useEffect, useState } from "react"
+import { getHydrationProgress } from "@/components/PlantCard"
 
 interface PlantEvent {
   id: number
@@ -24,6 +25,7 @@ interface Plant {
 export default function PlantDetailPage({ params }: { params: { id: string } }) {
   const [plant, setPlant] = useState<Plant | null>(null)
   const [loading, setLoading] = useState(true)
+  const progress = getHydrationProgress(plant?.hydration ?? 0)
 
   useEffect(() => {
     async function loadPlant() {
@@ -73,7 +75,20 @@ export default function PlantDetailPage({ params }: { params: { id: string } }) 
                 <p className="italic text-gray-500">{plant.species}</p>
                 <div className="flex flex-wrap justify-center md:justify-start gap-2 text-sm">
                   <span className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full font-medium">{plant.status}</span>
-                  <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full font-medium">Hydration: {plant.hydration}%</span>
+                </div>
+                <div
+                  className="w-full bg-gray-200 rounded-full h-2"
+                  role="progressbar"
+                  aria-label="Hydration"
+                  aria-valuenow={progress.pct}
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                >
+                  <div
+                    className={`h-2 rounded-full ${progress.barColor}`}
+                    style={{ width: `${progress.pct}%` }}
+                  />
+                  <span className="sr-only">Hydration: {progress.pct}%</span>
                 </div>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
                   Last watered: <strong>{plant.lastWatered}</strong> · Next due: <strong>{plant.nextDue}</strong>
