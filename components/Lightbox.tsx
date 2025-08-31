@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from "react"
+import Image from "next/image"
 
 interface LightboxImage {
   src: string
@@ -65,10 +66,14 @@ export default function Lightbox({ images }: { images: LightboxImage[] }) {
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/75"
         >
           <div className="relative">
-            <img
+            <Image
               src={images[openIndex].src}
               alt={images[openIndex].alt}
+              width={1200}
+              height={800}
+              sizes="100vw"
               className="max-h-screen max-w-full object-contain"
+              loading="lazy"
             />
             <button
               ref={closeRef}
@@ -110,10 +115,14 @@ export default function Lightbox({ images }: { images: LightboxImage[] }) {
             aria-label={`View image ${index + 1} of ${images.length}`}
             className="focus:outline-none"
           >
-            <img
+            <Image
               src={img.src}
               alt={img.alt}
+              width={400}
+              height={400}
+              sizes="(max-width: 768px) 50vw, 25vw"
               className="aspect-square rounded-lg border object-cover transition-transform duration-300 hover:scale-105 dark:border-gray-700"
+              loading="lazy"
             />
           </button>
         ))}
