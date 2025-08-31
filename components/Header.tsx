@@ -33,7 +33,7 @@ export default function Header({ plantsCount, avgHydration, tasksDue }: HeaderPr
         <button
           onClick={toggleTheme}
           aria-label="Toggle theme"
-          className="p-2 rounded-lg border dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+          className="p-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
         >
           {theme === "dark" ? (
             <Moon className="w-5 h-5 text-gray-200" aria-hidden="true" />

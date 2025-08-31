@@ -15,17 +15,17 @@ export default function EnvRow({
   tempUnit = 'F',
 }: EnvRowProps) {
   return (
-    <div className="mt-4 flex gap-6 text-sm items-center">
+    <div className="mt-4 flex gap-6 items-center text-sm text-gray-700 dark:text-gray-300">
       <span className="flex items-center gap-1">
-        <Thermometer className="w-4 h-4 text-red-500" />
+        <Thermometer className="w-4 h-4 text-red-500 dark:text-red-400" />
         {formatTemperature(temperature, tempUnit)}
       </span>
       <span className="flex items-center gap-1">
-        <Droplets className="w-4 h-4 text-blue-500" />
+        <Droplets className="w-4 h-4 text-blue-500 dark:text-blue-400" />
         {formatHumidity(humidity)}
       </span>
       <span className="flex items-center gap-1">
-        <Wind className="w-4 h-4 text-indigo-500" />
+        <Wind className="w-4 h-4 text-indigo-500 dark:text-indigo-400" />
         {formatVpd(vpd)}
       </span>
     </div>
