@@ -1,7 +1,7 @@
 export default function PlantDetailSkeleton() {
   return (
-    <div className="space-y-6 animate-pulse">
-      <section className="flex flex-col md:flex-row gap-6 items-center md:items-start">
+    <div className="space-y-4 md:space-y-6 animate-pulse">
+      <section className="flex flex-col md:flex-row gap-4 md:gap-6 items-center md:items-start">
         <div className="w-full md:w-1/2 rounded-xl border max-h-72 bg-gray-200 dark:bg-gray-700" />
         <div className="space-y-2 md:w-1/2 text-center md:text-left">
           <div className="h-8 w-3/4 mx-auto md:mx-0 rounded bg-gray-200 dark:bg-gray-700" />
@@ -19,7 +19,7 @@ export default function PlantDetailSkeleton() {
         </div>
       </section>
 
-      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
         {[0, 1, 2, 3].map((i) => (
           <div
             key={i}

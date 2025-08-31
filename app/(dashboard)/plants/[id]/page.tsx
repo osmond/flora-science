@@ -13,6 +13,9 @@ import NoteModal from "@/components/NoteModal"
 import { ToastProvider, useToast } from "@/components/Toast"
 import { CareTrendsChart } from "@/components/Charts"
 
+import { getWeatherForUser, type Weather } from "@/lib/weather"
+
+
 interface PlantEvent {
   id: number
   type: string
@@ -29,6 +32,7 @@ interface Plant {
   nextDue: string
   events: PlantEvent[]
   photos: string[]
+  carePlan?: string
 }
 
 const EVENT_TYPES = {
@@ -49,15 +53,35 @@ const EVENT_TYPES = {
   },
 } as const
 
-function PlantDetailContent({ params }: { params: { id: string } }) {
+export function PlantDetailContent({ params }: { params: { id: string } }) {
   const [plant, setPlant] = useState<Plant | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [carePlanLoading, setCarePlanLoading] = useState(true)
+  const [carePlanError, setCarePlanError] = useState<string | null>(null)
   const progress = getHydrationProgress(plant?.hydration ?? 0)
   const [waterOpen, setWaterOpen] = useState(false)
   const [fertilizeOpen, setFertilizeOpen] = useState(false)
   const [noteOpen, setNoteOpen] = useState(false)
   const toast = useToast()
+  const [weather, setWeather] = useState<Weather | null>(null)
+
+  function calculateNextDue(lastWatered: string, w: Weather | null): string {
+    const date = new Date(`${lastWatered} ${new Date().getFullYear()}`)
+    if (isNaN(date.getTime())) {
+      date.setTime(Date.now())
+    }
+    let days = 7
+    if (w) {
+      if (w.temperature > 85 && w.humidity < 50) {
+        days -= 1
+      } else if (w.temperature < 60 || w.humidity > 80) {
+        days += 1
+      }
+    }
+    date.setDate(date.getDate() + days)
+    return date.toLocaleDateString(undefined, { month: "short", day: "numeric" })
+  }
 
   function handleWater() {
     setWaterOpen(true)
@@ -80,10 +104,8 @@ function PlantDetailContent({ params }: { params: { id: string } }) {
             ...prev,
             hydration: Math.min(100, prev.hydration + (isNaN(amt) ? 0 : amt)),
             lastWatered: date,
-            events: [
-              ...prev.events,
-              { id: Date.now(), type: "water", date },
-            ],
+            nextDue: calculateNextDue(date, weather),
+            events: [...prev.events, { id: Date.now(), type: "water", date }],
           }
         : prev
     )
@@ -128,7 +150,16 @@ function PlantDetailContent({ params }: { params: { id: string } }) {
     try {
       const res = await fetch(`/api/plants/${params.id}`)
       if (res.ok) {
-        setPlant(await res.json())
+        const data = await res.json()
+        let w: Weather | null = null
+        try {
+          w = await getWeatherForUser()
+          setWeather(w)
+        } catch {
+          // ignore weather errors
+        }
+        data.nextDue = calculateNextDue(data.lastWatered, w)
+        setPlant(data)
       } else {
         setPlant(null)
         setError(`Error ${res.status}`)
@@ -141,13 +172,37 @@ function PlantDetailContent({ params }: { params: { id: string } }) {
     }
   }, [params.id])
 
+  const loadCarePlan = useCallback(async () => {
+    setCarePlanLoading(true)
+    setCarePlanError(null)
+    try {
+      const res = await fetch(`/api/plants/${params.id}/care-plan`)
+      if (res.ok) {
+        const data = await res.json()
+        setPlant((prev) => (prev ? { ...prev, carePlan: data.carePlan } : prev))
+      } else {
+        setCarePlanError(`Error ${res.status}`)
+      }
+    } catch (err) {
+      setCarePlanError(err instanceof Error ? err.message : String(err))
+    } finally {
+      setCarePlanLoading(false)
+    }
+  }, [params.id])
+
   useEffect(() => {
     loadPlant()
   }, [loadPlant])
 
+  useEffect(() => {
+    if (plant) {
+      loadCarePlan()
+    }
+  }, [plant, loadCarePlan])
+
   return (
     <main className="flex-1 bg-white dark:bg-gray-900">
-      <div className="p-6 space-y-6">
+      <div className="p-4 md:p-6 space-y-4 md:space-y-6">
         <Link href="/" className="inline-block px-3 py-1 border rounded hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800">
           ← Back to Today
         </Link>
@@ -176,16 +231,24 @@ function PlantDetailContent({ params }: { params: { id: string } }) {
           </div>
         ) : (
           <>
+
             <section className="flex flex-col md:flex-row gap-6 items-center md:items-start">
-              <Image
-                src={plant.photos[0]}
-                alt={plant.nickname}
-                width={800}
-                height={600}
-                sizes="(max-width: 768px) 100vw, 50vw"
-                className="w-full md:w-1/2 rounded-xl border object-cover max-h-72"
-                loading="lazy"
-              />
+              {plant.photos && plant.photos.length > 0 ? (
+                <Image
+                  src={plant.photos[0]}
+                  alt={plant.nickname}
+                  width={800}
+                  height={600}
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="w-full md:w-1/2 rounded-xl border object-cover max-h-72"
+                  loading="lazy"
+                />
+              ) : (
+                <div className="w-full md:w-1/2 rounded-xl border flex items-center justify-center bg-gray-100 dark:bg-gray-800 max-h-72">
+                  <span className="text-gray-500 dark:text-gray-400">No photo</span>
+                </div>
+              )}
+
               <div className="space-y-2 md:w-1/2 text-center md:text-left">
                 <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{plant.nickname}</h1>
                 <p className="italic text-gray-500">{plant.species}</p>
@@ -239,7 +302,7 @@ function PlantDetailContent({ params }: { params: { id: string } }) {
               </div>
             </section>
 
-            <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
               {[
                 { label: "Status", value: plant.status },
                 { label: "Hydration", value: `${plant.hydration}%` },
@@ -257,13 +320,26 @@ function PlantDetailContent({ params }: { params: { id: string } }) {
             </section>
 
             <section>
+
               <h2 className="text-lg font-semibold mb-3">Care Trends</h2>
               <CareTrendsChart events={plant.events} />
+
+              <h2 className="text-lg font-semibold mb-3">Care Plan</h2>
+              {carePlanLoading ? (
+                <p className="text-sm text-gray-500 dark:text-gray-400">Generating care plan...</p>
+              ) : carePlanError ? (
+                <p className="text-sm text-red-500">{carePlanError}</p>
+              ) : plant.carePlan ? (
+                <p className="text-sm whitespace-pre-line text-gray-700 dark:text-gray-300">{plant.carePlan}</p>
+              ) : (
+                <p className="text-sm text-gray-500 dark:text-gray-400">No care plan available.</p>
+              )}
+
             </section>
 
               <section>
                 <h2 className="text-lg font-semibold mb-3">Timeline</h2>
-                {plant.events.length === 0 ? (
+                {!plant.events || plant.events.length === 0 ? (
                   <p className="text-sm text-gray-500 dark:text-gray-400">No activity yet.</p>
                 ) : (
                   <ul className="space-y-2">
@@ -298,12 +374,16 @@ function PlantDetailContent({ params }: { params: { id: string } }) {
 
             <section>
               <h2 className="text-lg font-semibold mb-3">Gallery</h2>
-              <Lightbox
-                images={plant.photos.map((src, i) => ({
-                  src,
-                  alt: `${plant.nickname} photo ${i + 1}`,
-                }))}
-              />
+              {plant.photos && plant.photos.length > 0 ? (
+                <Lightbox
+                  images={plant.photos.map((src, i) => ({
+                    src,
+                    alt: `${plant.nickname} photo ${i + 1}`,
+                  }))}
+                />
+              ) : (
+                <p className="text-sm text-gray-500 dark:text-gray-400">No photos available.</p>
+              )}
             </section>
           </>
         )}
