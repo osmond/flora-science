@@ -1,5 +1,3 @@
-"use client"
-
 type PlantCardProps = {
   nickname: string
   species: string

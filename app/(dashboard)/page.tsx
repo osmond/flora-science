@@ -1,5 +1,3 @@
-"use client"
-
 import Link from "next/link"
 import PlantCard from "@/components/PlantCard"
 import Footer from "@/components/Footer"

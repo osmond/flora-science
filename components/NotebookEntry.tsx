@@ -1,5 +1,3 @@
-"use client"
-
 type Props = {
   icon: string
   note: string

@@ -1,5 +1,3 @@
-"use client"
-
 import { getLastSync } from "@/lib/utils"
 
 type FooterProps = {

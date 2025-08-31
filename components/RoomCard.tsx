@@ -1,5 +1,3 @@
-"use client"
-
 type RoomCardProps = {
   name: string
   avgHydration: number

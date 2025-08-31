@@ -1,4 +1,3 @@
-"use client"
 import { Thermometer, Droplets, Wind } from "lucide-react"
 
 export default function EnvRow() {
