@@ -11,6 +11,7 @@ import WaterModal from "@/components/WaterModal"
 import FertilizeModal from "@/components/FertilizeModal"
 import NoteModal from "@/components/NoteModal"
 import { ToastProvider, useToast } from "@/components/Toast"
+import { getWeatherForUser, type Weather } from "@/lib/weather"
 
 interface PlantEvent {
   id: number
@@ -60,6 +61,24 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
   const [fertilizeOpen, setFertilizeOpen] = useState(false)
   const [noteOpen, setNoteOpen] = useState(false)
   const toast = useToast()
+  const [weather, setWeather] = useState<Weather | null>(null)
+
+  function calculateNextDue(lastWatered: string, w: Weather | null): string {
+    const date = new Date(`${lastWatered} ${new Date().getFullYear()}`)
+    if (isNaN(date.getTime())) {
+      date.setTime(Date.now())
+    }
+    let days = 7
+    if (w) {
+      if (w.temperature > 85 && w.humidity < 50) {
+        days -= 1
+      } else if (w.temperature < 60 || w.humidity > 80) {
+        days += 1
+      }
+    }
+    date.setDate(date.getDate() + days)
+    return date.toLocaleDateString(undefined, { month: "short", day: "numeric" })
+  }
 
   function handleWater() {
     setWaterOpen(true)
@@ -82,10 +101,8 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
             ...prev,
             hydration: Math.min(100, prev.hydration + (isNaN(amt) ? 0 : amt)),
             lastWatered: date,
-            events: [
-              ...prev.events,
-              { id: Date.now(), type: "water", date },
-            ],
+            nextDue: calculateNextDue(date, weather),
+            events: [...prev.events, { id: Date.now(), type: "water", date }],
           }
         : prev
     )
@@ -130,7 +147,16 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
     try {
       const res = await fetch(`/api/plants/${params.id}`)
       if (res.ok) {
-        setPlant(await res.json())
+        const data = await res.json()
+        let w: Weather | null = null
+        try {
+          w = await getWeatherForUser()
+          setWeather(w)
+        } catch {
+          // ignore weather errors
+        }
+        data.nextDue = calculateNextDue(data.lastWatered, w)
+        setPlant(data)
       } else {
         setPlant(null)
         setError(`Error ${res.status}`)
