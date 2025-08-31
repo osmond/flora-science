@@ -20,7 +20,12 @@ export default function RoomsPage() {
   const [searchTerm, setSearchTerm] = useState("")
   return (
     <main className="flex-1 p-6">
-      <h2 className="text-xl font-bold mb-4">My Rooms</h2>
+      <div className="mb-4 flex items-center justify-between">
+        <h2 className="text-xl font-bold">My Rooms</h2>
+        <Link href="/rooms/new" className="text-sm text-blue-500 hover:underline">
+          Add Room
+        </Link>
+      </div>
 
       <input
         type="text"
@@ -30,19 +35,28 @@ export default function RoomsPage() {
         className="mb-4 p-2 border rounded w-full"
       />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {rooms
-          .filter((r) => r.name.toLowerCase().includes(searchTerm.toLowerCase()))
-          .map((r) => (
-            <Link key={r.id} href={`/rooms/${r.id}`} className="block">
-              <RoomCard
-                name={r.name}
-                avgHydration={r.avgHydration}
-                tasksDue={r.tasksDue}
-              />
-            </Link>
-          ))}
-      </div>
+      {rooms.length === 0 ? (
+        <div className="mt-8 text-center">
+          <p className="mb-4">No rooms yet</p>
+          <Link href="/rooms/new" className="text-blue-500 underline">
+            Create a room
+          </Link>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {rooms
+            .filter((r) => r.name.toLowerCase().includes(searchTerm.toLowerCase()))
+            .map((r) => (
+              <Link key={r.id} href={`/rooms/${r.id}`} className="block">
+                <RoomCard
+                  name={r.name}
+                  avgHydration={r.avgHydration}
+                  tasksDue={r.tasksDue}
+                />
+              </Link>
+            ))}
+        </div>
+      )}
 
       <footer className="text-xs text-gray-400 mt-6">Last sync: {getLastSync()}</footer>
     </main>
