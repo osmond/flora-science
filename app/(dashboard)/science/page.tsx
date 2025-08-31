@@ -7,8 +7,15 @@ import {
   WaterBalanceChart,
   StressIndexGauge,
   StressIndexChart,
+  TaskCompletionChart,
 } from "@/components/Charts"
-import { waterBalanceSeries, WeatherDay, WaterEvent, stressTrend } from "@/lib/plant-metrics"
+import {
+  waterBalanceSeries,
+  WeatherDay,
+  WaterEvent,
+  stressTrend,
+} from "@/lib/plant-metrics"
+import { CareEvent } from "@/lib/seasonal-trends"
 import EnvRow from "@/components/EnvRow"
 import Footer from "@/components/Footer"
 
@@ -88,6 +95,15 @@ export default function SciencePanel() {
   const stressData = stressTrend(stressReadings)
   const currentStress = stressData[stressData.length - 1]?.stress ?? 0
 
+  const taskEvents: CareEvent[] = [
+    { date: "2024-01-05", type: "completed" },
+    { date: "2024-01-12", type: "missed" },
+    { date: "2024-02-03", type: "completed" },
+    { date: "2024-02-20", type: "completed" },
+    { date: "2024-03-15", type: "missed" },
+    { date: "2024-03-22", type: "completed" },
+  ]
+
   const toggleUnit = () => setTempUnit((u) => (u === "F" ? "C" : "F"))
 
   return (
@@ -129,6 +145,11 @@ export default function SciencePanel() {
           <StressIndexGauge value={currentStress} />
           <StressIndexChart data={stressData} />
         </div>
+      </section>
+
+      <section className="mt-4 md:mt-6">
+        <h3 className="font-medium text-gray-800">Task Completion</h3>
+        <TaskCompletionChart events={taskEvents} />
       </section>
 
       <Footer />

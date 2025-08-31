@@ -16,13 +16,12 @@ import {
   ComposedChart,
 
 } from "recharts"
-import { aggregateCareByMonth, CareEvent } from "@/lib/seasonal-trends"
 import {
-  calculateNutrientAvailability,
-  calculateStressIndex,
-  stressTrend,
-  type StressDatum,
-} from "@/lib/plant-metrics"
+  aggregateCareByMonth,
+  aggregateTaskCompletion,
+  CareEvent,
+} from "@/lib/seasonal-trends"
+import { calculateNutrientAvailability, type StressDatum } from "@/lib/plant-metrics"
 
 // Dummy dataset for environment over 7 days
 const envData = [
@@ -118,6 +117,41 @@ export function CareTrendsChart({ events }: { events: CareEvent[] }) {
         <Bar dataKey="water" fill="#3b82f6" name="Water" />
         <Bar dataKey="fertilize" fill="#22c55e" name="Fertilize" />
       </BarChart>
+    </ResponsiveContainer>
+  )
+}
+
+export function TaskCompletionChart({ events }: { events: CareEvent[] }) {
+  const data = aggregateTaskCompletion(events).map((t) => {
+    const total = t.completed + t.missed
+    return {
+      month: t.month,
+      completed: total ? (t.completed / total) * 100 : 0,
+      missed: total ? (t.missed / total) * 100 : 0,
+    }
+  })
+
+  return (
+    <ResponsiveContainer width="100%" height={250}>
+      <LineChart data={data}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="month" />
+        <YAxis domain={[0, 100]} />
+        <Tooltip />
+        <Legend />
+        <Line
+          type="monotone"
+          dataKey="completed"
+          stroke="#22c55e"
+          name="Completed (%)"
+        />
+        <Line
+          type="monotone"
+          dataKey="missed"
+          stroke="#ef4444"
+          name="Missed (%)"
+        />
+      </LineChart>
     </ResponsiveContainer>
   )
 }
