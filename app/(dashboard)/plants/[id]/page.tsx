@@ -11,7 +11,8 @@ import WaterModal from "@/components/WaterModal"
 import FertilizeModal from "@/components/FertilizeModal"
 import NoteModal from "@/components/NoteModal"
 import { ToastProvider, useToast } from "@/components/Toast"
-import { CareTrendsChart } from "@/components/Charts"
+import { CareTrendsChart, NutrientLevelChart } from "@/components/Charts"
+import { calculateNutrientAvailability } from "@/lib/plant-metrics"
 
 import { getWeatherForUser, type Weather } from "@/lib/weather"
 import { samplePlants } from "@/lib/plants"
@@ -31,6 +32,8 @@ interface Plant {
   hydration: number
   lastWatered: string
   nextDue: string
+  lastFertilized: string
+  nutrientLevel?: number
   events: PlantEvent[]
   photos: string[]
   carePlan?: string
@@ -85,6 +88,14 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
     return date.toLocaleDateString(undefined, { month: "short", day: "numeric" })
   }
 
+  function calculateNextFeedDate(lastFertilized: string, nutrientLevel: number) {
+    const current = calculateNutrientAvailability(lastFertilized, nutrientLevel)
+    const daysLeft = Math.max(0, Math.ceil((current - 30) / 2))
+    const date = new Date()
+    date.setDate(date.getDate() + daysLeft)
+    return date.toLocaleDateString(undefined, { month: "short", day: "numeric" })
+  }
+
   function handleWater() {
     setWaterOpen(true)
   }
@@ -120,6 +131,8 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
       prev
         ? {
             ...prev,
+            lastFertilized: date,
+            nutrientLevel: 100,
             events: [
               ...prev.events,
               { id: Date.now(), type: "fertilize", date },
@@ -359,6 +372,9 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
                 <p className="text-sm text-gray-500 dark:text-gray-400">
                   Last watered: <strong>{plant.lastWatered}</strong> · Next due: <strong>{plant.nextDue}</strong>
                 </p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  Last fertilized: <strong>{plant.lastFertilized}</strong> · Next feed: <strong>{calculateNextFeedDate(plant.lastFertilized, plant.nutrientLevel ?? 100)}</strong>
+                </p>
               </div>
             </section>
 
@@ -367,7 +383,9 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
                 { label: "Status", value: plant.status },
                 { label: "Hydration", value: `${plant.hydration}%` },
                 { label: "Last Watered", value: plant.lastWatered },
-                { label: "Next Due", value: plant.nextDue }
+                { label: "Next Due", value: plant.nextDue },
+                { label: "Last Fertilized", value: plant.lastFertilized },
+                { label: "Next Feed", value: calculateNextFeedDate(plant.lastFertilized, plant.nutrientLevel ?? 100) }
               ].map(({ label, value }) => (
                 <div
                   key={label}
@@ -377,6 +395,14 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
                   <p className="text-xl font-semibold text-gray-900 dark:text-white">{value}</p>
                 </div>
               ))}
+            </section>
+
+            <section>
+              <h2 className="text-lg font-semibold mb-3">Nutrient Levels</h2>
+              <NutrientLevelChart
+                lastFertilized={plant.lastFertilized}
+                nutrientLevel={plant.nutrientLevel ?? 100}
+              />
             </section>
 
             <section>

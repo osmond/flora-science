@@ -12,6 +12,8 @@ export interface Plant {
   hydration: number
   lastWatered: string
   nextDue: string
+  lastFertilized: string
+  nutrientLevel?: number
   events: PlantEvent[]
   photos: string[]
   carePlan?: string
@@ -24,7 +26,9 @@ export const samplePlants: Record<string, Plant> = {
     status: "Water overdue",
     hydration: 72,
     lastWatered: "Aug 25",
+    lastFertilized: "Aug 10",
     nextDue: "Aug 30",
+    nutrientLevel: 55,
     events: [
       { id: 1, type: "water", date: "Aug 25" },
       { id: 2, type: "note", date: "Aug 20", note: "New leaf unfurling" }
@@ -40,7 +44,9 @@ export const samplePlants: Record<string, Plant> = {
     status: "Fine",
     hydration: 90,
     lastWatered: "Aug 27",
+    lastFertilized: "Aug 01",
     nextDue: "Sep 5",
+    nutrientLevel: 40,
     events: [{ id: 1, type: "water", date: "Aug 27" }],
     photos: ["https://placehold.co/800x400.png?text=Sunny"]
   },
@@ -50,7 +56,9 @@ export const samplePlants: Record<string, Plant> = {
     status: "Due today",
     hydration: 70,
     lastWatered: "Aug 28",
+    lastFertilized: "Aug 18",
     nextDue: "Aug 29",
+    nutrientLevel: 60,
     events: [{ id: 1, type: "water", date: "Aug 28" }],
     photos: ["https://placehold.co/800x400.png?text=Ivy"]
   },
@@ -60,7 +68,9 @@ export const samplePlants: Record<string, Plant> = {
     status: "Fertilize suggested",
     hydration: 75,
     lastWatered: "Aug 23",
+    lastFertilized: "Aug 15",
     nextDue: "Sep 2",
+    nutrientLevel: 80,
     events: [
       { id: 1, type: "fertilize", date: "Aug 15" },
       { id: 2, type: "water", date: "Aug 23" }
