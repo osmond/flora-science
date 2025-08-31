@@ -20,6 +20,7 @@ import {
   aggregateCareByMonth,
   aggregateTaskCompletion,
   CareEvent,
+  type DailyActivity,
 } from "@/lib/seasonal-trends"
 import { calculateNutrientAvailability, type StressDatum } from "@/lib/plant-metrics"
 
@@ -264,5 +265,60 @@ export function NutrientLevelChart({
       </LineChart>
 
     </ResponsiveContainer>
+  )
+}
+
+export function TimelineHeatmap({ activity }: { activity: DailyActivity }) {
+  const dates = Object.keys(activity).sort()
+  const types = Array.from(
+    new Set(dates.flatMap((d) => Object.keys(activity[d])))
+  )
+  const counts = dates.flatMap((d) => Object.values(activity[d]))
+  const max = Math.max(1, ...counts, 1)
+
+  return (
+    <div className="overflow-x-auto">
+      <table className="border-collapse">
+        <thead>
+          <tr>
+            <th className="p-1 text-xs"></th>
+            {dates.map((date) => (
+              <th key={date} className="p-1 text-xs">
+                {new Date(date).toLocaleDateString(undefined, {
+                  month: "short",
+                  day: "numeric",
+                })}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {types.map((type) => (
+            <tr key={type}>
+              <td className="p-1 text-xs">{type}</td>
+              {dates.map((date) => {
+                const count = activity[date]?.[type] ?? 0
+                const intensity = count / max
+                return (
+                  <td
+                    key={date}
+                    data-testid="heatmap-cell"
+                    data-count={count}
+                    title={`${type} on ${date}: ${count}`}
+                    style={{
+                      backgroundColor: count
+                        ? `rgba(34,197,94,${intensity})`
+                        : "#e5e7eb",
+                      width: "1rem",
+                      height: "1rem",
+                    }}
+                  />
+                )
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   )
 }

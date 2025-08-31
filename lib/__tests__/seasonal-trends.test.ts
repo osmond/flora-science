@@ -1,6 +1,7 @@
 import {
   aggregateCareByMonth,
   aggregateTaskCompletion,
+  generateDailyActivity,
 } from '../seasonal-trends'
 
 describe('aggregateCareByMonth', () => {
@@ -28,5 +29,18 @@ describe('aggregateTaskCompletion', () => {
     const result = aggregateTaskCompletion(events)
     expect(result[0]).toEqual({ month: 'Jan', completed: 1, missed: 1 })
     expect(result[1]).toEqual({ month: 'Feb', completed: 1, missed: 0 })
+  })
+})
+
+describe('generateDailyActivity', () => {
+  it('groups counts by date and event type', () => {
+    const events = [
+      { type: 'water', date: '2024-01-15' },
+      { type: 'water', date: '2024-01-15' },
+      { type: 'fertilize', date: '2024-01-16' },
+    ]
+    const result = generateDailyActivity(events)
+    expect(result['2024-01-15']).toEqual({ water: 2 })
+    expect(result['2024-01-16']).toEqual({ fertilize: 1 })
   })
 })
