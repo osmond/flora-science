@@ -148,8 +148,8 @@ export default function RoomsPage() {
   }
 
   return (
-    <main className="flex-1 p-6">
-      <div className="mb-4 flex gap-6 rounded-lg border border-gray-200 bg-gray-50 p-4 text-sm dark:border-gray-700 dark:bg-gray-800">
+    <main className="flex-1 p-4 md:p-6">
+      <div className="mb-4 flex flex-col sm:flex-row gap-4 sm:gap-6 rounded-lg border border-gray-200 bg-gray-50 p-4 text-sm dark:border-gray-700 dark:bg-gray-800">
         <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
           <Home className="h-4 w-4 text-gray-500 dark:text-gray-400" />
           <span>{totalRooms} rooms</span>
@@ -159,7 +159,7 @@ export default function RoomsPage() {
           <span>{roomsNeedingAttention} need attention</span>
         </div>
       </div>
-      <div className="mb-4 flex items-center justify-between">
+      <div className="mb-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div className="flex items-center gap-2">
           <h2 className="text-xl font-bold">My Rooms</h2>
           <Tooltip
@@ -274,7 +274,7 @@ export default function RoomsPage() {
       )}
 
       {isLoading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {Array.from({ length: 6 }).map((_, i) => (
             <RoomSkeleton key={i} />
           ))}
@@ -289,7 +289,7 @@ export default function RoomsPage() {
           </Link>
         </div>
       ) : view === "grid" ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {filteredRooms.map((r) => (
             <RoomCard
               key={r.id}

@@ -146,7 +146,7 @@ function PlantDetailContent({ params }: { params: { id: string } }) {
 
   return (
     <main className="flex-1 bg-white dark:bg-gray-900">
-      <div className="p-6 space-y-6">
+      <div className="p-4 md:p-6 space-y-4 md:space-y-6">
         <Link href="/" className="inline-block px-3 py-1 border rounded hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800">
           ← Back to Today
         </Link>
@@ -175,7 +175,7 @@ function PlantDetailContent({ params }: { params: { id: string } }) {
           </div>
         ) : (
           <>
-            <section className="flex flex-col md:flex-row gap-6 items-center md:items-start">
+            <section className="flex flex-col md:flex-row gap-4 md:gap-6 items-center md:items-start">
               <Image
                 src={plant.photos[0]}
                 alt={plant.nickname}
@@ -238,7 +238,7 @@ function PlantDetailContent({ params }: { params: { id: string } }) {
               </div>
             </section>
 
-            <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
               {[
                 { label: "Status", value: plant.status },
                 { label: "Hydration", value: `${plant.hydration}%` },
