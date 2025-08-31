@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { useState, useEffect } from "react"
 import RoomCard from "@/components/RoomCard"
+import RoomSkeleton from "@/components/RoomSkeleton"
 import { getLastSync } from "@/lib/utils"
 import { getRooms, type Room } from "@/lib/api"
 
@@ -11,19 +12,20 @@ export default function RoomsPage() {
 
   const [rooms, setRooms] = useState<Room[]>([])
   const [searchTerm, setSearchTerm] = useState("")
-  const [loading, setLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [sortBy, setSortBy] = useState<SortBy>("name")
 
   useEffect(() => {
     async function loadRooms() {
+      setIsLoading(true)
       try {
         const data = await getRooms()
         setRooms(data)
       } catch (err) {
         setError("Failed to load rooms")
       } finally {
-        setLoading(false)
+        setIsLoading(false)
       }
     }
     loadRooms()
@@ -68,8 +70,12 @@ export default function RoomsPage() {
         </select>
       </div>
 
-      {loading ? (
-        <p>Loading rooms...</p>
+      {isLoading ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <RoomSkeleton key={i} />
+          ))}
+        </div>
       ) : error ? (
         <p className="text-red-500">{error}</p>
       ) : rooms.length === 0 ? (
