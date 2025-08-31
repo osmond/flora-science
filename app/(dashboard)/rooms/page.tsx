@@ -8,6 +8,7 @@ import RoomSkeleton from "@/components/RoomSkeleton"
 import RoomModal from "@/components/RoomModal"
 import { getLastSync } from "@/lib/utils"
 import { getRooms, deleteRooms, moveRooms, type Room } from "@/lib/api"
+import Tooltip from "@/components/Tooltip"
 
 export default function RoomsPage() {
   type SortBy = "name" | "hydration" | "tasks"
@@ -21,6 +22,7 @@ export default function RoomsPage() {
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [activeRoom, setActiveRoom] = useState<Room | null>(null)
   const [selectedRoomIds, setSelectedRoomIds] = useState<string[]>([])
+  const [showAddRoomTip, setShowAddRoomTip] = useState(false)
 
   useEffect(() => {
     async function loadRooms() {
@@ -35,6 +37,15 @@ export default function RoomsPage() {
       }
     }
     loadRooms()
+  }, [])
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const dismissed = localStorage.getItem("addRoomTipDismissed")
+      if (!dismissed) {
+        setShowAddRoomTip(true)
+      }
+    }
   }, [])
 
   const sortedRooms = [...rooms].sort((a, b) => {
@@ -92,9 +103,27 @@ export default function RoomsPage() {
     <main className="flex-1 p-6">
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-xl font-bold">My Rooms</h2>
-        <Link href="/rooms/new" className="text-sm text-blue-500 hover:underline">
-          Add Room
-        </Link>
+        <Tooltip
+          content="Click here to add a room"
+          open={showAddRoomTip}
+          onOpenChange={(open) => {
+            setShowAddRoomTip(open)
+            if (!open) {
+              localStorage.setItem("addRoomTipDismissed", "true")
+            }
+          }}
+        >
+          <Link
+            href="/rooms/new"
+            className="text-sm text-blue-500 hover:underline"
+            onClick={() => {
+              localStorage.setItem("addRoomTipDismissed", "true")
+              setShowAddRoomTip(false)
+            }}
+          >
+            Add Room
+          </Link>
+        </Tooltip>
       </div>
 
       <div className="mb-4 flex flex-wrap items-center gap-2">
