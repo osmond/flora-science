@@ -1,0 +1,62 @@
+'use client'
+
+import { useEffect, useRef } from 'react'
+
+interface ModalProps {
+  isOpen: boolean
+  onClose: () => void
+  children: React.ReactNode
+}
+
+export default function Modal({ isOpen, onClose, children }: ModalProps) {
+  const dialogRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!isOpen) return
+
+    function onKeyDown(e: KeyboardEvent) {
+      if (!dialogRef.current) return
+      if (e.key === 'Escape') {
+        e.preventDefault()
+        onClose()
+      } else if (e.key === 'Tab') {
+        const focusable = dialogRef.current.querySelectorAll<HTMLElement>(
+          'a[href], button, textarea, input, select, [tabindex]:not([tabindex="-1"])'
+        )
+        if (focusable.length === 0) return
+        const list = Array.from(focusable)
+        const index = list.indexOf(document.activeElement as HTMLElement)
+        const nextIndex = e.shiftKey
+          ? (index - 1 + list.length) % list.length
+          : (index + 1) % list.length
+        e.preventDefault()
+        list[nextIndex]?.focus()
+      }
+    }
+
+    document.addEventListener('keydown', onKeyDown)
+    const first = dialogRef.current.querySelector<HTMLElement>(
+      'a[href], button, textarea, input, select, [tabindex]:not([tabindex="-1"])'
+    )
+    first?.focus()
+    return () => document.removeEventListener('keydown', onKeyDown)
+  }, [isOpen, onClose])
+
+  if (!isOpen) return null
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div
+        ref={dialogRef}
+        className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg max-w-sm w-full"
+      >
+        {children}
+      </div>
+    </div>
+  )
+}
+

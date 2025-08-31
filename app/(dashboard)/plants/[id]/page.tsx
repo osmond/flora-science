@@ -7,6 +7,9 @@ import Lightbox from "@/components/Lightbox"
 import { Droplet, Sprout, FileText } from "lucide-react"
 import { getHydrationProgress } from "@/components/PlantCard"
 import PlantDetailSkeleton from "./PlantDetailSkeleton"
+import WaterModal from "@/components/WaterModal"
+import FertilizeModal from "@/components/FertilizeModal"
+import NoteModal from "@/components/NoteModal"
 
 interface PlantEvent {
   id: number
@@ -48,20 +51,20 @@ export default function PlantDetailPage({ params }: { params: { id: string } }) 
   const [plant, setPlant] = useState<Plant | null>(null)
   const [loading, setLoading] = useState(true)
   const progress = getHydrationProgress(plant?.hydration ?? 0)
+  const [waterOpen, setWaterOpen] = useState(false)
+  const [fertilizeOpen, setFertilizeOpen] = useState(false)
+  const [noteOpen, setNoteOpen] = useState(false)
 
   function handleWater() {
-    alert("Water plant")
+    setWaterOpen(true)
   }
 
   function handleFertilize() {
-    alert("Fertilize plant")
+    setFertilizeOpen(true)
   }
 
   function handleAddNote() {
-    const note = prompt("Add a note for this plant:")
-    if (note) {
-      alert(`Note added: ${note}`)
-    }
+    setNoteOpen(true)
   }
 
   useEffect(() => {
@@ -217,6 +220,21 @@ export default function PlantDetailPage({ params }: { params: { id: string } }) 
           </>
         )}
       </div>
+      <WaterModal
+        isOpen={waterOpen}
+        onClose={() => setWaterOpen(false)}
+        onSubmit={(amount) => alert(`Watered: ${amount}ml`)}
+      />
+      <FertilizeModal
+        isOpen={fertilizeOpen}
+        onClose={() => setFertilizeOpen(false)}
+        onSubmit={(type) => alert(`Fertilized with ${type}`)}
+      />
+      <NoteModal
+        isOpen={noteOpen}
+        onClose={() => setNoteOpen(false)}
+        onSubmit={(note) => alert(`Note added: ${note}`)}
+      />
     </main>
   )
 }
