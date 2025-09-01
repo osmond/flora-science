@@ -59,7 +59,13 @@ export default function Timeline({ events }: { events: PlantEvent[] }) {
             return (
               <div key={week}>
                 <h3 className="text-sm font-semibold mb-2">
-                  Week of {format(weekDate, 'MMM d')}
+                  {
+                    index === 0
+                      ? 'This week'
+                      : index === 1
+                        ? 'Last week'
+                        : `Week of ${format(weekDate, 'MMM d')}`
+                  }
                 </h3>
                 <ol className="relative border-l ml-4">
                   {weekEvents.map((e) => {
