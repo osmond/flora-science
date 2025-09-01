@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import dynamic from 'next/dynamic'
 import EnvRow from '@/components/EnvRow'
 import ChartCard from '@/components/ChartCard'
@@ -29,9 +30,15 @@ interface EnvironmentBlockProps {
 }
 
 export default function EnvironmentBlock({ env, envChartData }: EnvironmentBlockProps) {
+  const [open, setOpen] = useState(false)
   return (
-    <details id="environment" open>
-      <summary className="text-lg font-semibold cursor-pointer">Environment</summary>
+    <details id="environment" open={open}>
+      <summary
+        className="text-lg font-semibold cursor-pointer"
+        onClick={() => setOpen((o) => !o)}
+      >
+        Environment
+      </summary>
       <p className="text-sm text-gray-500 mb-4">
         Temperature, humidity, and vapor pressure deficit readings.
       </p>

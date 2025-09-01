@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import dynamic from 'next/dynamic'
 import ChartCard from '@/components/ChartCard'
 import type { Plant } from './types'
@@ -37,9 +38,15 @@ export default function HydrationBlock({
   showWater,
   setShowWater,
 }: HydrationBlockProps) {
+  const [open, setOpen] = useState(false)
   return (
-    <details id="hydration" open>
-      <summary className="text-lg font-semibold cursor-pointer">Hydration & Nutrients</summary>
+    <details id="hydration" open={open}>
+      <summary
+        className="text-lg font-semibold cursor-pointer"
+        onClick={() => setOpen((o) => !o)}
+      >
+        Hydration & Nutrients
+      </summary>
       <p className="text-sm text-gray-500 mb-4">
         Nutrient levels and water balance.
       </p>

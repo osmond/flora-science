@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import dynamic from 'next/dynamic'
 import ChartCard from '@/components/ChartCard'
 import { type StressDatum } from '@/lib/plant-metrics'
@@ -22,9 +23,15 @@ interface StressBlockProps {
 }
 
 export default function StressBlock({ plant, weather, stressData }: StressBlockProps) {
+  const [open, setOpen] = useState(false)
   return (
-    <details id="plant-health" open>
-      <summary className="text-lg font-semibold cursor-pointer">Plant Health</summary>
+    <details id="plant-health" open={open}>
+      <summary
+        className="text-lg font-semibold cursor-pointer"
+        onClick={() => setOpen((o) => !o)}
+      >
+        Plant Health
+      </summary>
       <p className="text-sm text-gray-500 mb-4">
         Stress index overview and overall health radar.
       </p>
