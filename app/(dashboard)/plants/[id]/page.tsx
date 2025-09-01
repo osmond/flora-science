@@ -240,7 +240,6 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
           </div>
         ) : (
           <>
-
             <HeroSection
               plant={plant}
               weather={weather}
@@ -248,10 +247,18 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
               onFertilize={handleFertilize}
               onAddNote={handleAddNote}
             />
-            <AnalyticsPanel plant={plant} weather={weather} />
-            <CareTrends events={plant.events} />
-            <Timeline events={plant.events} />
-            <Gallery photos={plant.photos} nickname={plant.nickname} />
+            <div className="mt-8">
+              <AnalyticsPanel plant={plant} weather={weather} />
+            </div>
+            <div className="mt-8">
+              <CareTrends events={plant.events} />
+            </div>
+            <div className="mt-8">
+              <Timeline events={plant.events} />
+            </div>
+            <div className="mt-8">
+              <Gallery photos={plant.photos} nickname={plant.nickname} />
+            </div>
           </>
         )}
       </div>
