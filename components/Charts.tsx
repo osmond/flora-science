@@ -59,6 +59,22 @@ export interface EnvDatum {
   rh: number
 }
 
+function CustomTooltip({ active, payload, label }: any) {
+  if (active && payload?.length) {
+    return (
+      <div className="rounded border bg-white p-2 shadow text-xs">
+        <p className="font-medium">{label}</p>
+        {payload.map((p: any) => (
+          <p key={p.dataKey} style={{ color: p.color }}>
+            {p.name ?? p.dataKey}: {p.value}
+          </p>
+        ))}
+      </div>
+    )
+  }
+  return null
+}
+
 export function TempHumidityChart({
   tempUnit = "F",
   data = defaultEnvData,
@@ -80,7 +96,7 @@ export function TempHumidityChart({
         <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.1} />
         <XAxis dataKey="day" />
         <YAxis />
-        <Tooltip />
+        <Tooltip content={<CustomTooltip />} />
         <Legend />
         <ReferenceArea y1={40} y2={60} fill="#dcfce7" fillOpacity={0.1} />
         <Line
@@ -161,7 +177,7 @@ export function HydrationTrendChart({
         <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.1} />
         <XAxis dataKey="date" />
         <YAxis domain={[0, 100]} />
-        <Tooltip />
+        <Tooltip content={<CustomTooltip />} />
         <Legend />
         <ReferenceArea y1={0} y2={40} fill="#fecaca" fillOpacity={0.1} />
         <ReferenceArea y1={40} y2={100} fill="#dcfce7" fillOpacity={0.1} />
@@ -232,7 +248,7 @@ export function ComparativeChart({
         <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.1} />
         <XAxis dataKey="date" />
         <YAxis domain={[0, 100]} />
-        <Tooltip />
+        <Tooltip content={<CustomTooltip />} />
         <Legend content={renderLegend} />
         <ReferenceArea y1={40} y2={80} fill="#e0e7ff" fillOpacity={0.1} />
         {plants.map((p, idx) => (
@@ -310,7 +326,7 @@ export function TaskCompletionChart({ events }: { events: CareEvent[] }) {
         <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.1} />
         <XAxis dataKey="month" />
         <YAxis domain={[0, 100]} />
-        <Tooltip />
+        <Tooltip content={<CustomTooltip />} />
         <Legend />
         <ReferenceArea y1={80} y2={100} fill="#dcfce7" fillOpacity={0.1} />
         <Line
@@ -338,24 +354,34 @@ export interface WaterBalanceDatum {
   water: number
 }
 
-export function WaterBalanceChart({ data }: { data: WaterBalanceDatum[] }) {
+export function WaterBalanceChart({
+  data,
+  showEt = true,
+  showWater = true,
+}: {
+  data: WaterBalanceDatum[]
+  showEt?: boolean
+  showWater?: boolean
+}) {
   return (
     <ResponsiveContainer width="100%" height={250}>
       <ComposedChart data={data}>
         <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.1} />
         <XAxis dataKey="date" />
         <YAxis />
-        <Tooltip />
+        <Tooltip content={<CustomTooltip />} />
         <Legend />
         <ReferenceArea y1={0} y2={5} fill="#e0f2fe" fillOpacity={0.1} />
-        <Bar dataKey="water" fill="#3b82f6" name="Water (mm)" />
-        <Line
-          type="monotone"
-          dataKey="et0"
-          stroke="#f59e0b"
-          strokeWidth={2}
-          name="ET₀ (mm)"
-        />
+        {showWater && <Bar dataKey="water" fill="#3b82f6" name="Water (mm)" />}
+        {showEt && (
+          <Line
+            type="monotone"
+            dataKey="et0"
+            stroke="#f59e0b"
+            strokeWidth={2}
+            name="ET₀ (mm)"
+          />
+        )}
       </ComposedChart>
     </ResponsiveContainer>
   )
@@ -428,7 +454,7 @@ export function StressIndexChart({ data }: { data: StressDatum[] }) {
         <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.1} />
         <XAxis dataKey="date" />
         <YAxis domain={[0, 100]} />
-        <Tooltip />
+        <Tooltip content={<CustomTooltip />} />
         <ReferenceArea y1={0} y2={30} fill="#dcfce7" fillOpacity={0.1} />
         <Line
           type="monotone"
@@ -481,7 +507,7 @@ export function NutrientLevelChart({
         <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.1} />
         <XAxis dataKey="day" />
         <YAxis domain={[0, 100]} />
-        <Tooltip />
+        <Tooltip content={<CustomTooltip />} />
         <Legend />
         <ReferenceArea y1={60} y2={100} fill="#dcfce7" fillOpacity={0.1} />
         <Line
