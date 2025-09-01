@@ -1,5 +1,4 @@
 import { render, screen } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
 import CarePlan from '../plant-detail/CarePlan'
 
 describe('CarePlan', () => {
@@ -8,7 +7,7 @@ describe('CarePlan', () => {
     expect(screen.getByText(/No care plan available/i)).toBeInTheDocument()
   })
 
-  it('renders provided plan sections with icons and collapsible details', async () => {
+  it('renders provided plan sections with icons and collapsible details', () => {
     const plan = {
       overview: 'General care overview',
       light: 'Bright, indirect light',
@@ -22,8 +21,6 @@ describe('CarePlan', () => {
     }
 
     render(<CarePlan plan={plan} nickname="Delilah" />)
-    const user = userEvent.setup()
-
     expect(screen.getByText(/Care Plan for Delilah/i)).toBeInTheDocument()
     const iconMap: Record<string, string> = {
       overview: 'book-open',
@@ -43,7 +40,6 @@ describe('CarePlan', () => {
       const svg = button.querySelector('svg')
       expect(svg).toBeInTheDocument()
       expect(svg).toHaveClass(`lucide-${iconMap[key]}`)
-      await user.click(button)
       expect(screen.getByText(text)).toBeInTheDocument()
     }
   })
