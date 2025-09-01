@@ -14,7 +14,7 @@ import {
   BarChart,
   Bar,
   ComposedChart,
-
+  ReferenceLine,
 } from "recharts"
 import {
   aggregateCareByMonth,
@@ -22,7 +22,12 @@ import {
   CareEvent,
   type DailyActivity,
 } from "@/lib/seasonal-trends"
-import { calculateNutrientAvailability, type StressDatum } from "@/lib/plant-metrics"
+import {
+  calculateNutrientAvailability,
+  calculateHydrationTrend,
+  type StressDatum,
+  type HydrationLogEntry,
+} from "@/lib/plant-metrics"
 
 // Dummy dataset for environment over 7 days
 const envData = [
@@ -100,6 +105,37 @@ export function VPDGauge() {
           1.2 kPa
         </text>
       </RadialBarChart>
+    </ResponsiveContainer>
+  )
+}
+
+export function HydrationTrendChart({
+  log,
+}: {
+  log: HydrationLogEntry[]
+}) {
+  const data = calculateHydrationTrend(log)
+  return (
+    <ResponsiveContainer width="100%" height={250}>
+      <LineChart data={data}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="date" />
+        <YAxis domain={[0, 100]} />
+        <Tooltip />
+        <Legend />
+        <Line
+          type="monotone"
+          dataKey="avg"
+          stroke="#3b82f6"
+          name="Hydration (%)"
+        />
+        <ReferenceLine
+          y={40}
+          stroke="#ef4444"
+          strokeDasharray="3 3"
+          label="Low"
+        />
+      </LineChart>
     </ResponsiveContainer>
   )
 }

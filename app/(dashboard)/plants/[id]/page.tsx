@@ -13,6 +13,7 @@ import NoteModal from "@/components/NoteModal"
 import { ToastProvider, useToast } from "@/components/Toast"
 import {
   CareTrendsChart,
+  HydrationTrendChart,
   NutrientLevelChart,
   StressIndexGauge,
   TimelineHeatmap,
@@ -36,6 +37,7 @@ interface Plant {
   species: string
   status: string
   hydration: number
+  hydrationLog?: { date: string; value: number }[]
   lastWatered: string
   nextDue: string
   lastFertilized: string
@@ -431,6 +433,9 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
 
               <h2 className="text-lg font-semibold mb-3">Care Trends</h2>
               <CareTrendsChart events={plant.events} />
+
+              <h2 className="text-lg font-semibold mb-3">Hydration Trend</h2>
+              <HydrationTrendChart log={plant.hydrationLog ?? []} />
 
               <h2 className="text-lg font-semibold mb-3">Care Plan</h2>
               {carePlanLoading ? (

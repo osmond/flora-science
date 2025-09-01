@@ -10,6 +10,7 @@ export interface Plant {
   species: string
   status: string
   hydration: number
+  hydrationLog: { date: string; value: number }[]
   lastWatered: string
   nextDue: string
   lastFertilized: string
@@ -25,6 +26,11 @@ export const samplePlants: Record<string, Plant> = {
     species: "Monstera deliciosa",
     status: "Water overdue",
     hydration: 72,
+    hydrationLog: [
+      { date: "2024-08-21", value: 80 },
+      { date: "2024-08-24", value: 75 },
+      { date: "2024-08-27", value: 72 },
+    ],
     lastWatered: "Aug 25",
     lastFertilized: "Aug 10",
     nextDue: "Aug 30",
@@ -43,6 +49,11 @@ export const samplePlants: Record<string, Plant> = {
     species: "Sansevieria trifasciata",
     status: "Fine",
     hydration: 90,
+    hydrationLog: [
+      { date: "2024-08-22", value: 92 },
+      { date: "2024-08-25", value: 91 },
+      { date: "2024-08-28", value: 90 },
+    ],
     lastWatered: "Aug 27",
     lastFertilized: "Aug 01",
     nextDue: "Sep 5",
@@ -55,6 +66,11 @@ export const samplePlants: Record<string, Plant> = {
     species: "Epipremnum aureum",
     status: "Due today",
     hydration: 70,
+    hydrationLog: [
+      { date: "2024-08-21", value: 72 },
+      { date: "2024-08-24", value: 71 },
+      { date: "2024-08-27", value: 70 },
+    ],
     lastWatered: "Aug 28",
     lastFertilized: "Aug 18",
     nextDue: "Aug 29",
@@ -67,6 +83,11 @@ export const samplePlants: Record<string, Plant> = {
     species: "Ficus lyrata",
     status: "Fertilize suggested",
     hydration: 75,
+    hydrationLog: [
+      { date: "2024-08-21", value: 78 },
+      { date: "2024-08-24", value: 76 },
+      { date: "2024-08-27", value: 75 },
+    ],
     lastWatered: "Aug 23",
     lastFertilized: "Aug 15",
     nextDue: "Sep 2",
