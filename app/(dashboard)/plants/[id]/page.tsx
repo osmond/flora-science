@@ -8,6 +8,7 @@ import HeroSection from "@/components/plant-detail/HeroSection"
 import AnalyticsPanel from "@/components/plant-detail/AnalyticsPanel"
 import Timeline from "@/components/plant-detail/Timeline"
 import Gallery from "@/components/plant-detail/Gallery"
+import CarePlan from "@/components/plant-detail/CarePlan"
 
 const WaterModal = dynamic(() => import("@/components/WaterModal"), {
   ssr: false,
@@ -37,6 +38,9 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
   const toast = useToast()
   const [weather, setWeather] = useState<Weather | null>(null)
   const [offline, setOffline] = useState(false)
+  const [carePlan, setCarePlan] = useState<string | null>(null)
+  const [carePlanError, setCarePlanError] = useState<string | null>(null)
+  const [carePlanLoading, setCarePlanLoading] = useState(false)
 
   function calculateNextDue(lastWatered: string, w: Weather | null): string {
     const date = new Date(`${lastWatered} ${new Date().getFullYear()}`)
@@ -206,6 +210,32 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
     loadPlant()
   }, [loadPlant])
 
+  useEffect(() => {
+    let active = true
+    setCarePlanLoading(true)
+    setCarePlanError(null)
+    fetch(`/api/plants/${params.id}/care-plan`)
+      .then((res) => {
+        if (!res.ok) throw new Error(`Error ${res.status}`)
+        return res.text()
+      })
+      .then((text) => {
+        if (active) setCarePlan(text)
+      })
+      .catch((err) => {
+        if (active)
+          setCarePlanError(
+            err instanceof Error ? err.message : String(err),
+          )
+      })
+      .finally(() => {
+        if (active) setCarePlanLoading(false)
+      })
+    return () => {
+      active = false
+    }
+  }, [params.id])
+
   return (
     <main className="flex-1 bg-white dark:bg-gray-900">
       <div className="p-4 md:p-6 space-y-4 md:space-y-6">
@@ -248,6 +278,19 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
             />
             <div className="mt-8">
               <AnalyticsPanel plant={plant} weather={weather} />
+            </div>
+            <div className="mt-8">
+              {carePlanLoading ? (
+                <div className="rounded-xl p-6 bg-gray-50 dark:bg-gray-800 text-center text-sm text-gray-500">
+                  Loading care plan...
+                </div>
+              ) : carePlanError ? (
+                <div className="rounded-xl p-6 bg-gray-50 dark:bg-gray-800 text-sm text-red-500">
+                  {carePlanError}
+                </div>
+              ) : (
+                <CarePlan plan={carePlan} />
+              )}
             </div>
             <div className="mt-8">
               <Timeline events={plant.events} />
