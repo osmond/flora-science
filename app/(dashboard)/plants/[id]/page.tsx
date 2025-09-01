@@ -12,9 +12,8 @@ import AnalyticsPanel from "@/components/plant-detail/AnalyticsPanel"
 import CareTrends from "@/components/plant-detail/CareTrends"
 import Timeline from "@/components/plant-detail/Timeline"
 import Gallery from "@/components/plant-detail/Gallery"
-import type { Plant, PlantEvent } from "@/components/plant-detail/types"
 import { getWeatherForUser, type Weather } from "@/lib/weather"
-import { samplePlants } from "@/lib/plants"
+import { samplePlants, type Plant, type PlantEvent } from "@/lib/plants"
 
 
 export function PlantDetailContent({ params }: { params: { id: string } }) {
