@@ -8,16 +8,19 @@ import {
   StressIndexGauge,
   StressIndexChart,
   TaskCompletionChart,
+  ComparativeChart,
 } from "@/components/Charts"
 import {
   waterBalanceSeries,
   WeatherDay,
   WaterEvent,
   stressTrend,
+  collectPlantMetrics,
 } from "@/lib/plant-metrics"
 import { CareEvent } from "@/lib/seasonal-trends"
 import EnvRow from "@/components/EnvRow"
 import Footer from "@/components/Footer"
+import { samplePlants } from "@/lib/plants"
 
 export default function SciencePanel() {
   const readings = { temperature: 75, humidity: 52, vpd: 1.2 }
@@ -102,6 +105,9 @@ export default function SciencePanel() {
   const stressData = stressTrend(stressReadings)
   const currentStress = stressData[stressData.length - 1]?.stress ?? 0
 
+  const plants = Object.values(samplePlants)
+  const comparisonData = collectPlantMetrics(plants)
+
   const taskEvents: CareEvent[] = [
     { date: "2024-01-05", type: "completed" },
     { date: "2024-01-12", type: "missed" },
@@ -169,6 +175,11 @@ export default function SciencePanel() {
           <StressIndexGauge value={currentStress} />
           <StressIndexChart data={stressData} />
         </div>
+      </section>
+
+      <section className="mt-4 md:mt-6">
+        <h3 className="font-medium text-gray-800">Plant Comparison</h3>
+        <ComparativeChart plants={plants} data={comparisonData} />
       </section>
 
       <section className="mt-4 md:mt-6">
