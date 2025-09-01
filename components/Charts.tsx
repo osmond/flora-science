@@ -119,6 +119,7 @@ export function TempHumidityChart({
 }
 
 export function VPDGauge({ value = 1.2 }: { value?: number }) {
+  const max = 3
   const data = [{ name: "VPD", value, fill: "#4CAF50" }]
   return (
     <ResponsiveContainer width="100%" height={250}>
@@ -132,11 +133,30 @@ export function VPDGauge({ value = 1.2 }: { value?: number }) {
         startAngle={180}
         endAngle={0}
       >
+        <PolarAngleAxis
+          type="number"
+          domain={[0, max]}
+          ticks={[0, 1.2, max]}
+          tick={({ x, y, payload }: any) => (
+            <text
+              x={x}
+              y={y}
+              textAnchor="middle"
+              fill="#6b7280"
+              fontSize={10}
+            >
+              {payload.value}
+            </text>
+          )}
+          tickLine={false}
+        />
         <RadialBar
           minAngle={15}
           background
           clockWise
           dataKey="value"
+          data-testid="vpd-bar"
+          isAnimationActive={false}
         />
         <text
           x="50%"
