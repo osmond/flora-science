@@ -1,4 +1,5 @@
 import "./globals.css"
+import "../styles/typography.css"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import PageTransition from "../components/PageTransition"

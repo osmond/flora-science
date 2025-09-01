@@ -7,7 +7,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
     <div className="flex min-h-screen bg-gray-50">
       {/* Sidebar */}
       <aside className="w-56 border-r bg-white p-4 space-y-3">
-        <h1 className="text-lg font-bold text-green-700">Flora-Science</h1>
+        <h1 className="h1 text-green-700">Flora-Science</h1>
         <nav className="flex flex-col space-y-2 text-sm">
           <motion.div whileHover={{ scale: 1.03 }} whileFocus={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
             <Link href="/" className="hover:text-green-600">

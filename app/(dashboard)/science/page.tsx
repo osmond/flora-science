@@ -154,7 +154,7 @@ export default function SciencePanel() {
   return (
     <main className="flex-1 p-4 md:p-6">
       <header className="backdrop-blur bg-white/80 sticky top-0 z-10 p-4 md:p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 shadow-sm">
-        <h2 className="font-semibold text-xl">Science Panel</h2>
+        <h2 className="h2">Science Panel</h2>
         <button
           onClick={toggleUnit}
           className="px-3 py-1 border rounded hover:bg-gray-100"
@@ -164,7 +164,7 @@ export default function SciencePanel() {
       </header>
 
       <section className="mt-4 md:mt-6">
-        <h3 className="font-medium text-gray-800">Environment Data</h3>
+        <h3 className="h3 text-gray-800">Environment Data</h3>
         <EnvRow
           temperature={readings.temperature}
           humidity={readings.humidity}
@@ -175,12 +175,12 @@ export default function SciencePanel() {
       </section>
 
       <section className="mt-4 md:mt-6">
-        <h3 className="font-medium text-gray-800">VPD Gauge</h3>
+        <h3 className="h3 text-gray-800">VPD Gauge</h3>
         <VPDGauge />
       </section>
 
       <section className="mt-4 md:mt-6">
-        <h3 className="font-medium text-gray-800">Water Balance</h3>
+        <h3 className="h3 text-gray-800">Water Balance</h3>
         <div className="flex items-center gap-2 mb-2">
           <label
             htmlFor="watering-interval"
@@ -202,7 +202,7 @@ export default function SciencePanel() {
       </section>
 
       <section className="mt-4 md:mt-6">
-        <h3 className="font-medium text-gray-800">Plant Stress</h3>
+        <h3 className="h3 text-gray-800">Plant Stress</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <StressIndexGauge value={currentStress} />
           <StressIndexChart data={stressData} />
@@ -211,7 +211,7 @@ export default function SciencePanel() {
 
       <section className="mt-4 md:mt-6">
         <div className="flex items-center justify-between">
-          <h3 className="font-medium text-gray-800">Plant Comparison</h3>
+          <h3 className="h3 text-gray-800">Plant Comparison</h3>
           <select
             onChange={(e) => handleSelect(e.target.value)}
             className="border rounded px-2 py-1"
@@ -231,7 +231,7 @@ export default function SciencePanel() {
       </section>
 
       <section className="mt-4 md:mt-6">
-        <h3 className="font-medium text-gray-800">Task Completion</h3>
+        <h3 className="h3 text-gray-800">Task Completion</h3>
         <TaskCompletionChart events={taskEvents} />
       </section>
 

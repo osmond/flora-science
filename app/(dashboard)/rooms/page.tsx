@@ -166,7 +166,7 @@ export default function RoomsPage() {
       </div>
       <div className="mb-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div className="flex items-center gap-2">
-          <h2 className="text-xl font-bold">My Rooms</h2>
+          <h2 className="h2 font-bold">My Rooms</h2>
           <Tooltip
             content={
               <div className="text-left">

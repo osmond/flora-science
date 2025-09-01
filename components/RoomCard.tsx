@@ -62,7 +62,7 @@ export default function RoomCard({
         onClick={(e) => e.stopPropagation()}
         aria-label="Select room"
       />
-      <h3 className="font-semibold text-gray-900 dark:text-gray-100">{name}</h3>
+      <h3 className="h3 font-semibold text-gray-900 dark:text-gray-100">{name}</h3>
       <span
         className={`absolute top-2 right-2 px-2 py-0.5 text-xs rounded-full capitalize ${statusColor}`}
       >

@@ -21,7 +21,7 @@ export default function NoteModal({ isOpen, onClose, onSubmit }: Props) {
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <h2 className="text-lg font-semibold mb-4">Add Note</h2>
+      <h2 className="h2 mb-4">Add Note</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <label className="block text-sm">
           Note

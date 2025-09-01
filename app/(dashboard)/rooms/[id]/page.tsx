@@ -43,19 +43,19 @@ export default function RoomDetailPage({ params }: { params: { id: string } }) {
           <p>Loading...</p>
         ) : !room ? (
           <div className="rounded-lg border p-6 dark:border-gray-700">
-            <h2 className="text-xl font-bold">Room not found</h2>
+            <h2 className="h2 font-bold">Room not found</h2>
             <p className="text-sm text-gray-500 mt-1">ID: {params.id}</p>
           </div>
         ) : (
           <>
             <header>
-              <h1 className="text-2xl font-bold">{room.name}</h1>
+              <h1 className="h1">{room.name}</h1>
               <p className="text-gray-500">Avg Hydration: {room.hydration}%</p>
               <p className="text-gray-500">{room.tasks} tasks due</p>
             </header>
 
             <section>
-              <h2 className="font-semibold mb-2">Plants</h2>
+              <h2 className="h2 mb-2">Plants</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {room.plants.map((p) => {
                   const sample = samplePlants[p.id as keyof typeof samplePlants]
