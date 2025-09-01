@@ -1,7 +1,15 @@
 import Link from "next/link"
+import dynamic from "next/dynamic"
 import PlantCard from "@/components/PlantCard"
-import { CareTrendsChart } from "@/components/Charts"
 import { samplePlants } from "@/lib/plants"
+
+const CareTrendsChart = dynamic(
+  () => import("@/components/Charts").then((m) => m.CareTrendsChart),
+  {
+    ssr: false,
+    loading: () => <p>Loading chart...</p>,
+  }
+)
 
 const sampleRooms = {
   "living-room": {

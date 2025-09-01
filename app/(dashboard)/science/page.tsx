@@ -1,15 +1,36 @@
 "use client"
 
 import { useState } from "react"
-import {
-  TempHumidityChart,
-  VPDGauge,
-  WaterBalanceChart,
-  StressIndexGauge,
-  StressIndexChart,
-  TaskCompletionChart,
-  ComparativeChart,
-} from "@/components/Charts"
+import dynamic from "next/dynamic"
+
+const TempHumidityChart = dynamic(
+  () => import("@/components/Charts").then((m) => m.TempHumidityChart),
+  { ssr: false, loading: () => <p>Loading chart...</p> }
+)
+const VPDGauge = dynamic(
+  () => import("@/components/Charts").then((m) => m.VPDGauge),
+  { ssr: false, loading: () => <p>Loading chart...</p> }
+)
+const WaterBalanceChart = dynamic(
+  () => import("@/components/Charts").then((m) => m.WaterBalanceChart),
+  { ssr: false, loading: () => <p>Loading chart...</p> }
+)
+const StressIndexGauge = dynamic(
+  () => import("@/components/Charts").then((m) => m.StressIndexGauge),
+  { ssr: false, loading: () => <p>Loading chart...</p> }
+)
+const StressIndexChart = dynamic(
+  () => import("@/components/Charts").then((m) => m.StressIndexChart),
+  { ssr: false, loading: () => <p>Loading chart...</p> }
+)
+const TaskCompletionChart = dynamic(
+  () => import("@/components/Charts").then((m) => m.TaskCompletionChart),
+  { ssr: false, loading: () => <p>Loading chart...</p> }
+)
+const ComparativeChart = dynamic(
+  () => import("@/components/Charts").then((m) => m.ComparativeChart),
+  { ssr: false, loading: () => <p>Loading chart...</p> }
+)
 import {
   waterBalanceSeries,
   WeatherDay,

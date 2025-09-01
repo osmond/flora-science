@@ -4,12 +4,17 @@ import Link from "next/link"
 import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { AlertTriangle, HelpCircle, Home, LayoutGrid, List } from "lucide-react"
+import dynamic from "next/dynamic"
 import RoomCard from "@/components/RoomCard"
 import RoomSkeleton from "@/components/RoomSkeleton"
-import RoomModal from "@/components/RoomModal"
 import { getLastSync } from "@/lib/utils"
 import { getRooms, deleteRooms, moveRooms, type Room } from "@/lib/api"
 import Tooltip from "@/components/Tooltip"
+
+const RoomModal = dynamic(() => import("@/components/RoomModal"), {
+  ssr: false,
+  loading: () => null,
+})
 
 export default function RoomsPage() {
   type SortBy = "name" | "hydration" | "tasks"

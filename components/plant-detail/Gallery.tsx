@@ -1,6 +1,11 @@
 'use client'
 
-import Lightbox from '@/components/Lightbox'
+import dynamic from 'next/dynamic'
+
+const Lightbox = dynamic(() => import('@/components/Lightbox'), {
+  ssr: false,
+  loading: () => <p>Loading...</p>,
+})
 
 interface GalleryProps {
   photos: string[]
