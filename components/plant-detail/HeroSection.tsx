@@ -60,7 +60,7 @@ export default function HeroSection({
 
   return (
     <section className="space-y-4">
-      <div className="relative rounded-xl overflow-hidden shadow">
+      <div className="relative rounded-xl overflow-hidden">
         {plant.photos && plant.photos.length > 0 ? (
           <Image
             src={plant.photos[0]}
@@ -77,45 +77,45 @@ export default function HeroSection({
           </div>
         )}
         <div className="absolute inset-0 bg-black/30 flex flex-col justify-end p-4 sm:p-6">
-          <h1 className="text-2xl font-semibold text-white drop-shadow-md">
+          <h1 className="text-2xl font-semibold text-white">
             {plant.nickname} ·{' '}
             <span className="italic font-normal">{plant.species}</span>
           </h1>
-          <p className="mt-1 text-sm text-gray-200">{nextTaskText}</p>
+          <p className="mt-1 text-lg font-medium text-white">{nextTaskText}</p>
         </div>
       </div>
 
       <QuickStats plant={plant} weather={weather} />
 
-      <div className="flex flex-wrap justify-center sm:justify-start gap-3">
+      <div className="flex flex-wrap justify-center sm:justify-start gap-2">
         <button
           onClick={onWater}
           aria-label="Water plant"
-          className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-sm transition-colors ${
+          className={`flex items-center gap-1 px-3 py-1 rounded-full border text-sm ${
             waterOverdue
-              ? 'bg-amber-100 text-amber-800'
-              : 'bg-blue-50 text-blue-700'
+              ? 'bg-amber-50 text-blue-700 border-blue-300'
+              : 'bg-blue-50 text-blue-700 border-blue-200'
           }`}
         >
           <Droplet className="h-4 w-4" />
-          {`Water (Due ${nextWaterDue}${plant.recommendedWaterMl !== undefined ? ` · ~${plant.recommendedWaterMl} ml` : ''})`}
+          Water
         </button>
         <button
           onClick={onFertilize}
           aria-label="Fertilize plant"
-          className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-sm transition-colors ${
+          className={`flex items-center gap-1 px-3 py-1 rounded-full border text-sm ${
             feedOverdue
-              ? 'bg-amber-100 text-amber-800'
-              : 'bg-green-50 text-green-700'
+              ? 'bg-amber-50 text-green-700 border-green-300'
+              : 'bg-green-50 text-green-700 border-green-200'
           }`}
         >
           <Sprout className="h-4 w-4" />
-          {`Fertilize (Due ${nextFeedDate})`}
+          Feed
         </button>
         <button
           onClick={onAddNote}
           aria-label="Add note to plant"
-          className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-purple-50 text-purple-700 text-sm transition-colors"
+          className="flex items-center gap-1 px-3 py-1 rounded-full border bg-purple-50 text-purple-700 text-sm border-purple-200"
         >
           <FileText className="h-4 w-4" />
           Add Note

@@ -94,7 +94,7 @@ export default function Gallery({ photos = [], nickname }: GalleryProps) {
             </div>
           )}
 
-          <div>
+          <div className="relative">
             <button
               onClick={() => setOpenIndex(0)}
               className="focus:outline-none w-full h-64"
@@ -108,25 +108,32 @@ export default function Gallery({ photos = [], nickname }: GalleryProps) {
                 className="w-full h-64 object-cover rounded-lg"
                 loading="lazy"
               />
+              <span className="absolute bottom-1 left-1 rounded bg-black/50 px-1 text-xs text-white">
+                Photo 1
+              </span>
             </button>
             {length > 1 && (
               <div className="grid grid-cols-3 gap-4 mt-4">
                 {photos.slice(1).map((src, i) => (
-                  <button
-                    key={i + 1}
-                    onClick={() => setOpenIndex(i + 1)}
-                    className="focus:outline-none"
-                    aria-label={`View image ${i + 2} of ${length}`}
-                  >
-                    <Image
-                      src={src}
-                      alt={`${nickname} photo ${i + 2}`}
-                      width={400}
-                      height={400}
-                      className="w-full h-24 object-cover rounded-lg"
-                      loading="lazy"
-                    />
-                  </button>
+                  <div key={i + 1} className="relative">
+                    <button
+                      onClick={() => setOpenIndex(i + 1)}
+                      className="focus:outline-none"
+                      aria-label={`View image ${i + 2} of ${length}`}
+                    >
+                      <Image
+                        src={src}
+                        alt={`${nickname} photo ${i + 2}`}
+                        width={400}
+                        height={400}
+                        className="w-full h-24 object-cover rounded-lg"
+                        loading="lazy"
+                      />
+                      <span className="absolute bottom-1 left-1 rounded bg-black/50 px-1 text-xs text-white">
+                        Photo {i + 2}
+                      </span>
+                    </button>
+                  </div>
                 ))}
               </div>
             )}

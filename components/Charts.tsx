@@ -148,8 +148,7 @@ export function HydrationTrendChart({
         <Tooltip />
         <Legend />
         <ReferenceArea y1={0} y2={40} fill="#fecaca" fillOpacity={0.3} />
-        <ReferenceArea y1={40} y2={80} fill="#dcfce7" fillOpacity={0.3} />
-        <ReferenceArea y1={80} y2={100} fill="#fef9c3" fillOpacity={0.3} />
+        <ReferenceArea y1={40} y2={100} fill="#dcfce7" fillOpacity={0.3} />
         <Line
           type="monotone"
           dataKey="actual"
@@ -222,7 +221,7 @@ export function CareStreak({ events }: { events: CareEvent[] }) {
   })
 
   return (
-    <div className="grid grid-cols-6 gap-1 w-max" data-testid="care-streak">
+    <div className="grid grid-cols-7 gap-1 w-max" data-testid="care-streak">
       {days.map((d) => (
         <div
           key={d.date}
@@ -302,26 +301,39 @@ export function WaterBalanceChart({ data }: { data: WaterBalanceDatum[] }) {
 
 // Display a plant stress index as a radial gauge (0-100)
 export function StressIndexGauge({ value }: { value: number }) {
-  const data = [{ name: "Stress", value, fill: "#ef4444" }]
+  const data = [{ name: 'stress', value }]
   const { label, color } =
     value < 30
-      ? { label: "Low", color: "#22c55e" }
+      ? { label: 'Low', color: '#22c55e' }
       : value <= 70
-        ? { label: "Moderate", color: "#eab308" }
-        : { label: "High", color: "#ef4444" }
+        ? { label: 'Moderate', color: '#eab308' }
+        : { label: 'High', color: '#ef4444' }
   return (
     <ResponsiveContainer width="100%" height={250}>
       <RadialBarChart
         cx="50%"
         cy="50%"
-        innerRadius="80%"
+        innerRadius="70%"
         outerRadius="100%"
-        barSize={20}
+        barSize={14}
         data={data}
-        startAngle={180}
-        endAngle={0}
+        startAngle={90}
+        endAngle={-270}
       >
-        <RadialBar minAngle={15} background clockWise dataKey="value" />
+        <defs>
+          <linearGradient id="stressGradient" x1="0" y1="1" x2="1" y2="0">
+            <stop offset="0%" stopColor="#22c55e" />
+            <stop offset="50%" stopColor="#eab308" />
+            <stop offset="100%" stopColor="#ef4444" />
+          </linearGradient>
+        </defs>
+        <RadialBar
+          dataKey="value"
+          cornerRadius={8}
+          fill="url(#stressGradient)"
+          background
+          clockWise
+        />
         <text
           x="50%"
           y="50%"
