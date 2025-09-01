@@ -119,6 +119,35 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
     toast("Note added")
   }
 
+  async function fetchWeatherForPlant(): Promise<Weather | null> {
+    try {
+      const w = await getWeatherForUser()
+      setWeather(w)
+      return w
+    } catch {
+      return null
+    }
+  }
+
+  async function loadSamplePlant(): Promise<boolean> {
+    const sample = samplePlants[params.id as keyof typeof samplePlants]
+    if (!sample) return false
+
+    const w = await fetchWeatherForPlant()
+    const offlinePlant: Plant = {
+      ...sample,
+      events: (Array.isArray(sample.events) ? sample.events : []).filter(
+        (e: PlantEvent | null): e is PlantEvent =>
+          e !== null && e !== undefined && typeof e.id !== "undefined"
+      ),
+      nextDue: calculateNextDue(sample.lastWatered, w),
+    }
+    setPlant(offlinePlant)
+    setOffline(true)
+    setError(null)
+    return true
+  }
+
   const loadPlant = useCallback(async () => {
     setLoading(true)
     setError(null)
@@ -127,67 +156,19 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
       const res = await fetch(`/api/plants/${params.id}`)
       if (res.ok) {
         const data = await res.json()
-        let w: Weather | null = null
-        try {
-          w = await getWeatherForUser()
-          setWeather(w)
-        } catch {
-          // ignore weather errors
-        }
+        const w = await fetchWeatherForPlant()
         data.nextDue = calculateNextDue(data.lastWatered, w)
         data.events = (Array.isArray(data.events) ? data.events : []).filter(
           (e: PlantEvent | null): e is PlantEvent =>
             e !== null && e !== undefined && typeof e.id !== "undefined"
         )
         setPlant(data)
-      } else {
-        const sample = samplePlants[params.id as keyof typeof samplePlants]
-        if (sample) {
-          let w: Weather | null = null
-          try {
-            w = await getWeatherForUser()
-            setWeather(w)
-          } catch {
-            // ignore weather errors
-          }
-          const offlinePlant: Plant = {
-            ...sample,
-            events: (Array.isArray(sample.events) ? sample.events : []).filter(
-              (e: PlantEvent | null): e is PlantEvent =>
-                e !== null && e !== undefined && typeof e.id !== "undefined"
-            ),
-            nextDue: calculateNextDue(sample.lastWatered, w),
-          }
-          setPlant(offlinePlant)
-          setOffline(true)
-          setError(null)
-        } else {
-          setPlant(null)
-          setError(`Error ${res.status}`)
-        }
+      } else if (!(await loadSamplePlant())) {
+        setPlant(null)
+        setError(`Error ${res.status}`)
       }
     } catch (err) {
-      const sample = samplePlants[params.id as keyof typeof samplePlants]
-      if (sample) {
-        let w: Weather | null = null
-        try {
-          w = await getWeatherForUser()
-          setWeather(w)
-        } catch {
-          // ignore weather errors
-        }
-        const offlinePlant: Plant = {
-          ...sample,
-          events: (Array.isArray(sample.events) ? sample.events : []).filter(
-            (e: PlantEvent | null): e is PlantEvent =>
-              e !== null && e !== undefined && typeof e.id !== "undefined"
-          ),
-          nextDue: calculateNextDue(sample.lastWatered, w),
-        }
-        setPlant(offlinePlant)
-        setOffline(true)
-        setError(null)
-      } else {
+      if (!(await loadSamplePlant())) {
         setPlant(null)
         setError(err instanceof Error ? err.message : String(err))
       }
