@@ -25,8 +25,11 @@ type PlantCardProps = {
 
 export function getHydrationProgress(hydration: number) {
   const pct = Math.max(0, Math.min(100, Math.round(hydration)))
-  const barColor = pct < 30 ? 'bg-red-500' : pct < 60 ? 'bg-yellow-500' : 'bg-flora-leaf'
-  return { pct, barColor }
+  const barClass =
+    pct < 60
+      ? 'bg-gradient-to-r from-alert to-alert-red'
+      : 'bg-gradient-to-r from-fertilize to-water'
+  return { pct, barClass }
 }
 
 export default function PlantCard({
@@ -40,14 +43,14 @@ export default function PlantCard({
   photo,
   onMarkDone,
 }: PlantCardProps) {
-  const { pct, barColor } = getHydrationProgress(hydration)
+  const { pct, barClass } = getHydrationProgress(hydration)
   const statusColor =
     status === 'Water overdue'
-      ? 'bg-red-500 text-white'
+      ? 'bg-alert-red text-white'
       : status === 'Due today'
-      ? 'bg-yellow-500 text-gray-900'
+      ? 'bg-alert text-gray-900'
       : status === 'Fertilize suggested'
-      ? 'bg-green-500 text-white'
+      ? 'bg-fertilize text-white'
       : 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300'
 
   const history = hydrationHistory ?? []
@@ -56,7 +59,7 @@ export default function PlantCard({
 
   return (
     <motion.div
-      className="rounded-lg border border-gray-200 dark:border-gray-700 p-4 shadow-sm hover:shadow-md transition bg-white dark:bg-gray-800"
+      className="rounded-lg border border-gray-200 dark:border-gray-700 p-4 shadow-md hover:shadow-lg transition bg-white/90 dark:bg-gray-800/90"
       variants={cardVariants}
       initial="initial"
       animate="animate"
@@ -81,14 +84,14 @@ export default function PlantCard({
       </div>
       {note && <p className="text-xs text-gray-600 dark:text-gray-400">{note}</p>}
       <div
-        className="w-full bg-gray-200 rounded-full h-2 mt-2"
+        className="w-full bg-gray-200 rounded-full h-2 mt-2 overflow-hidden"
         role="progressbar"
         aria-valuenow={pct}
         aria-valuemin={0}
         aria-valuemax={100}
       >
         <div
-          className={`h-2 rounded-full ${barColor}`}
+          className={`h-2 ${barClass}`}
           style={{ width: `${pct}%` }}
         />
       </div>
@@ -100,7 +103,7 @@ export default function PlantCard({
               <span
                 key={i}
                 data-testid="water-dot"
-                className={`w-2 h-2 rounded-full ${w ? 'bg-flora-leaf' : 'bg-gray-300 dark:bg-gray-700'}`}
+                className={`w-2 h-2 rounded-full ${w ? 'bg-water' : 'bg-gray-300 dark:bg-gray-700'}`}
               />
             ))}
           </div>
@@ -118,7 +121,7 @@ export default function PlantCard({
                 e.stopPropagation()
                 onMarkDone()
               }}
-              className="text-xs px-2 py-1 rounded bg-flora-leaf text-white"
+              className="text-xs px-2 py-1 rounded bg-fertilize text-white"
             >
               Mark done
             </button>
