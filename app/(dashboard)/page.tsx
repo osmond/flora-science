@@ -83,7 +83,7 @@ export default function TodayPage() {
           </header>
 
           <header className="mt-4 mb-4 hidden md:block">
-            <h2 className="text-xl font-bold">Today</h2>
+            <h2 className="h2 font-bold">Today</h2>
             <p className="text-sm text-gray-500">
               {plantsCount} plants · Avg hydration {avgHydration}% · {tasksDue} tasks due today
             </p>

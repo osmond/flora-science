@@ -251,7 +251,7 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
           <div className="rounded-lg border p-6 dark:border-gray-700">
             {error ? (
               <>
-                <h2 className="text-xl font-bold">Failed to load plant</h2>
+                <h2 className="h2 font-bold">Failed to load plant</h2>
                 <p className="text-sm text-gray-500 mt-1">{error}</p>
                 <button
                   onClick={loadPlant}
@@ -262,7 +262,7 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
               </>
             ) : (
               <>
-                <h2 className="text-xl font-bold">Plant not found</h2>
+                <h2 className="h2 font-bold">Plant not found</h2>
                 <p className="text-sm text-gray-500 mt-1">ID: {params.id}</p>
               </>
             )}

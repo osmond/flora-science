@@ -24,7 +24,7 @@ export default function ChartCard({
 
   return (
     <div className={`${base} ${variantClasses}`}>
-      <h4 className="font-semibold mb-2 text-gray-900 dark:text-gray-100">{title}</h4>
+      <h4 className="h4 font-semibold mb-2 text-gray-900 dark:text-gray-100">{title}</h4>
       <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">{insight}</p>
       {children}
     </div>

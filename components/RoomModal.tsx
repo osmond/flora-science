@@ -11,7 +11,7 @@ interface Props {
 export default function RoomModal({ room, onClose }: Props) {
   return (
     <Modal isOpen={true} onClose={onClose}>
-      <h2 className="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100">{room.name}</h2>
+      <h2 className="h2 mb-2 text-gray-900 dark:text-gray-100">{room.name}</h2>
       {room.tags.length > 0 && (
         <div className="mb-2 flex flex-wrap gap-1">
           {room.tags.map((tag) => (
@@ -29,7 +29,7 @@ export default function RoomModal({ room, onClose }: Props) {
         Tasks Due: {room.tasksDue}
       </p>
       <div className="mb-4">
-        <h3 className="font-medium mb-1 text-gray-900 dark:text-gray-100">Recent Activity</h3>
+        <h3 className="h3 font-medium mb-1 text-gray-900 dark:text-gray-100">Recent Activity</h3>
         <p className="text-sm text-gray-600 dark:text-gray-400">No recent activity.</p>
       </div>
       <div className="flex justify-end">

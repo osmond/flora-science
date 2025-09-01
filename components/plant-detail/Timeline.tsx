@@ -49,7 +49,7 @@ export default function Timeline({ events }: { events: PlantEvent[] }) {
 
   return (
     <section className="rounded-xl p-6 bg-gray-50 dark:bg-gray-800 space-y-4">
-      <h2 className="text-lg font-semibold">Timeline</h2>
+      <h2 className="h2">Timeline</h2>
       {!weeks.length ? (
         <p className="text-sm text-gray-500 dark:text-gray-400">
           No activity yet.
@@ -61,7 +61,7 @@ export default function Timeline({ events }: { events: PlantEvent[] }) {
             const weekEvents = grouped[week]
             return (
               <div key={week}>
-                <h3 className="text-sm font-semibold mb-2">
+                <h3 className="h3 mb-2">
                   {
                     index === 0
                       ? 'This week'

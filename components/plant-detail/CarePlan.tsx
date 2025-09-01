@@ -94,7 +94,7 @@ export default function CarePlan({ plan, nickname }: CarePlanProps) {
 
   return (
     <section className="rounded-xl p-6 bg-green-50 dark:bg-gray-800">
-      <h2 className="text-xl font-semibold mb-4 flex items-center">
+      <h2 className="h2 mb-4 flex items-center">
         <Leaf className="w-6 h-6 mr-2" />
         Care Plan for {nickname}
       </h2>

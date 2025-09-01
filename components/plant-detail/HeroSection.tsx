@@ -59,7 +59,7 @@ export default function HeroSection({
           </div>
         )}
         <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 via-black/0 p-4 sm:p-6">
-          <h1 className="text-3xl font-serif text-white">{plant.nickname}</h1>
+          <h1 className="h1 font-serif text-white">{plant.nickname}</h1>
           <p className="text-lg italic text-white/80">{plant.species}</p>
           <p className="mt-2 text-base text-white/90">{nextTaskText}</p>
         </div>
