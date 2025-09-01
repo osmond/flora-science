@@ -32,7 +32,7 @@ export default function StressBlock({ plant, weather, stressData }: StressBlockP
       <p className="text-sm text-gray-500 mb-4">
         Stress index overview and overall health radar.
       </p>
-      <div className="flex gap-6 overflow-x-auto md:flex-col md:overflow-visible">
+      <div className="flex gap-6 overflow-x-auto snap-x snap-mandatory md:flex-col md:overflow-visible">
         <ChartCard title="Stress Index" insight="Current plant stress level">
           <StressIndexGauge
             value={calculateStressIndex({
@@ -54,7 +54,7 @@ export default function StressBlock({ plant, weather, stressData }: StressBlockP
           />
         </ChartCard>
       </div>
-      <div className="mt-4 flex overflow-x-auto md:flex-col md:overflow-visible">
+      <div className="mt-4 flex overflow-x-auto snap-x snap-mandatory md:flex-col md:overflow-visible">
         <ChartCard title="Stress Trend" insight="Stress index over time">
           <StressIndexChart data={stressData} />
         </ChartCard>
