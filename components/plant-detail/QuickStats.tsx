@@ -79,7 +79,7 @@ export default function QuickStats({ plant, weather }: QuickStatsProps) {
       ].map(({ label, value, icon: Icon, spark, color }) => (
         <div
           key={label}
-          className="flex flex-col items-center justify-center gap-1 p-4 rounded-md border border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800 flex-1 min-w-[150px]"
+          className="flex flex-col items-center justify-center gap-1 p-4 rounded-md bg-gray-50 dark:bg-gray-800 flex-1 min-w-[150px]"
         >
           <Icon className={`h-5 w-5 text-gray-500 dark:text-gray-400 ${color ?? ''}`} />
           <span className="text-xl font-bold text-gray-900 dark:text-white">

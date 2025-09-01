@@ -45,7 +45,7 @@ export default function Timeline({ events }: { events: PlantEvent[] }) {
     : []
 
   return (
-    <section className="rounded-xl border p-6 shadow-sm bg-white dark:bg-gray-900 space-y-4">
+    <section className="rounded-xl p-6 shadow-sm bg-gray-50 dark:bg-gray-800 space-y-4">
       <h2 className="text-lg font-semibold">Timeline</h2>
       {!weeks.length ? (
         <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -85,7 +85,7 @@ export default function Timeline({ events }: { events: PlantEvent[] }) {
                           <span className="font-medium">{type.label}</span>
                         </button>
                         {open && (
-                          <div className="mt-2 p-3 rounded-lg border bg-white dark:bg-gray-900 dark:border-gray-700 text-sm">
+                          <div className="mt-2 p-3 rounded-lg bg-gray-50 dark:bg-gray-800 text-sm">
                             {e.type === 'note' && e.note}
                           </div>
                         )}
