@@ -14,6 +14,13 @@ describe('Header', () => {
         avgHydration={72}
         tasksDue={2}
         avgHydrationHistory={[70, 72, 73]}
+        taskStreak={2}
+        waterTasks={1}
+        fertilizeTasks={0}
+        noteTasks={0}
+        waterOverdue={true}
+        fertilizeOverdue={false}
+        noteOverdue={false}
       />
     )
     const buttons = screen.getAllByRole('button')

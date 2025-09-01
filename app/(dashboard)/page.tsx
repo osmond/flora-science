@@ -3,6 +3,7 @@ import PlantCard from "@/components/PlantCard"
 import Footer from "@/components/Footer"
 import Header from "@/components/Header"
 import { samplePlants } from "@/lib/plants"
+import { parse, format, subDays } from "date-fns"
 
 export default function TodayPage() {
   const plants = Object.entries(samplePlants)
@@ -11,6 +12,28 @@ export default function TodayPage() {
     plants.reduce((sum, [, p]) => sum + p.hydration, 0) / plantsCount
   )
   const tasksDue = plants.filter(([, p]) => p.status.toLowerCase().includes("due")).length
+  const waterTasks = plants.filter(([, p]) => {
+    const s = p.status.toLowerCase()
+    return s.includes("water overdue") || (s.includes("due") && !s.includes("fertilize"))
+  }).length
+  const fertilizeTasks = plants.filter(([, p]) => p.status.toLowerCase().includes("fertilize")).length
+  const noteTasks = plants.filter(([, p]) => p.status.toLowerCase().includes("note")).length
+  const waterOverdue = plants.some(([, p]) => p.status.toLowerCase().includes("water overdue"))
+  const fertilizeOverdue = plants.some(([, p]) => p.status.toLowerCase().includes("fertilize overdue"))
+  const noteOverdue = plants.some(([, p]) => p.status.toLowerCase().includes("note overdue"))
+
+  const eventDates = plants.flatMap(([, p]) =>
+    p.events.map((e) => parse(`${e.date} 2024`, "MMM d yyyy", new Date()))
+  )
+  const dateSet = new Set(eventDates.map((d) => format(d, "yyyy-MM-dd")))
+  let taskStreak = 0
+  if (dateSet.size > 0) {
+    let current = eventDates.reduce((a, b) => (a > b ? a : b))
+    while (dateSet.has(format(current, "yyyy-MM-dd"))) {
+      taskStreak++
+      current = subDays(current, 1)
+    }
+  }
   const avgHydrationHistory = [65, 70, 68, 72, 75]
 
   return (
@@ -20,6 +43,13 @@ export default function TodayPage() {
         avgHydration={avgHydration}
         tasksDue={tasksDue}
         avgHydrationHistory={avgHydrationHistory}
+        taskStreak={taskStreak}
+        waterTasks={waterTasks}
+        fertilizeTasks={fertilizeTasks}
+        noteTasks={noteTasks}
+        waterOverdue={waterOverdue}
+        fertilizeOverdue={fertilizeOverdue}
+        noteOverdue={noteOverdue}
       />
       <main className="flex-1 p-4 md:p-6 pb-20 md:pb-6">
         <div className="max-w-7xl mx-auto">

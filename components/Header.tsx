@@ -9,6 +9,13 @@ interface HeaderProps {
   avgHydration: number
   tasksDue: number
   avgHydrationHistory: number[]
+  taskStreak: number
+  waterTasks: number
+  fertilizeTasks: number
+  noteTasks: number
+  waterOverdue: boolean
+  fertilizeOverdue: boolean
+  noteOverdue: boolean
 }
 
 export default function Header({
@@ -16,9 +23,19 @@ export default function Header({
   avgHydration,
   tasksDue,
   avgHydrationHistory,
+  taskStreak,
+  waterTasks,
+  fertilizeTasks,
+  noteTasks,
+  waterOverdue,
+  fertilizeOverdue,
+  noteOverdue,
 }: HeaderProps) {
   const { theme, toggleTheme } = useTheme()
   const currentDate = format(new Date(), "EEEE, MMM d")
+
+  const getBadgeClass = (overdue: boolean, count: number) =>
+    overdue ? "text-red-600" : count > 0 ? "text-yellow-600" : "text-green-600"
 
   return (
     <header className="backdrop-blur bg-white/80 dark:bg-gray-900/80 sticky top-0 z-10 p-4 flex items-center justify-between shadow-sm">
@@ -31,6 +48,12 @@ export default function Header({
           <span className="font-semibold text-flora-leaf">{avgHydration}%</span>
           <Sparkline data={avgHydrationHistory} />
           <span>· {tasksDue} tasks due today</span>
+        </div>
+        <div className="text-xs text-gray-600 dark:text-gray-400 flex items-center gap-2 mt-1">
+          <span>{taskStreak}-day completion streak</span>
+          <span className={getBadgeClass(waterOverdue, waterTasks)}>💧 {waterTasks}</span>
+          <span className={getBadgeClass(fertilizeOverdue, fertilizeTasks)}>🌱 {fertilizeTasks}</span>
+          <span className={getBadgeClass(noteOverdue, noteTasks)}>📝 {noteTasks}</span>
         </div>
       </div>
       <div className="flex items-center gap-3">
