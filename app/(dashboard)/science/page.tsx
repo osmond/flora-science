@@ -20,6 +20,7 @@ import {
 import { CareEvent } from "@/lib/seasonal-trends"
 import EnvRow from "@/components/EnvRow"
 import Footer from "@/components/Footer"
+import Panel from "@/components/Panel"
 import { samplePlants } from "@/lib/plants"
 
 export default function SciencePanel() {
@@ -131,8 +132,7 @@ export default function SciencePanel() {
         </button>
       </header>
 
-      <section className="mt-4 md:mt-6">
-        <h3 className="font-medium text-gray-800">Environment Data</h3>
+      <Panel label="Environment Data">
         <EnvRow
           temperature={readings.temperature}
           humidity={readings.humidity}
@@ -140,15 +140,13 @@ export default function SciencePanel() {
           tempUnit={tempUnit}
         />
         <TempHumidityChart tempUnit={tempUnit} />
-      </section>
+      </Panel>
 
-      <section className="mt-4 md:mt-6">
-        <h3 className="font-medium text-gray-800">VPD Gauge</h3>
+      <Panel label="VPD Gauge">
         <VPDGauge />
-      </section>
+      </Panel>
 
-      <section className="mt-4 md:mt-6">
-        <h3 className="font-medium text-gray-800">Water Balance</h3>
+      <Panel label="Water Balance">
         <div className="flex items-center gap-2 mb-2">
           <label
             htmlFor="watering-interval"
@@ -167,25 +165,22 @@ export default function SciencePanel() {
           />
         </div>
         <WaterBalanceChart data={waterData} />
-      </section>
+      </Panel>
 
-      <section className="mt-4 md:mt-6">
-        <h3 className="font-medium text-gray-800">Plant Stress</h3>
+      <Panel label="Plant Stress">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <StressIndexGauge value={currentStress} />
           <StressIndexChart data={stressData} />
         </div>
-      </section>
+      </Panel>
 
-      <section className="mt-4 md:mt-6">
-        <h3 className="font-medium text-gray-800">Plant Comparison</h3>
+      <Panel label="Plant Comparison">
         <ComparativeChart plants={plants} data={comparisonData} />
-      </section>
+      </Panel>
 
-      <section className="mt-4 md:mt-6">
-        <h3 className="font-medium text-gray-800">Task Completion</h3>
+      <Panel label="Task Completion">
         <TaskCompletionChart events={taskEvents} />
-      </section>
+      </Panel>
 
       <Footer />
     </main>
