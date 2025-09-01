@@ -1,8 +1,7 @@
 "use client"
 
-import Link from "next/link"
 import { useState } from "react"
-import PlantCard from "@/components/PlantCard"
+import { renderPlantCard } from "@/components/renderPlantCard"
 import Footer from "@/components/Footer"
 import Header from "@/components/Header"
 import { samplePlants } from "@/lib/plants"
@@ -151,28 +150,7 @@ export default function TodayPage() {
 
           {groupBy === "none" ? (
             <section className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {sortedPlants.map(([id, p]) => {
-                const s = p.status.toLowerCase()
-                const tasks = {
-                  water: s.includes("water overdue") || (s.includes("due") && !s.includes("fertilize")) ? 1 : 0,
-                  fertilize: s.includes("fertilize") ? 1 : 0,
-                  notes: s.includes("note") ? 1 : 0,
-                }
-                return (
-                  <Link key={id} href={`/plants/${id}`} className="block">
-                    <PlantCard
-                      nickname={p.nickname}
-                      species={p.species}
-                      status={p.status}
-                      hydration={p.hydration}
-                      photo={p.photos[0]}
-                      hydrationHistory={p.hydrationLog.map((h) => h.value)}
-                      tasks={tasks}
-                      onMarkDone={() => {}}
-                    />
-                  </Link>
-                )
-              })}
+              {sortedPlants.map(renderPlantCard)}
             </section>
           ) : (
             <div className="space-y-4">
@@ -184,32 +162,7 @@ export default function TodayPage() {
                       {group} ({items.length})
                     </summary>
                     <div className="mt-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                      {items.map(([id, p]) => {
-                        const s = p.status.toLowerCase()
-                        const tasks = {
-                          water:
-                            s.includes("water overdue") ||
-                            (s.includes("due") && !s.includes("fertilize"))
-                              ? 1
-                              : 0,
-                          fertilize: s.includes("fertilize") ? 1 : 0,
-                          notes: s.includes("note") ? 1 : 0,
-                        }
-                        return (
-                          <Link key={id} href={`/plants/${id}`} className="block">
-                            <PlantCard
-                              nickname={p.nickname}
-                              species={p.species}
-                              status={p.status}
-                              hydration={p.hydration}
-                              photo={p.photos[0]}
-                              hydrationHistory={p.hydrationLog.map((h) => h.value)}
-                              tasks={tasks}
-                              onMarkDone={() => {}}
-                            />
-                          </Link>
-                        )
-                      })}
+                      {items.map(renderPlantCard)}
                     </div>
                   </details>
                 ))}
