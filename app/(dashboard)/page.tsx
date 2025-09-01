@@ -66,18 +66,28 @@ export default function TodayPage() {
           </header>
 
           <section className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {plants.map(([id, p]) => (
-              <Link key={id} href={`/plants/${id}`} className="block">
-                <PlantCard
-                  nickname={p.nickname}
-                  species={p.species}
-                  status={p.status}
-                  hydration={p.hydration}
-                  photo={p.photos[0]}
-                  hydrationHistory={p.hydrationLog.map((h) => h.value)}
-                />
-              </Link>
-            ))}
+            {plants.map(([id, p]) => {
+              const s = p.status.toLowerCase()
+              const tasks = {
+                water: s.includes("water overdue") || (s.includes("due") && !s.includes("fertilize")) ? 1 : 0,
+                fertilize: s.includes("fertilize") ? 1 : 0,
+                notes: s.includes("note") ? 1 : 0,
+              }
+              return (
+                <Link key={id} href={`/plants/${id}`} className="block">
+                  <PlantCard
+                    nickname={p.nickname}
+                    species={p.species}
+                    status={p.status}
+                    hydration={p.hydration}
+                    photo={p.photos[0]}
+                    hydrationHistory={p.hydrationLog.map((h) => h.value)}
+                    tasks={tasks}
+                    onMarkDone={() => {}}
+                  />
+                </Link>
+              )
+            })}
           </section>
 
           <Footer />
