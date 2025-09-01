@@ -14,6 +14,8 @@ export interface Plant {
   lastWatered: string
   nextDue: string
   lastFertilized: string
+  potSize: number
+  recommendedWaterMl?: number
   nutrientLevel?: number
   events: PlantEvent[]
   photos: string[]

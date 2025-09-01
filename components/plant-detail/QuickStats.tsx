@@ -24,7 +24,30 @@ export default function QuickStats({ plant, weather }: QuickStatsProps) {
     <section className="flex flex-wrap justify-between gap-4 md:gap-6">
       {[
         { label: 'Last Watered', value: plant.lastWatered, icon: Droplet },
-        { label: 'Next Water Due', value: plant.nextDue, icon: Calendar },
+        {
+          label: 'Next Water Due',
+          value: (
+            <span className="flex items-center gap-1">
+              {plant.nextDue}
+              {plant.recommendedWaterMl !== undefined && (
+                <>
+                  <span>·</span>
+                  <span className="flex items-center">
+                    ~
+                    <span className="relative inline-flex items-center justify-center mx-1">
+                      <Droplet className="h-5 w-5 text-blue-500" />
+                      <span className="absolute text-[8px] font-bold text-blue-900">
+                        {plant.recommendedWaterMl}
+                      </span>
+                    </span>
+                    ml
+                  </span>
+                </>
+              )}
+            </span>
+          ),
+          icon: Calendar,
+        },
         { label: 'Last Fertilized', value: plant.lastFertilized, icon: Sprout },
         {
           label: 'Next Feed',
