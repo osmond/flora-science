@@ -5,6 +5,18 @@ export interface PlantEvent {
   note?: string
 }
 
+export interface CarePlan {
+  light?: string
+  water?: string
+  humidity?: string
+  temperature?: string
+  soil?: string
+  fertilization?: string
+  pruning?: string
+  pests?: string
+  overview?: string
+}
+
 export interface Plant {
   nickname: string
   species: string
@@ -19,7 +31,7 @@ export interface Plant {
   nutrientLevel?: number
   events: PlantEvent[]
   photos: string[]
-  carePlan?: string
+  carePlan?: CarePlan | string
 }
 
 export const samplePlants: Record<string, Plant> = {

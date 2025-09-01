@@ -12,7 +12,7 @@ export async function GET(
 
   if (!plant.carePlan) {
     const apiKey = process.env.OPENAI_API_KEY
-    const prompt = `Provide a detailed weekly care plan for a ${plant.species} named ${plant.nickname}.`
+    const prompt = `Generate a care plan for a ${plant.species} named ${plant.nickname} as a JSON object with the keys light, water, humidity, temperature, soil, fertilization, pruning, pests, and overview. Each value should be a concise sentence. Return only JSON.`
 
     if (!apiKey) {
       plant.carePlan =
@@ -43,7 +43,8 @@ export async function GET(
       }
 
       const data = await res.json()
-      plant.carePlan = data.choices?.[0]?.message?.content?.trim() || ''
+      const content = data.choices?.[0]?.message?.content?.trim() || '{}'
+      plant.carePlan = JSON.parse(content)
     } catch (err) {
       return NextResponse.json(
         { error: err instanceof Error ? err.message : 'Unknown error' },
