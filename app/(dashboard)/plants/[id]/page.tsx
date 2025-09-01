@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useCallback } from "react"
+import { useEffect, useState, useCallback, useMemo } from "react"
 import { ToastProvider, useToast } from "@/components/Toast"
 import PlantDetailSkeleton from "./PlantDetailSkeleton"
 import WaterModal from "@/components/WaterModal"
@@ -15,6 +15,7 @@ import Gallery from "@/components/plant-detail/Gallery"
 import type { Plant, PlantEvent } from "@/components/plant-detail/types"
 import { getWeatherForUser, type Weather } from "@/lib/weather"
 import { samplePlants } from "@/lib/plants"
+import { calculateStressIndex } from "@/lib/plant-metrics"
 
 
 export function PlantDetailContent({ params }: { params: { id: string } }) {
@@ -27,6 +28,16 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
   const toast = useToast()
   const [weather, setWeather] = useState<Weather | null>(null)
   const [offline, setOffline] = useState(false)
+
+  const stressIndex = useMemo(() => {
+    if (!plant) return 0
+    return calculateStressIndex({
+      overdueDays: plant.status === "Water overdue" ? 1 : 0,
+      hydration: plant.hydration,
+      temperature: weather?.temperature ?? 25,
+      light: 50,
+    })
+  }, [plant, weather])
 
   function calculateNextDue(lastWatered: string, w: Weather | null): string {
     const date = new Date(`${lastWatered} ${new Date().getFullYear()}`)
@@ -229,8 +240,8 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
               onFertilize={handleFertilize}
               onAddNote={handleAddNote}
             />
-            <QuickStats plant={plant} weather={weather} />
-            <AnalyticsPanel plant={plant} weather={weather} />
+            <QuickStats plant={plant} stressIndex={stressIndex} />
+            <AnalyticsPanel plant={plant} weather={weather} stressIndex={stressIndex} />
             <CareTrends events={plant.events} />
             <Timeline events={plant.events} />
             <Gallery photos={plant.photos} nickname={plant.nickname} />

@@ -2,13 +2,12 @@
 
 import Sparkline from '@/components/Sparkline'
 import { Droplet, Sprout, Calendar, Activity } from 'lucide-react'
-import { calculateNutrientAvailability, calculateStressIndex } from '@/lib/plant-metrics'
+import { calculateNutrientAvailability } from '@/lib/plant-metrics'
 import type { Plant } from './types'
-import type { Weather } from '@/lib/weather'
 
 interface QuickStatsProps {
   plant: Plant
-  weather: Weather | null
+  stressIndex: number
 }
 
 function calculateNextFeedDate(lastFertilized: string, nutrientLevel: number) {
@@ -19,7 +18,7 @@ function calculateNextFeedDate(lastFertilized: string, nutrientLevel: number) {
   return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
 }
 
-export default function QuickStats({ plant, weather }: QuickStatsProps) {
+export default function QuickStats({ plant, stressIndex }: QuickStatsProps) {
   return (
     <section className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
       {[
@@ -42,14 +41,7 @@ export default function QuickStats({ plant, weather }: QuickStatsProps) {
         },
         {
           label: 'Stress Score',
-          value: Math.round(
-            calculateStressIndex({
-              overdueDays: plant.status === 'Water overdue' ? 1 : 0,
-              hydration: plant.hydration,
-              temperature: weather?.temperature ?? 25,
-              light: 50,
-            })
-          ),
+          value: stressIndex,
           icon: Activity,
           color: 'text-orange-600',
         },
