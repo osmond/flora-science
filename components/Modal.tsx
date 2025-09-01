@@ -37,9 +37,9 @@ export default function Modal({ isOpen, onClose, children }: ModalProps) {
     }
 
     document.addEventListener('keydown', onKeyDown)
-    const first = dialogRef.current.querySelector<HTMLElement>(
+    const first = dialogRef.current?.querySelector(
       'a[href], button, textarea, input, select, [tabindex]:not([tabindex="-1"])'
-    )
+    ) as HTMLElement | null
     first?.focus()
     return () => document.removeEventListener('keydown', onKeyDown)
   }, [isOpen, onClose])
