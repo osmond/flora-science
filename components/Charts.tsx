@@ -77,18 +77,26 @@ export function TempHumidityChart({
   return (
     <ResponsiveContainer width="100%" height={250}>
       <LineChart data={chartData}>
-        <CartesianGrid strokeDasharray="3 3" />
+        <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.1} />
         <XAxis dataKey="day" />
         <YAxis />
         <Tooltip />
         <Legend />
+        <ReferenceArea y1={40} y2={60} fill="#dcfce7" fillOpacity={0.1} />
         <Line
           type="monotone"
           dataKey="temp"
           stroke="#f87171"
+          strokeWidth={2}
           name={tempUnit === "F" ? "Temp (°F)" : "Temp (°C)"}
         />
-        <Line type="monotone" dataKey="rh" stroke="#60a5fa" name="RH (%)" />
+        <Line
+          type="monotone"
+          dataKey="rh"
+          stroke="#60a5fa"
+          strokeWidth={2}
+          name="RH (%)"
+        />
       </LineChart>
     </ResponsiveContainer>
   )
@@ -150,17 +158,18 @@ export function HydrationTrendChart({
   return (
     <ResponsiveContainer width="100%" height={250}>
       <LineChart data={data}>
-        <CartesianGrid strokeDasharray="3 3" />
+        <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.1} />
         <XAxis dataKey="date" />
         <YAxis domain={[0, 100]} />
         <Tooltip />
         <Legend />
-        <ReferenceArea y1={0} y2={40} fill="#fecaca" fillOpacity={0.3} />
-        <ReferenceArea y1={40} y2={100} fill="#dcfce7" fillOpacity={0.3} />
+        <ReferenceArea y1={0} y2={40} fill="#fecaca" fillOpacity={0.1} />
+        <ReferenceArea y1={40} y2={100} fill="#dcfce7" fillOpacity={0.1} />
         <Line
           type="monotone"
           dataKey="actual"
           stroke="#3b82f6"
+          strokeWidth={2}
           name="Hydration (%)"
         />
         <Line
@@ -168,6 +177,7 @@ export function HydrationTrendChart({
           dataKey="forecast"
           stroke="#93c5fd"
           strokeDasharray="4 4"
+          strokeWidth={2}
           name="Forecast"
         />
       </LineChart>
@@ -219,17 +229,19 @@ export function ComparativeChart({
   return (
     <ResponsiveContainer width="100%" height={250}>
       <LineChart data={data}>
-        <CartesianGrid strokeDasharray="3 3" />
+        <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.1} />
         <XAxis dataKey="date" />
         <YAxis domain={[0, 100]} />
         <Tooltip />
         <Legend content={renderLegend} />
+        <ReferenceArea y1={40} y2={80} fill="#e0e7ff" fillOpacity={0.1} />
         {plants.map((p, idx) => (
           <Line
             key={p.nickname}
             type="monotone"
             dataKey={p.nickname}
             stroke={colors[idx % colors.length]}
+            strokeWidth={2}
             name={p.nickname}
             data-testid={`comparative-line-${idx}`}
           />
@@ -295,21 +307,24 @@ export function TaskCompletionChart({ events }: { events: CareEvent[] }) {
   return (
     <ResponsiveContainer width="100%" height={250}>
       <LineChart data={data}>
-        <CartesianGrid strokeDasharray="3 3" />
+        <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.1} />
         <XAxis dataKey="month" />
         <YAxis domain={[0, 100]} />
         <Tooltip />
         <Legend />
+        <ReferenceArea y1={80} y2={100} fill="#dcfce7" fillOpacity={0.1} />
         <Line
           type="monotone"
           dataKey="completed"
           stroke="#22c55e"
+          strokeWidth={2}
           name="Completed (%)"
         />
         <Line
           type="monotone"
           dataKey="missed"
           stroke="#ef4444"
+          strokeWidth={2}
           name="Missed (%)"
         />
       </LineChart>
@@ -327,16 +342,18 @@ export function WaterBalanceChart({ data }: { data: WaterBalanceDatum[] }) {
   return (
     <ResponsiveContainer width="100%" height={250}>
       <ComposedChart data={data}>
-        <CartesianGrid strokeDasharray="3 3" />
+        <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.1} />
         <XAxis dataKey="date" />
         <YAxis />
         <Tooltip />
         <Legend />
+        <ReferenceArea y1={0} y2={5} fill="#e0f2fe" fillOpacity={0.1} />
         <Bar dataKey="water" fill="#3b82f6" name="Water (mm)" />
         <Line
           type="monotone"
           dataKey="et0"
           stroke="#f59e0b"
+          strokeWidth={2}
           name="ET₀ (mm)"
         />
       </ComposedChart>
@@ -408,12 +425,18 @@ export function StressIndexChart({ data }: { data: StressDatum[] }) {
   return (
     <ResponsiveContainer width="100%" height={250}>
       <LineChart data={data}>
-        <CartesianGrid strokeDasharray="3 3" />
+        <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.1} />
         <XAxis dataKey="date" />
         <YAxis domain={[0, 100]} />
         <Tooltip />
-        <Legend />
-        <Line type="monotone" dataKey="stress" stroke="#ef4444" name="Stress" />
+        <ReferenceArea y1={0} y2={30} fill="#dcfce7" fillOpacity={0.1} />
+        <Line
+          type="monotone"
+          dataKey="stress"
+          stroke="#ef4444"
+          strokeWidth={2}
+          name="Stress"
+        />
       </LineChart>
     </ResponsiveContainer>
   )
@@ -455,17 +478,25 @@ export function NutrientLevelChart({
   return (
     <ResponsiveContainer width="100%" height={250}>
       <LineChart data={data}>
-        <CartesianGrid strokeDasharray="3 3" />
+        <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.1} />
         <XAxis dataKey="day" />
         <YAxis domain={[0, 100]} />
         <Tooltip />
         <Legend />
-        <Line type="monotone" dataKey="level" stroke="#16a34a" name="Nutrients (%)" />
+        <ReferenceArea y1={60} y2={100} fill="#dcfce7" fillOpacity={0.1} />
+        <Line
+          type="monotone"
+          dataKey="level"
+          stroke="#16a34a"
+          strokeWidth={2}
+          name="Nutrients (%)"
+        />
         <Line
           type="monotone"
           dataKey="forecast"
           stroke="#86efac"
           strokeDasharray="4 4"
+          strokeWidth={2}
           name="Forecast"
         />
       </LineChart>
@@ -512,7 +543,7 @@ export function PlantHealthRadar({
   return (
     <ResponsiveContainer width={180} height={140}>
       <RadarChart cx="50%" cy="50%" outerRadius="80%" data={data}>
-        <PolarGrid stroke="#e5e7eb" />
+        <PolarGrid stroke="#e5e7eb" strokeOpacity={0.1} />
         <PolarAngleAxis dataKey="metric" stroke="#6b7280" />
         <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} />
         <Radar dataKey="value" stroke="#64748b" fill="#94a3b8" fillOpacity={0.3} />
