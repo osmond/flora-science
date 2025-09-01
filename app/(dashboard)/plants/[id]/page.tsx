@@ -1,6 +1,5 @@
 'use client'
 
-import Link from "next/link"
 import Image from "next/image"
 import { useEffect, useState, useCallback, useMemo } from "react"
 import Lightbox from "@/components/Lightbox"
@@ -258,10 +257,6 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
   return (
     <main className="flex-1 bg-white dark:bg-gray-900">
       <div className="p-4 md:p-6 space-y-4 md:space-y-6">
-        <Link href="/" className="inline-block px-3 py-1 border rounded hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800">
-          ← Back to Today
-        </Link>
-
         {offline && plant && (
           <div className="rounded border border-yellow-300 bg-yellow-50 p-3 text-sm text-yellow-800">
             Offline data. Changes may not be saved.
