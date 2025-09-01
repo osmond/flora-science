@@ -50,11 +50,11 @@ export default function QuickStats({ plant, weather }: QuickStatsProps) {
   const stats = [
     {
       icon: Droplet,
-      text: `Last watered: ${plant.lastWatered}`,
+      text: `${plant.lastWatered} (Last watered)`,
     },
     {
       icon: Calendar,
-      text: `Next water: ${plant.nextDue}${
+      text: `${plant.nextDue}${
         plant.recommendedWaterMl !== undefined
           ? ` (~${plant.recommendedWaterMl} ml)`
           : ''
@@ -62,27 +62,27 @@ export default function QuickStats({ plant, weather }: QuickStatsProps) {
     },
     {
       icon: Sprout,
-      text: `Next feed: ${calculateNextFeedDate(
+      text: `${calculateNextFeedDate(
         plant.lastFertilized,
         plant.nutrientLevel ?? 100,
-      )}`,
+      )} (Next feed)`,
     },
     {
       icon: Battery,
-      text: `Hydration: ${plant.hydration}%`,
+      text: `${plant.hydration}% Hydration`,
     },
     {
       icon: Activity,
-      text: `Stress: ${stressLabel} (${stressValue})`,
+      text: `${stressLabel} Stress`,
     },
   ]
 
   return (
-    <ul className="flex flex-wrap gap-2 text-sm">
+    <ul className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-gray-700 dark:text-gray-200">
       {stats.map(({ icon: Icon, text }) => (
         <li
           key={text}
-          className="flex items-center gap-1 rounded-full bg-gray-100 px-3 py-1 dark:bg-gray-800"
+          className="flex items-center gap-1 after:content-['|'] last:after:content-[''] after:mx-2 after:text-gray-300"
         >
           <Icon className="h-4 w-4" />
           {text}

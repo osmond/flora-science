@@ -45,7 +45,7 @@ export default function Gallery({ photos = [], nickname }: GalleryProps) {
   }, [openIndex, close, showNext, showPrev])
 
   return (
-    <section className="rounded-xl p-6 shadow-sm bg-gray-50 dark:bg-gray-800">
+    <section className="rounded-xl p-6 bg-gray-50 dark:bg-gray-800">
       <h2 className="text-lg font-semibold mb-4">Gallery</h2>
       {length > 0 ? (
         <>
@@ -72,7 +72,7 @@ export default function Gallery({ photos = [], nickname }: GalleryProps) {
                 >
                   ×
                 </button>
-                  {length > 1 && (
+                {length > 1 && (
                   <>
                     <button
                       aria-label="Previous image"
@@ -94,49 +94,29 @@ export default function Gallery({ photos = [], nickname }: GalleryProps) {
             </div>
           )}
 
-          <div className="relative">
-            <button
-              onClick={() => setOpenIndex(0)}
-              className="focus:outline-none w-full h-64"
-              aria-label={`View image 1 of ${length}`}
-            >
-              <Image
-                src={photos[0]}
-                alt={`${nickname} photo 1`}
-                width={800}
-                height={600}
-                className="w-full h-64 object-cover rounded-lg"
-                loading="lazy"
-              />
-              <span className="absolute bottom-1 left-1 rounded bg-black/50 px-1 text-xs text-white">
-                Photo 1
-              </span>
-            </button>
-            {length > 1 && (
-              <div className="grid grid-cols-3 gap-4 mt-4">
-                {photos.slice(1).map((src, i) => (
-                  <div key={i + 1} className="relative">
-                    <button
-                      onClick={() => setOpenIndex(i + 1)}
-                      className="focus:outline-none"
-                      aria-label={`View image ${i + 2} of ${length}`}
-                    >
-                      <Image
-                        src={src}
-                        alt={`${nickname} photo ${i + 2}`}
-                        width={400}
-                        height={400}
-                        className="w-full h-24 object-cover rounded-lg"
-                        loading="lazy"
-                      />
-                      <span className="absolute bottom-1 left-1 rounded bg-black/50 px-1 text-xs text-white">
-                        Photo {i + 2}
-                      </span>
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
+          <div className="grid grid-cols-3 gap-4">
+            {photos.map((src, i) => (
+              <button
+                key={i}
+                onClick={() => setOpenIndex(i)}
+                className="group relative aspect-square w-full focus:outline-none"
+                aria-label={`View image ${i + 1} of ${length}`}
+              >
+                <Image
+                  src={src}
+                  alt={`${nickname} photo ${i + 1}`}
+                  fill
+                  sizes="200px"
+                  className="object-cover rounded-lg"
+                  loading="lazy"
+                />
+                <span className="absolute inset-0 flex items-end justify-start rounded-lg bg-black/0 hover:bg-black/40 transition-colors">
+                  <span className="m-1 rounded px-1 text-xs text-white opacity-0 group-hover:opacity-100">
+                    Photo {i + 1}
+                  </span>
+                </span>
+              </button>
+            ))}
           </div>
         </>
       ) : (

@@ -72,7 +72,7 @@ describe('PlantDetailPage', () => {
     )
 
     expect(await screen.findByText(/Timeline/i)).toBeInTheDocument()
-    expect(screen.getAllByText(/Watered/i).length).toBeGreaterThan(0)
+    expect(screen.getAllByText(/ago/i).length).toBeGreaterThan(0)
   })
 
   it('falls back to sample data when offline', async () => {
