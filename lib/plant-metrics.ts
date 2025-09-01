@@ -40,6 +40,16 @@ export function calculateEt0(day: WeatherDay): number {
   return Number(et0.toFixed(2))
 }
 
+export function calculateWaterRecommendation(
+  potSize: number,
+  et0: number,
+): number {
+  const radius = potSize / 2
+  const area = Math.PI * radius * radius
+  const volume = area * et0 * 0.1
+  return Math.round(volume)
+}
+
 export interface WaterBalanceDatum {
   date: string
   et0: number

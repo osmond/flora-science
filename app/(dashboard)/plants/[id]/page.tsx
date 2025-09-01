@@ -25,6 +25,7 @@ const NoteModal = dynamic(() => import("@/components/NoteModal"), {
 import type { Plant, PlantEvent } from "@/components/plant-detail/types"
 import { getWeatherForUser, type Weather } from "@/lib/weather"
 import { samplePlants } from "@/lib/plants"
+import { calculateEt0, calculateWaterRecommendation } from "@/lib/plant-metrics"
 
 
 export function PlantDetailContent({ params }: { params: { id: string } }) {
@@ -133,6 +134,15 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
     if (!sample) return false
 
     const w = await fetchWeatherForPlant()
+    const et0 =
+      w &&
+      calculateEt0({
+        date: new Date().toISOString(),
+        temperature: w.temperature,
+        humidity: w.humidity,
+        solarRadiation: w.solarRadiation,
+        windSpeed: w.windSpeed,
+      })
     const offlinePlant: Plant = {
       ...sample,
       events: (Array.isArray(sample.events) ? sample.events : []).filter(
@@ -140,6 +150,10 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
           e !== null && e !== undefined && typeof e.id !== "undefined"
       ),
       nextDue: calculateNextDue(sample.lastWatered, w),
+      recommendedWaterMl:
+        w && typeof et0 === "number"
+          ? calculateWaterRecommendation(sample.potSize, et0)
+          : undefined,
     }
     setPlant(offlinePlant)
     setOffline(true)
@@ -156,11 +170,24 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
       if (res.ok) {
         const data = await res.json()
         const w = await fetchWeatherForPlant()
+        const et0 =
+          w &&
+          calculateEt0({
+            date: new Date().toISOString(),
+            temperature: w.temperature,
+            humidity: w.humidity,
+            solarRadiation: w.solarRadiation,
+            windSpeed: w.windSpeed,
+          })
         data.nextDue = calculateNextDue(data.lastWatered, w)
         data.events = (Array.isArray(data.events) ? data.events : []).filter(
           (e: PlantEvent | null): e is PlantEvent =>
             e !== null && e !== undefined && typeof e.id !== "undefined"
         )
+        data.recommendedWaterMl =
+          w && typeof et0 === "number"
+            ? calculateWaterRecommendation(data.potSize, et0)
+            : undefined
         setPlant(data)
       } else if (!(await loadSamplePlant())) {
         setPlant(null)

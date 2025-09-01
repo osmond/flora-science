@@ -15,6 +15,7 @@ export interface Plant {
   lastWatered: string
   nextDue: string
   lastFertilized: string
+  potSize: number
   nutrientLevel?: number
   events: PlantEvent[]
   photos: string[]
@@ -36,6 +37,7 @@ export const samplePlants: Record<string, Plant> = {
     lastWatered: "Aug 25",
     lastFertilized: "Aug 10",
     nextDue: "Aug 30",
+    potSize: 25,
     nutrientLevel: 55,
     events: [
       { id: 1, type: "water", date: "Aug 25" },
@@ -60,6 +62,7 @@ export const samplePlants: Record<string, Plant> = {
     lastWatered: "Aug 27",
     lastFertilized: "Aug 01",
     nextDue: "Sep 5",
+    potSize: 15,
     nutrientLevel: 40,
     events: [{ id: 1, type: "water", date: "Aug 27" }],
     photos: ["https://placehold.co/800x400.png?text=Sunny"]
@@ -78,6 +81,7 @@ export const samplePlants: Record<string, Plant> = {
     lastWatered: "Aug 28",
     lastFertilized: "Aug 18",
     nextDue: "Aug 29",
+    potSize: 12,
     nutrientLevel: 60,
     events: [{ id: 1, type: "water", date: "Aug 28" }],
     photos: ["https://placehold.co/800x400.png?text=Ivy"]
@@ -96,6 +100,7 @@ export const samplePlants: Record<string, Plant> = {
     lastWatered: "Aug 23",
     lastFertilized: "Aug 15",
     nextDue: "Sep 2",
+    potSize: 30,
     nutrientLevel: 80,
     events: [
       { id: 1, type: "fertilize", date: "Aug 15" },
