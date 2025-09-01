@@ -1,8 +1,13 @@
 'use client'
 
 import { useState } from 'react'
-import { CareTrendsChart } from '@/components/Charts'
+import dynamic from 'next/dynamic'
 import type { PlantEvent } from './types'
+
+const CareTrendsChart = dynamic(
+  () => import('@/components/Charts').then((m) => m.CareTrendsChart),
+  { ssr: false, loading: () => <p>Loading chart...</p> }
+)
 
 interface CareTrendsProps {
   events: PlantEvent[]

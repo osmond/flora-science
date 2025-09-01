@@ -1,9 +1,26 @@
 'use client'
 
-import { StressIndexGauge, PlantHealthRadar, NutrientLevelChart, HydrationTrendChart } from '@/components/Charts'
+import dynamic from 'next/dynamic'
 import { calculateStressIndex } from '@/lib/plant-metrics'
 import type { Plant } from './types'
 import type { Weather } from '@/lib/weather'
+
+const StressIndexGauge = dynamic(
+  () => import('@/components/Charts').then((m) => m.StressIndexGauge),
+  { ssr: false, loading: () => <p>Loading chart...</p> }
+)
+const PlantHealthRadar = dynamic(
+  () => import('@/components/Charts').then((m) => m.PlantHealthRadar),
+  { ssr: false, loading: () => <p>Loading chart...</p> }
+)
+const NutrientLevelChart = dynamic(
+  () => import('@/components/Charts').then((m) => m.NutrientLevelChart),
+  { ssr: false, loading: () => <p>Loading chart...</p> }
+)
+const HydrationTrendChart = dynamic(
+  () => import('@/components/Charts').then((m) => m.HydrationTrendChart),
+  { ssr: false, loading: () => <p>Loading chart...</p> }
+)
 
 interface AnalyticsPanelProps {
   plant: Plant

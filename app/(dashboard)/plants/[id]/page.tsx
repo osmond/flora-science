@@ -1,17 +1,28 @@
 'use client'
 
 import { useEffect, useState, useCallback } from "react"
+import dynamic from "next/dynamic"
 import { ToastProvider, useToast } from "@/components/Toast"
 import PlantDetailSkeleton from "./PlantDetailSkeleton"
-import WaterModal from "@/components/WaterModal"
-import FertilizeModal from "@/components/FertilizeModal"
-import NoteModal from "@/components/NoteModal"
 import HeroSection from "@/components/plant-detail/HeroSection"
 import QuickStats from "@/components/plant-detail/QuickStats"
 import AnalyticsPanel from "@/components/plant-detail/AnalyticsPanel"
 import CareTrends from "@/components/plant-detail/CareTrends"
 import Timeline from "@/components/plant-detail/Timeline"
 import Gallery from "@/components/plant-detail/Gallery"
+
+const WaterModal = dynamic(() => import("@/components/WaterModal"), {
+  ssr: false,
+  loading: () => null,
+})
+const FertilizeModal = dynamic(() => import("@/components/FertilizeModal"), {
+  ssr: false,
+  loading: () => null,
+})
+const NoteModal = dynamic(() => import("@/components/NoteModal"), {
+  ssr: false,
+  loading: () => null,
+})
 import type { Plant, PlantEvent } from "@/components/plant-detail/types"
 import { getWeatherForUser, type Weather } from "@/lib/weather"
 import { samplePlants } from "@/lib/plants"
