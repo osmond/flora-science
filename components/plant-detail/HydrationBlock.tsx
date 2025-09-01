@@ -1,6 +1,7 @@
 'use client'
 
 import dynamic from 'next/dynamic'
+import { Droplet } from 'lucide-react'
 import ChartCard from '@/components/ChartCard'
 import type { Plant } from './types'
 import type { WaterBalanceDatum } from '@/lib/plant-metrics'
@@ -43,7 +44,10 @@ export default function HydrationBlock({
 }: HydrationBlockProps) {
   return (
     <details id="hydration" open>
-      <summary className="text-lg font-semibold cursor-pointer"><span className="mr-1">💧</span>Hydration & Nutrients</summary>
+      <summary className="text-lg font-semibold cursor-pointer">
+        <Droplet className="inline-block w-4 h-4 mr-1" />
+        Hydration & Nutrients
+      </summary>
       <p className="text-sm text-gray-500 mb-4">
         Hydration history and nutrient levels.
       </p>
