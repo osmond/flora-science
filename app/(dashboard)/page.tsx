@@ -73,7 +73,8 @@ export default function TodayPage() {
                   species={p.species}
                   status={p.status}
                   hydration={p.hydration}
-                  hydrationHistory={[p.hydration - 5, p.hydration, Math.min(100, p.hydration + 5)]}
+                  photo={p.photos[0]}
+                  hydrationHistory={p.hydrationLog.map((h) => h.value)}
                 />
               </Link>
             ))}
