@@ -16,6 +16,7 @@ import {
   NutrientLevelChart,
   StressIndexGauge,
   TimelineHeatmap,
+  PlantHealthRadar,
 } from "@/components/Charts"
 import { calculateNutrientAvailability, calculateStressIndex } from "@/lib/plant-metrics"
 import { generateDailyActivity } from "@/lib/seasonal-trends"
@@ -428,7 +429,18 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
             </section>
 
             <section>
+              <h2 className="text-lg font-semibold mb-3">Plant Health</h2>
+              <PlantHealthRadar
+                hydration={plant.hydration}
+                lastFertilized={plant.lastFertilized}
+                nutrientLevel={plant.nutrientLevel ?? 100}
+                events={plant.events}
+                status={plant.status}
+                weather={weather}
+              />
+            </section>
 
+            <section>
               <h2 className="text-lg font-semibold mb-3">Care Trends</h2>
               <CareTrendsChart events={plant.events} />
 
