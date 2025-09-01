@@ -41,7 +41,7 @@ import type { Weather } from "@/lib/weather"
 
 
 // Dummy dataset for environment over 7 days
-const envData = [
+const defaultEnvData = [
   { day: "Mon", temp: 74, rh: 55 },
   { day: "Tue", temp: 76, rh: 52 },
   { day: "Wed", temp: 78, rh: 50 },
@@ -51,22 +51,30 @@ const envData = [
   { day: "Sun", temp: 75, rh: 56 },
 ]
 
+export interface EnvDatum {
+  day: string
+  temp: number
+  rh: number
+}
+
 export function TempHumidityChart({
   tempUnit = "F",
+  data = defaultEnvData,
 }: {
   tempUnit?: "F" | "C"
+  data?: EnvDatum[]
 }) {
-  const data =
+  const chartData =
     tempUnit === "F"
-      ? envData
-      : envData.map((d) => ({
+      ? data
+      : data.map((d) => ({
           ...d,
           temp: ((d.temp - 32) * 5) / 9,
         }))
 
   return (
     <ResponsiveContainer width="100%" height={250}>
-      <LineChart data={data}>
+      <LineChart data={chartData}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="day" />
         <YAxis />
@@ -84,10 +92,8 @@ export function TempHumidityChart({
   )
 }
 
-// Dummy VPD gauge (value out of 2.0 kPa)
-const vpdData = [{ name: "VPD", value: 1.2, fill: "#4CAF50" }]
-
-export function VPDGauge() {
+export function VPDGauge({ value = 1.2 }: { value?: number }) {
+  const data = [{ name: "VPD", value, fill: "#4CAF50" }]
   return (
     <ResponsiveContainer width="100%" height={250}>
       <RadialBarChart
@@ -96,7 +102,7 @@ export function VPDGauge() {
         innerRadius="80%"
         outerRadius="100%"
         barSize={20}
-        data={vpdData}
+        data={data}
         startAngle={180}
         endAngle={0}
       >
@@ -113,7 +119,7 @@ export function VPDGauge() {
           dominantBaseline="middle"
           className="text-lg fill-gray-700"
         >
-          1.2 kPa
+          {value.toFixed(1)} kPa
         </text>
       </RadialBarChart>
     </ResponsiveContainer>
