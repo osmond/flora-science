@@ -1,7 +1,6 @@
 'use client'
 
 import dynamic from 'next/dynamic'
-import { Thermometer } from 'lucide-react'
 import EnvRow from '@/components/EnvRow'
 import ChartCard from '@/components/ChartCard'
 
@@ -32,10 +31,7 @@ interface EnvironmentBlockProps {
 export default function EnvironmentBlock({ env, envChartData }: EnvironmentBlockProps) {
   return (
     <details id="environment" open>
-      <summary className="text-lg font-semibold cursor-pointer">
-        <Thermometer className="inline-block w-4 h-4 mr-1" />
-        Environment
-      </summary>
+      <summary className="text-lg font-semibold cursor-pointer">Environment</summary>
       <p className="text-sm text-gray-500 mb-4">
         Temperature, humidity, and vapor pressure deficit readings.
       </p>
