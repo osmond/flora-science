@@ -33,7 +33,6 @@ import {
   calculateHydrationTrend,
   calculateNutrientAvailability,
   calculateStressIndex,
-  calculateHydrationTrend,
 
   type StressDatum,
   type HydrationLogEntry,
