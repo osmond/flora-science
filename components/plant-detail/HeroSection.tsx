@@ -3,10 +3,13 @@
 import Image from 'next/image'
 import { Droplet, Sprout, FileText } from 'lucide-react'
 import { getHydrationProgress } from '@/components/PlantCard'
+import QuickStats from './QuickStats'
 import type { Plant } from './types'
+import type { Weather } from '@/lib/weather'
 
 interface HeroSectionProps {
   plant: Plant
+  weather: Weather | null
   onWater: () => void
   onFertilize: () => void
   onAddNote: () => void
@@ -14,6 +17,7 @@ interface HeroSectionProps {
 
 export default function HeroSection({
   plant,
+  weather,
   onWater,
   onFertilize,
   onAddNote,
@@ -45,6 +49,8 @@ export default function HeroSection({
           <p className="italic text-gray-200">{plant.species}</p>
         </div>
       </div>
+
+      <QuickStats plant={plant} weather={weather} />
 
       <div className="flex flex-wrap justify-center sm:justify-start gap-3">
         <button

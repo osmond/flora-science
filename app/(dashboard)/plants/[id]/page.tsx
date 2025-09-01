@@ -5,7 +5,6 @@ import dynamic from "next/dynamic"
 import { ToastProvider, useToast } from "@/components/Toast"
 import PlantDetailSkeleton from "./PlantDetailSkeleton"
 import HeroSection from "@/components/plant-detail/HeroSection"
-import QuickStats from "@/components/plant-detail/QuickStats"
 import AnalyticsPanel from "@/components/plant-detail/AnalyticsPanel"
 import CareTrends from "@/components/plant-detail/CareTrends"
 import Timeline from "@/components/plant-detail/Timeline"
@@ -217,11 +216,11 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
 
             <HeroSection
               plant={plant}
+              weather={weather}
               onWater={handleWater}
               onFertilize={handleFertilize}
               onAddNote={handleAddNote}
             />
-            <QuickStats plant={plant} weather={weather} />
             <AnalyticsPanel plant={plant} weather={weather} />
             <CareTrends events={plant.events} />
             <Timeline events={plant.events} />

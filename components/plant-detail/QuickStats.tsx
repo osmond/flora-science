@@ -21,7 +21,7 @@ function calculateNextFeedDate(lastFertilized: string, nutrientLevel: number) {
 
 export default function QuickStats({ plant, weather }: QuickStatsProps) {
   return (
-    <section className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+    <section className="flex flex-wrap justify-between gap-4 md:gap-6">
       {[
         { label: 'Last Watered', value: plant.lastWatered, icon: Droplet },
         { label: 'Next Water Due', value: plant.nextDue, icon: Calendar },
@@ -56,7 +56,7 @@ export default function QuickStats({ plant, weather }: QuickStatsProps) {
       ].map(({ label, value, icon: Icon, spark, color }) => (
         <div
           key={label}
-          className="flex flex-col items-center justify-center gap-1 rounded-lg border p-4 bg-white shadow-sm dark:bg-gray-900 dark:border-gray-700"
+          className="flex flex-col items-center justify-center gap-1 p-4 rounded-md border border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800 flex-1 min-w-[150px]"
         >
           <Icon className={`h-5 w-5 text-gray-500 dark:text-gray-400 ${color ?? ''}`} />
           <span className="text-xl font-bold text-gray-900 dark:text-white">
