@@ -6,7 +6,6 @@ import PlantCard from "@/components/PlantCard"
 import Footer from "@/components/Footer"
 import Header from "@/components/Header"
 import { samplePlants } from "@/lib/plants"
-import { downloadCsv } from "@/lib/utils"
 import { parse, format, subDays, differenceInDays, addDays, isSameDay } from "date-fns"
 
 type GroupBy = "status" | "room" | "none"
@@ -15,7 +14,6 @@ type SortBy = "hydration" | "alpha" | "lastWatered"
 export default function TodayPage() {
   const [groupBy, setGroupBy] = useState<GroupBy>("none")
   const [sortBy, setSortBy] = useState<SortBy>("alpha")
-  const [labMode, setLabMode] = useState(false)
 
   const plants = Object.entries(samplePlants)
   const plantsCount = plants.length
@@ -64,21 +62,7 @@ export default function TodayPage() {
   }).length
   const nextDayFertilizeTasks = nextDayTasks.filter(([, p]) => p.status.toLowerCase().includes("fertilize")).length
   const nextDayNoteTasks = nextDayTasks.filter(([, p]) => p.status.toLowerCase().includes("note")).length
-  const todayTasksData = plants.flatMap(([, p]) => {
-    const s = p.status.toLowerCase()
-    const tasks: { plant: string; task: string; status: string }[] = []
-    if (s.includes("water overdue") || (s.includes("due") && !s.includes("fertilize"))) {
-      tasks.push({ plant: p.nickname, task: "Water", status: p.status })
-    }
-    if (s.includes("fertilize")) {
-      tasks.push({ plant: p.nickname, task: "Fertilize", status: p.status })
-    }
-    if (s.includes("note")) {
-      tasks.push({ plant: p.nickname, task: "Note", status: p.status })
-    }
-    return tasks
-  })
-    const eventDates = plants.flatMap(([, p]) =>
+  const eventDates = plants.flatMap(([, p]) =>
     p.events.map((e) => parse(`${e.date} 2024`, "MMM d yyyy", new Date()))
   )
   const dateSet = new Set(eventDates.map((d) => format(d, "yyyy-MM-dd")))
@@ -163,14 +147,6 @@ export default function TodayPage() {
               <option value="hydration">Hydration</option>
               <option value="lastWatered">Last watered</option>
             </select>
-            <label className="flex items-center gap-1 text-sm">
-              <input
-                type="checkbox"
-                checked={labMode}
-                onChange={(e) => setLabMode(e.target.checked)}
-              />
-              Lab mode
-            </label>
           </div>
 
           {groupBy === "none" ? (
@@ -253,37 +229,6 @@ export default function TodayPage() {
             </ul>
           </section>
 
-          {labMode && (
-            <section className="mt-8">
-              <h3 className="text-lg font-semibold mb-2">Lab data</h3>
-              <button
-                onClick={() => downloadCsv("today-tasks.csv", todayTasksData)}
-                className="mb-2 px-3 py-1 border rounded"
-              >
-                Export CSV
-              </button>
-              <div className="overflow-x-auto">
-                <table className="min-w-full text-sm">
-                  <thead>
-                    <tr>
-                      <th className="text-left p-2">Plant</th>
-                      <th className="text-left p-2">Task</th>
-                      <th className="text-left p-2">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {todayTasksData.map((t, i) => (
-                      <tr key={i} className="border-t">
-                        <td className="p-2">{t.plant}</td>
-                        <td className="p-2">{t.task}</td>
-                        <td className="p-2">{t.status}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </section>
-          )}
 
           <Footer />
         </div>
