@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import dynamic from 'next/dynamic'
 import {
   calculateStressIndex,
@@ -14,6 +14,8 @@ import ChartCard from '@/components/ChartCard'
 import VitalsSummary from './VitalsSummary'
 import type { Plant } from './types'
 import type { Weather } from '@/lib/weather'
+
+const ranges = { day: 1, week: 7, month: 30 } as const
 
 const StressIndexGauge = dynamic(
   () => import('@/components/Charts').then((m) => m.StressIndexGauge),
@@ -54,6 +56,10 @@ interface AnalyticsPanelProps {
 }
 
 export default function AnalyticsPanel({ plant, weather }: AnalyticsPanelProps) {
+  const [timeframe, setTimeframe] = useState<keyof typeof ranges>('week')
+  const [showEt, setShowEt] = useState(true)
+  const [showWater, setShowWater] = useState(true)
+
   const weatherHistory = useMemo<WeatherDay[]>(() => {
     const base = {
       temperature: weather?.temperature ?? 25,
@@ -61,12 +67,13 @@ export default function AnalyticsPanel({ plant, weather }: AnalyticsPanelProps) 
       solarRadiation: weather?.solarRadiation ?? 20,
       windSpeed: weather?.windSpeed ?? 2,
     }
-    return Array.from({ length: 7 }).map((_, idx) => {
+    const all = Array.from({ length: ranges.month }).map((_, idx) => {
       const d = new Date()
-      d.setDate(d.getDate() - (6 - idx))
+      d.setDate(d.getDate() - (ranges.month - 1 - idx))
       return { date: d.toISOString().split('T')[0], ...base }
     })
-  }, [weather])
+    return all.slice(-ranges[timeframe])
+  }, [weather, timeframe])
 
   const env = useMemo(() => {
     const temperature = weather?.temperature ?? 25
@@ -98,14 +105,22 @@ export default function AnalyticsPanel({ plant, weather }: AnalyticsPanelProps) 
     [plant.events],
   )
 
+  const filteredWaterEvents = useMemo(
+    () => {
+      const start = weatherHistory[0]?.date
+      return start ? waterEvents.filter((e) => e.date >= start) : waterEvents
+    },
+    [waterEvents, weatherHistory],
+  )
+
   const waterData = useMemo(
-    () => waterBalanceSeries(weatherHistory, waterEvents),
-    [weatherHistory, waterEvents],
+    () => waterBalanceSeries(weatherHistory, filteredWaterEvents),
+    [weatherHistory, filteredWaterEvents],
   )
 
   const stressData = useMemo(() => {
     const wateringInterval = 7
-    const eventDates = new Set(waterEvents.map((e) => e.date))
+    const eventDates = new Set(filteredWaterEvents.map((e) => e.date))
     let cumulativeHydration = 0
     let lastWateredIdx = -Infinity
     const readings = waterData.map((d, idx) => {
@@ -124,7 +139,7 @@ export default function AnalyticsPanel({ plant, weather }: AnalyticsPanelProps) 
       }
     })
     return stressTrend(readings)
-  }, [waterData, weatherHistory, waterEvents])
+  }, [waterData, weatherHistory, filteredWaterEvents])
 
   return (
     <>
@@ -212,7 +227,48 @@ export default function AnalyticsPanel({ plant, weather }: AnalyticsPanelProps) 
           </div>
           <div className="mt-4 flex overflow-x-auto md:flex-col md:overflow-visible">
             <ChartCard title="Water Balance" insight="Water balance with ET0">
-              <WaterBalanceChart data={waterData} />
+              <div className="mb-2 flex items-center gap-2">
+                <div className="flex gap-1">
+                  {(
+                    ['day', 'week', 'month'] as (keyof typeof ranges)[]
+                  ).map((tf) => (
+                    <button
+                      key={tf}
+                      onClick={() => setTimeframe(tf)}
+                      className={`rounded px-2 py-1 text-xs capitalize border ${
+                        timeframe === tf
+                          ? 'bg-gray-200 dark:bg-gray-700'
+                          : 'bg-transparent'
+                      }`}
+                    >
+                      {tf}
+                    </button>
+                  ))}
+                </div>
+                <div className="ml-auto flex gap-2 text-xs">
+                  <label className="flex items-center gap-1">
+                    <input
+                      type="checkbox"
+                      checked={showWater}
+                      onChange={(e) => setShowWater(e.target.checked)}
+                    />
+                    Water
+                  </label>
+                  <label className="flex items-center gap-1">
+                    <input
+                      type="checkbox"
+                      checked={showEt}
+                      onChange={(e) => setShowEt(e.target.checked)}
+                    />
+                    ET₀
+                  </label>
+                </div>
+              </div>
+              <WaterBalanceChart
+                data={waterData}
+                showEt={showEt}
+                showWater={showWater}
+              />
             </ChartCard>
           </div>
         </details>
