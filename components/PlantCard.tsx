@@ -12,6 +12,7 @@ type PlantCardProps = {
   tasksDue?: number
   note?: string
   hydrationHistory?: number[]
+  photo?: string
 }
 
 export function getHydrationProgress(hydration: number) {
@@ -28,9 +29,22 @@ export default function PlantCard({
   tasksDue = 0,
   note,
   hydrationHistory,
+  photo,
 }: PlantCardProps) {
   const { pct, barColor } = getHydrationProgress(hydration)
   const badgeColor = tasksDue > 0 ? 'bg-red-500 text-white' : 'bg-flora-leaf text-white'
+  const statusColor =
+    status === 'Water overdue'
+      ? 'bg-red-500 text-white'
+      : status === 'Due today'
+      ? 'bg-yellow-500 text-gray-900'
+      : status === 'Fertilize suggested'
+      ? 'bg-green-500 text-white'
+      : 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300'
+
+  const history = hydrationHistory ?? []
+  const padded = Array.from({ length: 7 }, (_, i) => history[history.length - 7 + i] ?? 0)
+  const wateringStreak = padded.map((val, i) => (i > 0 ? val > padded[i - 1] : false))
 
   return (
     <motion.div
@@ -43,10 +57,20 @@ export default function PlantCard({
       whileTap={tap}
       transition={defaultTransition}
     >
-      <h3 className="font-semibold text-gray-900 dark:text-gray-100">
-        {nickname} <span className="italic text-gray-500 dark:text-gray-400">— {species}</span>
-      </h3>
-      <p className="text-sm text-gray-700 dark:text-gray-300">{status}</p>
+      {photo && (
+        <img
+          src={photo}
+          alt={nickname}
+          className="w-full h-32 object-cover rounded-md mb-2"
+        />
+      )}
+      <div className="flex items-start justify-between">
+        <div>
+          <h3 className="font-bold text-gray-900 dark:text-gray-100">{nickname}</h3>
+          <p className="text-sm text-gray-500 dark:text-gray-400">{species}</p>
+        </div>
+        <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${statusColor}`}>{status}</span>
+      </div>
       {note && <p className="text-xs text-gray-600 dark:text-gray-400">{note}</p>}
       <div
         className="w-full bg-gray-200 rounded-full h-2 mt-2"
@@ -61,9 +85,17 @@ export default function PlantCard({
         />
       </div>
       <div className="flex items-center justify-between mt-2">
-        <div className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
-          Hydration: {pct}%
+        <div className="text-xs text-gray-500 dark:text-gray-400 flex flex-col gap-1">
           {hydrationHistory && <Sparkline data={hydrationHistory} />}
+          <div className="flex gap-1">
+            {wateringStreak.map((w, i) => (
+              <span
+                key={i}
+                data-testid="water-dot"
+                className={`w-2 h-2 rounded-full ${w ? 'bg-flora-leaf' : 'bg-gray-300 dark:bg-gray-700'}`}
+              />
+            ))}
+          </div>
         </div>
         <div className="flex items-center gap-1">
           <span className="text-xs text-gray-500 dark:text-gray-400">Tasks</span>
