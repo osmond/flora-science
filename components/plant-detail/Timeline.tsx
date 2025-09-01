@@ -7,18 +7,12 @@ import type { PlantEvent } from './types'
 
 const EVENT_TYPES = {
   water: {
-    label: 'Watered',
-    color: 'bg-blue-100 text-blue-700',
     icon: Droplet,
   },
   fertilize: {
-    label: 'Fertilized',
-    color: 'bg-green-100 text-green-700',
     icon: Sprout,
   },
   note: {
-    label: 'Note',
-    color: 'bg-purple-100 text-purple-700',
     icon: FileText,
   },
 } as const
@@ -45,7 +39,7 @@ export default function Timeline({ events }: { events: PlantEvent[] }) {
     : []
 
   return (
-    <section className="rounded-xl p-6 shadow-sm bg-gray-50 dark:bg-gray-800 space-y-4">
+    <section className="rounded-xl p-6 bg-gray-50 dark:bg-gray-800 space-y-4">
       <h2 className="text-lg font-semibold">Timeline</h2>
       {!weeks.length ? (
         <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -83,16 +77,15 @@ export default function Timeline({ events }: { events: PlantEvent[] }) {
                           onClick={() => setExpandedId(open ? null : e.id)}
                           className="text-left w-full"
                         >
-                          <time className="block text-xs text-gray-500">
+                          <time className="text-sm text-gray-700 dark:text-gray-300">
                             {formatDistanceToNow(new Date(e.date), {
                               addSuffix: true,
                             })}
                           </time>
-                          <span className="font-medium">{type.label}</span>
                         </button>
-                        {open && (
+                        {open && e.type === 'note' && (
                           <div className="mt-2 p-3 rounded-lg bg-gray-50 dark:bg-gray-800 text-sm">
-                            {e.type === 'note' && e.note}
+                            {e.note}
                           </div>
                         )}
                       </li>

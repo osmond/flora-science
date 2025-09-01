@@ -220,10 +220,16 @@ export function CareStreak({ events }: { events: CareEvent[] }) {
     const d = new Date()
     d.setDate(today.getDate() - (29 - idx))
     const key = d.toISOString().split("T")[0]
-    const has = events.some(
-      (e) => new Date(e.date).toISOString().split("T")[0] === key
+    const hasWater = events.some(
+      (e) =>
+        e.type === "water" && new Date(e.date).toISOString().split("T")[0] === key
     )
-    return { date: key, has }
+    const hasFeed = events.some(
+      (e) =>
+        e.type === "fertilize" &&
+        new Date(e.date).toISOString().split("T")[0] === key
+    )
+    return { date: key, hasWater, hasFeed }
   })
 
   return (
@@ -231,11 +237,19 @@ export function CareStreak({ events }: { events: CareEvent[] }) {
       {days.map((d) => (
         <div
           key={d.date}
-          title={`${d.date}: ${d.has ? "care" : "no care"}`}
-          className={`w-3 h-3 rounded-full ${
-            d.has
-              ? "bg-green-500"
-              : "bg-gray-200 dark:bg-gray-700"
+          title={
+            d.hasWater || d.hasFeed
+              ? d.hasWater && d.hasFeed
+                ? `${d.date}: water & feed`
+                : `${d.date}: ${d.hasWater ? "water" : "feed"}`
+              : `${d.date}: no care`
+          }
+          className={`w-3 h-3 rounded ${
+            d.hasWater
+              ? "bg-blue-400"
+              : d.hasFeed
+                ? "bg-green-400"
+                : "bg-gray-200 dark:bg-gray-700"
           }`}
         />
       ))}
