@@ -10,6 +10,7 @@ import {
   type WeatherDay,
 } from '@/lib/plant-metrics'
 import EnvRow from '@/components/EnvRow'
+import ChartCard from '@/components/ChartCard'
 import VitalsSummary from './VitalsSummary'
 import type { Plant } from './types'
 import type { Weather } from '@/lib/weather'
@@ -140,9 +141,16 @@ export default function AnalyticsPanel({ plant, weather }: AnalyticsPanelProps) 
             vpd={env.vpd}
             tempUnit="C"
           />
-          <div className="mt-4 grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <TempHumidityChart tempUnit="C" data={envChartData} />
-            <VPDGauge value={env.vpd} />
+          <div className="mt-4 flex gap-6 overflow-x-auto md:flex-col md:overflow-visible">
+            <ChartCard
+              title="Temperature & Humidity"
+              insight="Daily temperature and humidity readings."
+            >
+              <TempHumidityChart tempUnit="C" data={envChartData} />
+            </ChartCard>
+            <ChartCard title="VPD" insight="Vapor pressure deficit">
+              <VPDGauge value={env.vpd} />
+            </ChartCard>
           </div>
         </details>
 
@@ -151,26 +159,35 @@ export default function AnalyticsPanel({ plant, weather }: AnalyticsPanelProps) 
           <p className="text-sm text-gray-500 mb-4">
             Stress index overview and overall health radar.
           </p>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <StressIndexGauge
-              value={calculateStressIndex({
-                overdueDays: plant.status === 'Water overdue' ? 1 : 0,
-                hydration: plant.hydration,
-                temperature: weather?.temperature ?? 25,
-                light: 50,
-              })}
-            />
-            <PlantHealthRadar
-              hydration={plant.hydration}
-              lastFertilized={plant.lastFertilized}
-              nutrientLevel={plant.nutrientLevel ?? 100}
-              events={plant.events}
-              status={plant.status}
-              weather={weather}
-            />
+          <div className="flex gap-6 overflow-x-auto md:flex-col md:overflow-visible">
+            <ChartCard
+              title="Stress Index"
+              insight="Current plant stress level"
+            >
+              <StressIndexGauge
+                value={calculateStressIndex({
+                  overdueDays: plant.status === 'Water overdue' ? 1 : 0,
+                  hydration: plant.hydration,
+                  temperature: weather?.temperature ?? 25,
+                  light: 50,
+                })}
+              />
+            </ChartCard>
+            <ChartCard title="Plant Health" insight="Overall health radar">
+              <PlantHealthRadar
+                hydration={plant.hydration}
+                lastFertilized={plant.lastFertilized}
+                nutrientLevel={plant.nutrientLevel ?? 100}
+                events={plant.events}
+                status={plant.status}
+                weather={weather}
+              />
+            </ChartCard>
           </div>
-          <div className="mt-4">
-            <StressIndexChart data={stressData} />
+          <div className="mt-4 flex overflow-x-auto md:flex-col md:overflow-visible">
+            <ChartCard title="Stress Trend" insight="Stress index over time">
+              <StressIndexChart data={stressData} />
+            </ChartCard>
           </div>
         </details>
 
@@ -179,15 +196,24 @@ export default function AnalyticsPanel({ plant, weather }: AnalyticsPanelProps) 
           <p className="text-sm text-gray-500 mb-4">
             Hydration history and nutrient levels.
           </p>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <NutrientLevelChart
-              lastFertilized={plant.lastFertilized}
-              nutrientLevel={plant.nutrientLevel ?? 100}
-            />
-            <HydrationTrendChart log={plant.hydrationLog ?? []} />
+          <div className="flex gap-6 overflow-x-auto md:flex-col md:overflow-visible">
+            <ChartCard
+              title="Nutrient Levels"
+              insight="Nutrient availability over time"
+            >
+              <NutrientLevelChart
+                lastFertilized={plant.lastFertilized}
+                nutrientLevel={plant.nutrientLevel ?? 100}
+              />
+            </ChartCard>
+            <ChartCard title="Hydration Trend" insight="Hydration history">
+              <HydrationTrendChart log={plant.hydrationLog ?? []} />
+            </ChartCard>
           </div>
-          <div className="mt-4">
-            <WaterBalanceChart data={waterData} />
+          <div className="mt-4 flex overflow-x-auto md:flex-col md:overflow-visible">
+            <ChartCard title="Water Balance" insight="Water balance with ET0">
+              <WaterBalanceChart data={waterData} />
+            </ChartCard>
           </div>
         </details>
       </section>
