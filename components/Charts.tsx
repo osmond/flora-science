@@ -38,6 +38,8 @@ import {
 } from "@/lib/plant-metrics"
 import type { Plant } from "@/lib/plants"
 import type { Weather } from "@/lib/weather"
+import Link from "next/link"
+import { useSearchParams } from "next/navigation"
 
 
 // Dummy dataset for environment over 7 days
@@ -177,7 +179,7 @@ export function ComparativeChart({
   plants,
   data,
 }: {
-  plants: Plant[]
+  plants: (Plant & { id: string })[]
   data: ComparativeDatum[]
 }) {
   const colors = [
@@ -191,6 +193,29 @@ export function ComparativeChart({
     "#fde047",
   ]
 
+  const searchParams = useSearchParams()
+  const query = Object.fromEntries(searchParams.entries())
+
+  const renderLegend = ({ payload }: any) => (
+    <ul className="flex flex-wrap gap-4">
+      {payload?.map((entry: any) => {
+        const plant = plants.find((p) => p.nickname === entry.value)
+        if (!plant) return null
+        return (
+          <li key={plant.id} className="flex items-center">
+            <span
+              className="w-3 h-3 mr-1"
+              style={{ backgroundColor: entry.color }}
+            />
+            <Link href={{ pathname: `/plants/${plant.id}`, query }}>
+              {entry.value}
+            </Link>
+          </li>
+        )
+      })}
+    </ul>
+  )
+
   return (
     <ResponsiveContainer width="100%" height={250}>
       <LineChart data={data}>
@@ -198,7 +223,7 @@ export function ComparativeChart({
         <XAxis dataKey="date" />
         <YAxis domain={[0, 100]} />
         <Tooltip />
-        <Legend />
+        <Legend content={renderLegend} />
         {plants.map((p, idx) => (
           <Line
             key={p.nickname}

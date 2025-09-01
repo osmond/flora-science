@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import dynamic from "next/dynamic"
+import { useRouter, useSearchParams } from "next/navigation"
 
 const TempHumidityChart = dynamic(
   () => import("@/components/Charts").then((m) => m.TempHumidityChart),
@@ -126,7 +127,12 @@ export default function SciencePanel() {
   const stressData = stressTrend(stressReadings)
   const currentStress = stressData[stressData.length - 1]?.stress ?? 0
 
-  const plants = Object.values(samplePlants)
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const plants = Object.entries(samplePlants).map(([id, plant]) => ({
+    id,
+    ...plant,
+  }))
   const comparisonData = collectPlantMetrics(plants)
 
   const taskEvents: CareEvent[] = [
@@ -139,6 +145,11 @@ export default function SciencePanel() {
   ]
 
   const toggleUnit = () => setTempUnit((u) => (u === "F" ? "C" : "F"))
+
+  const handleSelect = (id: string) => {
+    const query = searchParams.toString()
+    router.push(`/plants/${id}${query ? `?${query}` : ""}`)
+  }
 
   return (
     <main className="flex-1 p-4 md:p-6">
@@ -199,7 +210,23 @@ export default function SciencePanel() {
       </section>
 
       <section className="mt-4 md:mt-6">
-        <h3 className="font-medium text-gray-800">Plant Comparison</h3>
+        <div className="flex items-center justify-between">
+          <h3 className="font-medium text-gray-800">Plant Comparison</h3>
+          <select
+            onChange={(e) => handleSelect(e.target.value)}
+            className="border rounded px-2 py-1"
+            defaultValue=""
+          >
+            <option value="" disabled>
+              View plant...
+            </option>
+            {plants.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.nickname}
+              </option>
+            ))}
+          </select>
+        </div>
         <ComparativeChart plants={plants} data={comparisonData} />
       </section>
 

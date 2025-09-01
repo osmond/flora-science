@@ -3,6 +3,10 @@ import { ComparativeChart } from '../Charts'
 import { collectPlantMetrics } from '@/lib/plant-metrics'
 import { samplePlants } from '@/lib/plants'
 
+jest.mock('next/navigation', () => ({
+  useSearchParams: () => new URLSearchParams(),
+}))
+
 jest.mock('recharts', () => {
   const original = jest.requireActual('recharts')
   const React = require('react')
@@ -18,7 +22,10 @@ jest.mock('recharts', () => {
 
 describe('ComparativeChart', () => {
   it('renders a line for each plant', () => {
-    const plants = [samplePlants['1'], samplePlants['2']]
+    const plants = [
+      { id: '1', ...samplePlants['1'] },
+      { id: '2', ...samplePlants['2'] },
+    ]
     const data = collectPlantMetrics(plants)
     render(<ComparativeChart plants={plants} data={data} />)
     const lines = screen.getAllByTestId(/comparative-line-/)
