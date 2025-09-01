@@ -108,7 +108,7 @@ export default function HeroSection({
         aria-valuetext={`${progress.pct}% hydration`}
       >
         <div
-          className={`h-2 rounded-full ${progress.barColor}`}
+          className={`h-2 rounded-full ${progress.barClass}`}
           style={{ width: `${progress.pct}%` }}
         />
         <span className="sr-only">{`${progress.pct}% hydration`}</span>
