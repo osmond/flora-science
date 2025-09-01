@@ -9,6 +9,7 @@ export interface Plant {
   nickname: string
   species: string
   status: string
+  room: string
   hydration: number
   hydrationLog: { date: string; value: number }[]
   lastWatered: string
@@ -25,6 +26,7 @@ export const samplePlants: Record<string, Plant> = {
     nickname: "Delilah",
     species: "Monstera deliciosa",
     status: "Water overdue",
+    room: "Living Room",
     hydration: 72,
     hydrationLog: [
       { date: "2024-08-21", value: 80 },
@@ -48,6 +50,7 @@ export const samplePlants: Record<string, Plant> = {
     nickname: "Sunny",
     species: "Sansevieria trifasciata",
     status: "Fine",
+    room: "Bedroom",
     hydration: 90,
     hydrationLog: [
       { date: "2024-08-22", value: 92 },
@@ -65,6 +68,7 @@ export const samplePlants: Record<string, Plant> = {
     nickname: "Ivy",
     species: "Epipremnum aureum",
     status: "Due today",
+    room: "Living Room",
     hydration: 70,
     hydrationLog: [
       { date: "2024-08-21", value: 72 },
@@ -82,6 +86,7 @@ export const samplePlants: Record<string, Plant> = {
     nickname: "Figgy",
     species: "Ficus lyrata",
     status: "Fertilize suggested",
+    room: "Office",
     hydration: 75,
     hydrationLog: [
       { date: "2024-08-21", value: 78 },

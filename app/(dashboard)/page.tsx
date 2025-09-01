@@ -1,11 +1,20 @@
+"use client"
+
 import Link from "next/link"
+import { useState } from "react"
 import PlantCard from "@/components/PlantCard"
 import Footer from "@/components/Footer"
 import Header from "@/components/Header"
 import { samplePlants } from "@/lib/plants"
 import { parse, format, subDays } from "date-fns"
 
+type GroupBy = "status" | "room" | "none"
+type SortBy = "hydration" | "alpha" | "lastWatered"
+
 export default function TodayPage() {
+  const [groupBy, setGroupBy] = useState<GroupBy>("none")
+  const [sortBy, setSortBy] = useState<SortBy>("alpha")
+
   const plants = Object.entries(samplePlants)
   const plantsCount = plants.length
   const avgHydration = Math.round(
@@ -36,6 +45,29 @@ export default function TodayPage() {
   }
   const avgHydrationHistory = [65, 70, 68, 72, 75]
 
+  const sortedPlants = [...plants].sort((a, b) => {
+    const [, pa] = a
+    const [, pb] = b
+    switch (sortBy) {
+      case "hydration":
+        return pb.hydration - pa.hydration
+      case "lastWatered":
+        return (
+          parse(`${pb.lastWatered} 2024`, "MMM d yyyy", new Date()).getTime() -
+          parse(`${pa.lastWatered} 2024`, "MMM d yyyy", new Date()).getTime()
+        )
+      default:
+        return pa.nickname.localeCompare(pb.nickname)
+    }
+  })
+
+  const grouped = groupBy === "none" ? { All: sortedPlants } : sortedPlants.reduce<Record<string, typeof sortedPlants>>((acc, plant) => {
+    const key = groupBy === "status" ? plant[1].status : plant[1].room
+    if (!acc[key]) acc[key] = []
+    acc[key].push(plant)
+    return acc
+  }, {})
+
   return (
     <>
       <Header
@@ -65,30 +97,93 @@ export default function TodayPage() {
             </p>
           </header>
 
-          <section className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {plants.map(([id, p]) => {
-              const s = p.status.toLowerCase()
-              const tasks = {
-                water: s.includes("water overdue") || (s.includes("due") && !s.includes("fertilize")) ? 1 : 0,
-                fertilize: s.includes("fertilize") ? 1 : 0,
-                notes: s.includes("note") ? 1 : 0,
-              }
-              return (
-                <Link key={id} href={`/plants/${id}`} className="block">
-                  <PlantCard
-                    nickname={p.nickname}
-                    species={p.species}
-                    status={p.status}
-                    hydration={p.hydration}
-                    photo={p.photos[0]}
-                    hydrationHistory={p.hydrationLog.map((h) => h.value)}
-                    tasks={tasks}
-                    onMarkDone={() => {}}
-                  />
-                </Link>
-              )
-            })}
-          </section>
+          <div className="flex gap-4 mb-4">
+            <select
+              value={groupBy}
+              onChange={(e) => setGroupBy(e.target.value as GroupBy)}
+              className="border rounded p-2"
+            >
+              <option value="none">No grouping</option>
+              <option value="status">Group by status</option>
+              <option value="room">Group by room</option>
+            </select>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as SortBy)}
+              className="border rounded p-2"
+            >
+              <option value="alpha">Alphabetical</option>
+              <option value="hydration">Hydration</option>
+              <option value="lastWatered">Last watered</option>
+            </select>
+          </div>
+
+          {groupBy === "none" ? (
+            <section className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {sortedPlants.map(([id, p]) => {
+                const s = p.status.toLowerCase()
+                const tasks = {
+                  water: s.includes("water overdue") || (s.includes("due") && !s.includes("fertilize")) ? 1 : 0,
+                  fertilize: s.includes("fertilize") ? 1 : 0,
+                  notes: s.includes("note") ? 1 : 0,
+                }
+                return (
+                  <Link key={id} href={`/plants/${id}`} className="block">
+                    <PlantCard
+                      nickname={p.nickname}
+                      species={p.species}
+                      status={p.status}
+                      hydration={p.hydration}
+                      photo={p.photos[0]}
+                      hydrationHistory={p.hydrationLog.map((h) => h.value)}
+                      tasks={tasks}
+                      onMarkDone={() => {}}
+                    />
+                  </Link>
+                )
+              })}
+            </section>
+          ) : (
+            <div className="space-y-4">
+              {Object.entries(grouped)
+                .sort((a, b) => a[0].localeCompare(b[0]))
+                .map(([group, items]) => (
+                  <details key={group} open>
+                    <summary className="cursor-pointer font-semibold">
+                      {group} ({items.length})
+                    </summary>
+                    <div className="mt-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                      {items.map(([id, p]) => {
+                        const s = p.status.toLowerCase()
+                        const tasks = {
+                          water:
+                            s.includes("water overdue") ||
+                            (s.includes("due") && !s.includes("fertilize"))
+                              ? 1
+                              : 0,
+                          fertilize: s.includes("fertilize") ? 1 : 0,
+                          notes: s.includes("note") ? 1 : 0,
+                        }
+                        return (
+                          <Link key={id} href={`/plants/${id}`} className="block">
+                            <PlantCard
+                              nickname={p.nickname}
+                              species={p.species}
+                              status={p.status}
+                              hydration={p.hydration}
+                              photo={p.photos[0]}
+                              hydrationHistory={p.hydrationLog.map((h) => h.value)}
+                              tasks={tasks}
+                              onMarkDone={() => {}}
+                            />
+                          </Link>
+                        )
+                      })}
+                    </div>
+                  </details>
+                ))}
+            </div>
+          )}
 
           <Footer />
         </div>
