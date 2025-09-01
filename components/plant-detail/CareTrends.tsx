@@ -14,7 +14,7 @@ interface CareTrendsProps {
 
 export default function CareTrends({ events }: CareTrendsProps) {
   return (
-    <section className="rounded-xl p-6 shadow-sm bg-gray-50 dark:bg-gray-800">
+    <section className="rounded-xl p-6 bg-gray-50 dark:bg-gray-800">
       <div className="mb-4">
         <h2 className="text-lg font-semibold">Care Trends</h2>
       </div>

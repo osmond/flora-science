@@ -45,7 +45,7 @@ export default function Gallery({ photos = [], nickname }: GalleryProps) {
   }, [openIndex, close, showNext, showPrev])
 
   return (
-    <section className="rounded-xl p-6 shadow-sm bg-gray-50 dark:bg-gray-800">
+    <section className="rounded-xl p-6 bg-gray-50 dark:bg-gray-800">
       <h2 className="text-lg font-semibold mb-4">Gallery</h2>
       {length > 0 ? (
         <>

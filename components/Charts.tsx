@@ -149,7 +149,7 @@ export function HydrationTrendChart({
         <Legend />
         <ReferenceArea y1={0} y2={40} fill="#fecaca" fillOpacity={0.3} />
         <ReferenceArea y1={40} y2={80} fill="#dcfce7" fillOpacity={0.3} />
-        <ReferenceArea y1={80} y2={100} fill="#fef9c3" fillOpacity={0.3} />
+        <ReferenceArea y1={80} y2={100} fill="#bfdbfe" fillOpacity={0.3} />
         <Line
           type="monotone"
           dataKey="actual"
@@ -302,13 +302,13 @@ export function WaterBalanceChart({ data }: { data: WaterBalanceDatum[] }) {
 
 // Display a plant stress index as a radial gauge (0-100)
 export function StressIndexGauge({ value }: { value: number }) {
-  const data = [{ name: "Stress", value, fill: "#ef4444" }]
+  const data = [{ name: 'Stress', value }]
   const { label, color } =
     value < 30
-      ? { label: "Low", color: "#22c55e" }
+      ? { label: 'Low', color: '#22c55e' }
       : value <= 70
-        ? { label: "Moderate", color: "#eab308" }
-        : { label: "High", color: "#ef4444" }
+        ? { label: 'Moderate', color: '#eab308' }
+        : { label: 'High', color: '#ef4444' }
   return (
     <ResponsiveContainer width="100%" height={250}>
       <RadialBarChart
@@ -316,12 +316,25 @@ export function StressIndexGauge({ value }: { value: number }) {
         cy="50%"
         innerRadius="80%"
         outerRadius="100%"
-        barSize={20}
+        barSize={12}
         data={data}
-        startAngle={180}
-        endAngle={0}
+        startAngle={90}
+        endAngle={-270}
       >
-        <RadialBar minAngle={15} background clockWise dataKey="value" />
+        <defs>
+          <linearGradient id="stressGradient" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor={color} stopOpacity={0.4} />
+            <stop offset="100%" stopColor={color} stopOpacity={1} />
+          </linearGradient>
+        </defs>
+        <RadialBar
+          minAngle={15}
+          background
+          clockWise
+          dataKey="value"
+          cornerRadius={10}
+          fill="url(#stressGradient)"
+        />
         <text
           x="50%"
           y="50%"

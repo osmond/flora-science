@@ -29,7 +29,7 @@ interface AnalyticsPanelProps {
 
 export default function AnalyticsPanel({ plant, weather }: AnalyticsPanelProps) {
   return (
-    <section className="rounded-xl p-6 shadow-sm bg-gray-50 dark:bg-gray-800 space-y-6">
+    <section className="rounded-xl p-6 bg-gray-50 dark:bg-gray-800 space-y-6">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <StressIndexGauge
           value={calculateStressIndex({

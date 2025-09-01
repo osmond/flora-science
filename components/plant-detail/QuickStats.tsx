@@ -1,7 +1,6 @@
 'use client'
 
-import Sparkline from '@/components/Sparkline'
-import { Droplet, Sprout, Calendar, Activity } from 'lucide-react'
+import { Droplet, Sprout, Calendar, Battery, Zap } from 'lucide-react'
 import { calculateNutrientAvailability, calculateStressIndex } from '@/lib/plant-metrics'
 import type { Plant } from './types'
 import type { Weather } from '@/lib/weather'
@@ -23,75 +22,57 @@ export function calculateNextFeedDate(
 }
 
 export default function QuickStats({ plant, weather }: QuickStatsProps) {
+  const stress = Math.round(
+    calculateStressIndex({
+      overdueDays: plant.status === 'Water overdue' ? 1 : 0,
+      hydration: plant.hydration,
+      temperature: weather?.temperature ?? 25,
+      light: 50,
+    })
+  )
+  const stressLabel =
+    stress < 30 ? 'Low' : stress <= 70 ? 'Moderate' : 'High'
+
+  const nextFeed = calculateNextFeedDate(
+    plant.lastFertilized,
+    plant.nutrientLevel ?? 100
+  )
+
+  const stats = [
+    { icon: Droplet, label: 'Last watered', value: plant.lastWatered },
+    {
+      icon: Calendar,
+      label: 'Next water',
+      value:
+        plant.recommendedWaterMl !== undefined
+          ? `${plant.nextDue} · ~${plant.recommendedWaterMl} ml`
+          : plant.nextDue,
+      valueClass: 'text-blue-600',
+    },
+    {
+      icon: Sprout,
+      label: 'Next feed',
+      value: nextFeed,
+      valueClass: 'text-green-600',
+    },
+    { icon: Battery, label: 'Hydration', value: `${plant.hydration}%` },
+    { icon: Zap, label: 'Stress', value: `${stressLabel} (${stress})` },
+  ]
+
   return (
-    <section className="flex flex-wrap justify-between gap-4 md:gap-6">
-      {[
-        { label: 'Last Watered', value: plant.lastWatered, icon: Droplet },
-        {
-          label: 'Next Water Due',
-          value: (
-            <span className="flex items-center gap-1">
-              {plant.nextDue}
-              {plant.recommendedWaterMl !== undefined && (
-                <>
-                  <span>·</span>
-                  <span className="flex items-center">
-                    ~
-                    <span className="relative inline-flex items-center justify-center mx-1">
-                      <Droplet className="h-5 w-5 text-blue-500" />
-                      <span className="absolute text-[8px] font-bold text-blue-900">
-                        {plant.recommendedWaterMl}
-                      </span>
-                    </span>
-                    ml
-                  </span>
-                </>
-              )}
-            </span>
-          ),
-          icon: Calendar,
-        },
-        { label: 'Last Fertilized', value: plant.lastFertilized, icon: Sprout },
-        {
-          label: 'Next Feed',
-          value: calculateNextFeedDate(
-            plant.lastFertilized,
-            plant.nutrientLevel ?? 100
-          ),
-          icon: Calendar,
-        },
-        {
-          label: 'Hydration',
-          value: `${plant.hydration}%`,
-          icon: Droplet,
-          spark: plant.hydrationLog?.map((h) => h.value) ?? [],
-        },
-        {
-          label: 'Stress Score',
-          value: Math.round(
-            calculateStressIndex({
-              overdueDays: plant.status === 'Water overdue' ? 1 : 0,
-              hydration: plant.hydration,
-              temperature: weather?.temperature ?? 25,
-              light: 50,
-            })
-          ),
-          icon: Activity,
-          color: 'text-orange-600',
-        },
-      ].map(({ label, value, icon: Icon, spark, color }) => (
-        <div
+    <div className="flex flex-wrap gap-2">
+      {stats.map(({ icon: Icon, label, value, valueClass }) => (
+        <span
           key={label}
-          className="flex flex-col items-center justify-center gap-1 p-4 rounded-md bg-gray-50 dark:bg-gray-800 flex-1 min-w-[150px]"
+          className="flex items-center gap-1 px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-800 text-sm text-gray-700 dark:text-gray-200"
         >
-          <Icon className={`h-5 w-5 text-gray-500 dark:text-gray-400 ${color ?? ''}`} />
-          <span className="text-xl font-bold text-gray-900 dark:text-white">
-            {value}
-          </span>
-          <span className="text-xs text-gray-500 dark:text-gray-400">{label}</span>
-          {spark && spark.length > 1 && <Sparkline data={spark} />}
-        </div>
+          <Icon
+            className={`w-4 h-4 ${valueClass ?? 'text-gray-600'}`}
+          />
+          <span className="font-medium">{label}:</span>
+          <span className={valueClass}>{value}</span>
+        </span>
       ))}
-    </section>
+    </div>
   )
 }

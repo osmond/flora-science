@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import { Droplet, Sprout, FileText } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { formatDistanceToNow } from 'date-fns'
 import { getHydrationProgress } from '@/components/PlantCard'
 import QuickStats, { calculateNextFeedDate } from './QuickStats'
 import type { Plant } from './types'
@@ -48,9 +49,18 @@ export default function HeroSection({
   const waterOverdue = isPast(nextWaterDue)
   const feedOverdue = isPast(nextFeedDate)
 
+  const nextWaterDate = new Date(`${nextWaterDue} ${new Date().getFullYear()}`)
+  const nextTaskText = `Water ${formatDistanceToNow(nextWaterDate, {
+    addSuffix: true,
+  })}${
+    plant.recommendedWaterMl !== undefined
+      ? ` · ~${plant.recommendedWaterMl} ml`
+      : ''
+  }`
+
   return (
     <section className="space-y-4">
-      <div className="relative rounded-xl overflow-hidden shadow">
+      <div className="relative rounded-xl overflow-hidden">
         {plant.photos && plant.photos.length > 0 ? (
           <Image
             src={plant.photos[0]}
@@ -67,12 +77,14 @@ export default function HeroSection({
           </div>
         )}
         <div className="absolute inset-0 bg-black/30 flex flex-col justify-end p-4 sm:p-6">
-          <h1 className="text-3xl font-bold text-white drop-shadow-md">
-            {plant.nickname}
+          <h1 className="text-2xl font-semibold text-white drop-shadow-md">
+            {plant.nickname} ·{' '}
+            <span className="italic font-normal">{plant.species}</span>
           </h1>
-          <p className="italic text-gray-200">{plant.species}</p>
         </div>
       </div>
+
+      <h2 className="text-xl font-semibold">{nextTaskText}</h2>
 
       <QuickStats plant={plant} weather={weather} />
 
@@ -80,23 +92,31 @@ export default function HeroSection({
         <button
           onClick={onWater}
           aria-label="Water plant"
-          className={`flex items-center gap-1 px-4 py-2 rounded-full bg-blue-600 ${waterOverdue ? 'text-amber-600' : 'text-white'} transition-transform duration-150 hover:scale-105 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-blue-500 dark:hover:bg-blue-600`}
+          className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-sm border transition-colors ${
+            waterOverdue
+              ? 'bg-amber-50 text-blue-700 border-blue-300'
+              : 'bg-blue-50 text-blue-700 border-transparent'
+          }`}
         >
           <Droplet className="h-4 w-4" />
-          {`Water (Due ${nextWaterDue})`}
+          Water
         </button>
         <button
           onClick={onFertilize}
           aria-label="Fertilize plant"
-          className={`flex items-center gap-1 px-4 py-2 rounded-full bg-green-600 ${feedOverdue ? 'text-amber-600' : 'text-white'} transition-transform duration-150 hover:scale-105 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 dark:bg-green-500 dark:hover:bg-green-600`}
+          className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-sm border transition-colors ${
+            feedOverdue
+              ? 'bg-amber-50 text-green-700 border-green-300'
+              : 'bg-green-50 text-green-700 border-transparent'
+          }`}
         >
           <Sprout className="h-4 w-4" />
-          {`Fertilize (Due ${nextFeedDate})`}
+          Fertilize
         </button>
         <button
           onClick={onAddNote}
           aria-label="Add note to plant"
-          className="flex items-center gap-1 px-4 py-2 rounded-full bg-purple-600 text-white transition-transform duration-150 hover:scale-105 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:bg-purple-500 dark:hover:bg-purple-600"
+          className="flex items-center gap-1 px-3 py-1.5 rounded-full text-sm border border-transparent bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-200"
         >
           <FileText className="h-4 w-4" />
           Add Note
