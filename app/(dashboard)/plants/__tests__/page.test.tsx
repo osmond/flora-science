@@ -11,10 +11,6 @@ jest.mock('@/components/plant-detail/AnalyticsPanel', () => ({
   __esModule: true,
   default: () => <div>AnalyticsPanel</div>,
 }))
-jest.mock('@/components/plant-detail/CareTrends', () => ({
-  __esModule: true,
-  default: () => <div>CareTrends</div>,
-}))
 jest.mock('@/components/plant-detail/QuickStats', () => ({
   __esModule: true,
   default: () => <div>QuickStats</div>,

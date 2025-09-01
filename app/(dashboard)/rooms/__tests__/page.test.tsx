@@ -1,10 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import RoomDetailPage from '../[id]/page'
 
-jest.mock('@/components/Charts', () => ({
-  CareStreak: () => <div>CareStreak</div>,
-}))
-
 describe('RoomDetailPage', () => {
   afterEach(() => {
     jest.resetAllMocks()

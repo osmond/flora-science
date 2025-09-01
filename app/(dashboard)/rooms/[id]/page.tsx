@@ -2,18 +2,9 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import dynamic from 'next/dynamic'
 import PlantCard from '@/components/PlantCard'
 import { samplePlants } from '@/lib/plants'
 import { sampleRooms, type RoomDetail } from '@/lib/rooms'
-
-const CareStreak = dynamic(
-  () => import('@/components/Charts').then((m) => m.CareStreak),
-  {
-    ssr: false,
-    loading: () => <p>Loading chart...</p>,
-  }
-)
 
 export default function RoomDetailPage({ params }: { params: { id: string } }) {
   const [room, setRoom] = useState<RoomDetail | null>(null)
@@ -84,10 +75,6 @@ export default function RoomDetailPage({ params }: { params: { id: string } }) {
               </div>
             </section>
 
-            <section>
-              <h2 className="font-semibold mb-2">Care Trends</h2>
-              <CareStreak events={room.events ?? []} />
-            </section>
           </>
         )}
       </div>

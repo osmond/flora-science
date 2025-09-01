@@ -6,7 +6,6 @@ import { ToastProvider, useToast } from "@/components/Toast"
 import PlantDetailSkeleton from "./PlantDetailSkeleton"
 import HeroSection from "@/components/plant-detail/HeroSection"
 import AnalyticsPanel from "@/components/plant-detail/AnalyticsPanel"
-import CareTrends from "@/components/plant-detail/CareTrends"
 import Timeline from "@/components/plant-detail/Timeline"
 import Gallery from "@/components/plant-detail/Gallery"
 
@@ -249,9 +248,6 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
             />
             <div className="mt-8">
               <AnalyticsPanel plant={plant} weather={weather} />
-            </div>
-            <div className="mt-8">
-              <CareTrends events={plant.events} />
             </div>
             <div className="mt-8">
               <Timeline events={plant.events} />
