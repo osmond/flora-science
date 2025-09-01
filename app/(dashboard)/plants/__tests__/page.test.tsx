@@ -23,19 +23,25 @@ describe('PlantDetailPage', () => {
   })
 
   it('shows placeholder when plant has no photos', async () => {
-    global.fetch = jest.fn().mockResolvedValue({
-      ok: true,
-      json: async () => ({
-        nickname: 'Test',
-        species: 'Species',
-        status: 'Fine',
-        hydration: 50,
-        lastWatered: 'Aug 1',
-        nextDue: 'Aug 5',
-        events: [],
-        // no photos
-      }),
-    }) as any
+    const mock = jest.fn().mockImplementation((url: any) => {
+      if (url.toString().includes('/care-plan')) {
+        return Promise.resolve({ ok: true, text: async () => '' })
+      }
+      return Promise.resolve({
+        ok: true,
+        json: async () => ({
+          nickname: 'Test',
+          species: 'Species',
+          status: 'Fine',
+          hydration: 50,
+          lastWatered: 'Aug 1',
+          nextDue: 'Aug 5',
+          events: [],
+          // no photos
+        }),
+      })
+    })
+    global.fetch = mock as any
 
     render(
       <ToastProvider>
@@ -47,19 +53,25 @@ describe('PlantDetailPage', () => {
   })
 
   it('handles null events without crashing', async () => {
-    global.fetch = jest.fn().mockResolvedValue({
-      ok: true,
-      json: async () => ({
-        nickname: 'Test',
-        species: 'Species',
-        status: 'Fine',
-        hydration: 50,
-        lastWatered: 'Aug 1',
-        nextDue: 'Aug 5',
-        events: [null, { id: 1, type: 'water', date: 'Aug 1' }],
-        photos: [],
-      }),
-    }) as any
+    const mock = jest.fn().mockImplementation((url: any) => {
+      if (url.toString().includes('/care-plan')) {
+        return Promise.resolve({ ok: true, text: async () => '' })
+      }
+      return Promise.resolve({
+        ok: true,
+        json: async () => ({
+          nickname: 'Test',
+          species: 'Species',
+          status: 'Fine',
+          hydration: 50,
+          lastWatered: 'Aug 1',
+          nextDue: 'Aug 5',
+          events: [null, { id: 1, type: 'water', date: 'Aug 1' }],
+          photos: [],
+        }),
+      })
+    })
+    global.fetch = mock as any
 
     render(
       <ToastProvider>
@@ -102,10 +114,17 @@ describe('PlantDetailPage', () => {
       photos: [],
     }
 
-    const mockFetch = jest
-      .fn()
-      .mockResolvedValueOnce({ ok: false, status: 500 })
-      .mockResolvedValueOnce({ ok: true, json: async () => plant })
+    let plantCall = 0
+    const mockFetch = jest.fn().mockImplementation((url: any) => {
+      if (url.toString().includes('/care-plan')) {
+        return Promise.resolve({ ok: true, text: async () => '' })
+      }
+      plantCall++
+      if (plantCall === 1) {
+        return Promise.resolve({ ok: false, status: 500 })
+      }
+      return Promise.resolve({ ok: true, json: async () => plant })
+    })
     global.fetch = mockFetch as any
     const user = userEvent.setup()
 
@@ -134,10 +153,13 @@ describe('PlantDetailPage', () => {
       photos: [],
     }
 
-    global.fetch = jest.fn().mockResolvedValue({
-      ok: true,
-      json: async () => plant,
-    }) as any
+    const mock = jest.fn().mockImplementation((url: any) => {
+      if (url.toString().includes('/care-plan')) {
+        return Promise.resolve({ ok: true, text: async () => '' })
+      }
+      return Promise.resolve({ ok: true, json: async () => plant })
+    })
+    global.fetch = mock as any
 
     const user = userEvent.setup()
 
@@ -170,10 +192,13 @@ describe('PlantDetailPage', () => {
       photos: [],
     }
 
-    global.fetch = jest.fn().mockResolvedValue({
-      ok: true,
-      json: async () => plant,
-    }) as any
+    const mock = jest.fn().mockImplementation((url: any) => {
+      if (url.toString().includes('/care-plan')) {
+        return Promise.resolve({ ok: true, text: async () => '' })
+      }
+      return Promise.resolve({ ok: true, json: async () => plant })
+    })
+    global.fetch = mock as any
 
     const user = userEvent.setup()
 
@@ -206,10 +231,13 @@ describe('PlantDetailPage', () => {
       photos: [],
     }
 
-    global.fetch = jest.fn().mockResolvedValue({
-      ok: true,
-      json: async () => plant,
-    }) as any
+    const mock = jest.fn().mockImplementation((url: any) => {
+      if (url.toString().includes('/care-plan')) {
+        return Promise.resolve({ ok: true, text: async () => '' })
+      }
+      return Promise.resolve({ ok: true, json: async () => plant })
+    })
+    global.fetch = mock as any
 
     const user = userEvent.setup()
 
