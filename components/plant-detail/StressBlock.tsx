@@ -28,7 +28,7 @@ interface StressBlockProps {
 export default function StressBlock({ plant, weather, stressData }: StressBlockProps) {
   return (
     <details id="plant-health" open>
-      <summary className="text-lg font-semibold cursor-pointer"><span className="mr-1">⚡</span>Plant Health</summary>
+      <summary className="text-lg font-semibold cursor-pointer">Plant Health</summary>
       <p className="text-sm text-gray-500 mb-4">
         Stress index overview and overall health radar.
       </p>
