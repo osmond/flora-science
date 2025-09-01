@@ -11,7 +11,6 @@ import {
   Legend,
   RadialBarChart,
   RadialBar,
-  BarChart,
   Bar,
   ComposedChart,
   RadarChart,
@@ -20,11 +19,10 @@ import {
   PolarAngleAxis,
   PolarRadiusAxis,
 
-  ReferenceLine,
+  ReferenceArea,
 
 } from "recharts"
 import {
-  aggregateCareByMonth,
   aggregateTaskCompletion,
   CareEvent,
   type DailyActivity,
@@ -149,6 +147,9 @@ export function HydrationTrendChart({
         <YAxis domain={[0, 100]} />
         <Tooltip />
         <Legend />
+        <ReferenceArea y1={0} y2={40} fill="#fecaca" fillOpacity={0.3} />
+        <ReferenceArea y1={40} y2={80} fill="#dcfce7" fillOpacity={0.3} />
+        <ReferenceArea y1={80} y2={100} fill="#fef9c3" fillOpacity={0.3} />
         <Line
           type="monotone"
           dataKey="actual"
@@ -161,12 +162,6 @@ export function HydrationTrendChart({
           stroke="#93c5fd"
           strokeDasharray="4 4"
           name="Forecast"
-        />
-        <ReferenceLine
-          y={40}
-          stroke="#ef4444"
-          strokeDasharray="3 3"
-          label="Low"
         />
       </LineChart>
     </ResponsiveContainer>
@@ -214,28 +209,32 @@ export function ComparativeChart({
   )
 }
 
-export function CareTrendsChart({
-  events,
-  view = "monthly",
-}: {
-  events: CareEvent[]
-  view?: "monthly" | "weekly" | "yearly"
-}) {
-  // currently only monthly view implemented
-  const data = aggregateCareByMonth(events)
+export function CareStreak({ events }: { events: CareEvent[] }) {
+  const today = new Date()
+  const days = Array.from({ length: 30 }).map((_, idx) => {
+    const d = new Date()
+    d.setDate(today.getDate() - (29 - idx))
+    const key = d.toISOString().split("T")[0]
+    const has = events.some(
+      (e) => new Date(e.date).toISOString().split("T")[0] === key
+    )
+    return { date: key, has }
+  })
 
   return (
-    <ResponsiveContainer width="100%" height={250}>
-      <BarChart data={data}>
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="month" />
-        <YAxis allowDecimals={false} />
-        <Tooltip />
-        <Legend />
-        <Bar dataKey="water" fill="#3b82f6" name="Water" />
-        <Bar dataKey="fertilize" fill="#22c55e" name="Fertilize" />
-      </BarChart>
-    </ResponsiveContainer>
+    <div className="grid grid-cols-6 gap-1 w-max" data-testid="care-streak">
+      {days.map((d) => (
+        <div
+          key={d.date}
+          title={`${d.date}: ${d.has ? "care" : "no care"}`}
+          className={`w-3 h-3 rounded-full ${
+            d.has
+              ? "bg-green-500"
+              : "bg-gray-200 dark:bg-gray-700"
+          }`}
+        />
+      ))}
+    </div>
   )
 }
 
@@ -304,6 +303,12 @@ export function WaterBalanceChart({ data }: { data: WaterBalanceDatum[] }) {
 // Display a plant stress index as a radial gauge (0-100)
 export function StressIndexGauge({ value }: { value: number }) {
   const data = [{ name: "Stress", value, fill: "#ef4444" }]
+  const { label, color } =
+    value < 30
+      ? { label: "Low", color: "#22c55e" }
+      : value <= 70
+        ? { label: "Moderate", color: "#eab308" }
+        : { label: "High", color: "#ef4444" }
   return (
     <ResponsiveContainer width="100%" height={250}>
       <RadialBarChart
@@ -325,6 +330,16 @@ export function StressIndexGauge({ value }: { value: number }) {
           className="text-lg fill-gray-700"
         >
           {value}
+        </text>
+        <text
+          x="50%"
+          y="65%"
+          textAnchor="middle"
+          dominantBaseline="middle"
+          style={{ fill: color }}
+          className="text-sm"
+        >
+          {label}
         </text>
       </RadialBarChart>
     </ResponsiveContainer>

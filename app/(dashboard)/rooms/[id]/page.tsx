@@ -7,8 +7,8 @@ import PlantCard from '@/components/PlantCard'
 import { samplePlants } from '@/lib/plants'
 import { sampleRooms, type RoomDetail } from '@/lib/rooms'
 
-const CareTrendsChart = dynamic(
-  () => import('@/components/Charts').then((m) => m.CareTrendsChart),
+const CareStreak = dynamic(
+  () => import('@/components/Charts').then((m) => m.CareStreak),
   {
     ssr: false,
     loading: () => <p>Loading chart...</p>,
@@ -86,7 +86,7 @@ export default function RoomDetailPage({ params }: { params: { id: string } }) {
 
             <section>
               <h2 className="font-semibold mb-2">Care Trends</h2>
-              <CareTrendsChart events={room.events ?? []} />
+              <CareStreak events={room.events ?? []} />
             </section>
           </>
         )}

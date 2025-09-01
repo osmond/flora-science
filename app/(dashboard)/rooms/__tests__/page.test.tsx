@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react'
 import RoomDetailPage from '../[id]/page'
 
 jest.mock('@/components/Charts', () => ({
-  CareTrendsChart: () => <div>CareTrendsChart</div>,
+  CareStreak: () => <div>CareStreak</div>,
 }))
 
 describe('RoomDetailPage', () => {
