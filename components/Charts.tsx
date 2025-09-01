@@ -32,8 +32,12 @@ import {
 import {
   calculateNutrientAvailability,
   calculateStressIndex,
+  calculateHydrationTrend,
   type StressDatum,
+  type HydrationLogEntry,
+  type ComparativeDatum,
 } from "@/lib/plant-metrics"
+import type { Plant } from "@/lib/plants"
 import type { Weather } from "@/lib/weather"
 
 
@@ -143,6 +147,47 @@ export function HydrationTrendChart({
           strokeDasharray="3 3"
           label="Low"
         />
+      </LineChart>
+    </ResponsiveContainer>
+  )
+}
+
+export function ComparativeChart({
+  plants,
+  data,
+}: {
+  plants: Plant[]
+  data: ComparativeDatum[]
+}) {
+  const colors = [
+    "#3b82f6",
+    "#ef4444",
+    "#16a34a",
+    "#f59e0b",
+    "#8b5cf6",
+    "#ec4899",
+    "#0ea5e9",
+    "#fde047",
+  ]
+
+  return (
+    <ResponsiveContainer width="100%" height={250}>
+      <LineChart data={data}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="date" />
+        <YAxis domain={[0, 100]} />
+        <Tooltip />
+        <Legend />
+        {plants.map((p, idx) => (
+          <Line
+            key={p.nickname}
+            type="monotone"
+            dataKey={p.nickname}
+            stroke={colors[idx % colors.length]}
+            name={p.nickname}
+            data-testid={`comparative-line-${idx}`}
+          />
+        ))}
       </LineChart>
     </ResponsiveContainer>
   )

@@ -4,7 +4,9 @@ import {
   WeatherDay,
   WaterEvent,
   calculateHydrationTrend,
+  collectPlantMetrics,
 } from '../plant-metrics'
+import { samplePlants } from '../plants'
 
 describe('plant metrics', () => {
   it('calculates et0 and water balance', () => {
@@ -28,5 +30,12 @@ describe('plant metrics', () => {
     const trend = calculateHydrationTrend(log, 3, 50)
     expect(trend[2]).toMatchObject({ avg: 60, belowThreshold: false })
     expect(trend[3].belowThreshold).toBe(true)
+  })
+
+  it('collects hydration metrics across plants', () => {
+    const plants = [samplePlants['1'], samplePlants['2']]
+    const metrics = collectPlantMetrics(plants)
+    expect(metrics[0]).toMatchObject({ date: '2024-08-21', Delilah: 80 })
+    expect(metrics.some((m) => m.Sunny === 92)).toBe(true)
   })
 })

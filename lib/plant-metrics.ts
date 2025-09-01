@@ -1,3 +1,5 @@
+import type { Plant } from "./plants"
+
 export interface WeatherDay {
   date: string
   temperature: number // °C
@@ -162,5 +164,39 @@ export function calculateHydrationTrend(
       avg: rounded,
       belowThreshold: rounded < threshold,
     }
+  })
+}
+
+export interface ComparativeDatum {
+  date: string
+  [plant: string]: number | null | undefined
+}
+
+/**
+ * Collect hydration values across multiple plants and align them by date.
+ *
+ * The returned array contains one entry per unique date found in any plant's
+ * hydration log. Each object has a `date` property and a property for each
+ * plant's nickname holding the hydration value (or `null` if no reading was
+ * recorded that day).
+ */
+export function collectPlantMetrics(plants: Plant[]): ComparativeDatum[] {
+  const dates = new Set<string>()
+  plants.forEach((p) =>
+    p.hydrationLog.forEach((h) => {
+      dates.add(h.date)
+    }),
+  )
+  const sortedDates = Array.from(dates).sort(
+    (a, b) => new Date(a).getTime() - new Date(b).getTime(),
+  )
+
+  return sortedDates.map((date) => {
+    const datum: ComparativeDatum = { date }
+    plants.forEach((p) => {
+      const entry = p.hydrationLog.find((h) => h.date === date)
+      datum[p.nickname] = entry ? entry.value : null
+    })
+    return datum
   })
 }
