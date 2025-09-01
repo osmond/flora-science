@@ -74,6 +74,10 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
   const [waterOpen, setWaterOpen] = useState(false)
   const [fertilizeOpen, setFertilizeOpen] = useState(false)
   const [noteOpen, setNoteOpen] = useState(false)
+  const [trendView, setTrendView] = useState<"monthly" | "weekly" | "yearly">(
+    "monthly",
+  )
+  const [expandedId, setExpandedId] = useState<number | null>(null)
   const toast = useToast()
   const [weather, setWeather] = useState<Weather | null>(null)
   const [offline, setOffline] = useState(false)
@@ -290,106 +294,123 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
           <>
 
             {/* Hero Section */}
-            <section className="rounded-xl border p-6 shadow-sm bg-white dark:bg-gray-900 flex flex-col md:flex-row gap-6 items-center md:items-start">
-              {plant.photos && plant.photos.length > 0 ? (
-                <Image
-                  src={plant.photos[0]}
-                  alt={plant.nickname}
-                  width={800}
-                  height={600}
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  className="w-full md:w-1/2 rounded-lg object-cover max-h-72"
-                  loading="lazy"
-                />
-              ) : (
-                <div className="w-full md:w-1/2 rounded-lg flex items-center justify-center bg-gray-100 dark:bg-gray-800 max-h-72">
-                  <span className="text-gray-500 dark:text-gray-400">No photo</span>
-                </div>
-              )}
-
-              <div className="space-y-3 md:w-1/2 text-center md:text-left">
-                <div>
-                  <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+            <section className="space-y-4">
+              <div className="relative rounded-xl overflow-hidden shadow">
+                {plant.photos && plant.photos.length > 0 ? (
+                  <Image
+                    src={plant.photos[0]}
+                    alt={plant.nickname}
+                    width={1200}
+                    height={800}
+                    sizes="100vw"
+                    className="w-full h-64 sm:h-80 object-cover"
+                    loading="lazy"
+                  />
+                ) : (
+                  <div className="w-full h-64 sm:h-80 flex items-center justify-center bg-gray-100 dark:bg-gray-800">
+                    <span className="text-gray-500 dark:text-gray-400">No photo</span>
+                  </div>
+                )}
+                <div className="absolute inset-0 bg-black/30 flex flex-col justify-end p-4 sm:p-6">
+                  <h1 className="text-3xl font-bold text-white drop-shadow-md">
                     {plant.nickname}
                   </h1>
-                  <p className="italic text-gray-500">{plant.species}</p>
+                  <p className="italic text-gray-200">{plant.species}</p>
                 </div>
-                <div className="flex flex-wrap justify-center md:justify-start gap-2 mt-2">
-                  <button
-                    onClick={handleWater}
-                    aria-label="Water plant"
-                    className="flex items-center px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-blue-500 dark:hover:bg-blue-600"
-                  >
-                    <Droplet className="h-4 w-4 mr-1" />
-                    Water
-                  </button>
-                  <button
-                    onClick={handleFertilize}
-                    aria-label="Fertilize plant"
-                    className="flex items-center px-3 py-1 rounded bg-green-600 text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 dark:bg-green-500 dark:hover:bg-green-600"
-                  >
-                    <Sprout className="h-4 w-4 mr-1" />
-                    Fertilize
-                  </button>
-                  <button
-                    onClick={handleAddNote}
-                    aria-label="Add note to plant"
-                    className="flex items-center px-3 py-1 rounded bg-purple-600 text-white hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:bg-purple-500 dark:hover:bg-purple-600"
-                  >
-                    <FileText className="h-4 w-4 mr-1" />
-                    Add Note
-                  </button>
-                </div>
-                <div className="flex flex-wrap justify-center md:justify-start gap-2 text-sm">
-                  <span className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full font-medium">
-                    {plant.status}
-                  </span>
-                </div>
-                <div
-                  className="w-full bg-gray-200 rounded-full h-2"
-                  role="progressbar"
-                  aria-label="Hydration"
-                  aria-valuenow={progress.pct}
-                  aria-valuemin={0}
-                  aria-valuemax={100}
-                  aria-valuetext={`${progress.pct}% hydration`}
+              </div>
+
+              <div className="flex flex-wrap justify-center sm:justify-start gap-3">
+                <button
+                  onClick={handleWater}
+                  aria-label="Water plant"
+                  className="flex items-center gap-1 px-4 py-2 rounded-full bg-blue-600 text-white transition-transform duration-150 hover:scale-105 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-blue-500 dark:hover:bg-blue-600"
                 >
-                  <div
-                    className={`h-2 rounded-full ${progress.barColor}`}
-                    style={{ width: `${progress.pct}%` }}
-                  />
-                  <span className="sr-only">{`${progress.pct}% hydration`}</span>
-                </div>
+                  <Droplet className="h-4 w-4" />
+                  Water
+                </button>
+                <button
+                  onClick={handleFertilize}
+                  aria-label="Fertilize plant"
+                  className="flex items-center gap-1 px-4 py-2 rounded-full bg-green-600 text-white transition-transform duration-150 hover:scale-105 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 dark:bg-green-500 dark:hover:bg-green-600"
+                >
+                  <Sprout className="h-4 w-4" />
+                  Fertilize
+                </button>
+                <button
+                  onClick={handleAddNote}
+                  aria-label="Add note to plant"
+                  className="flex items-center gap-1 px-4 py-2 rounded-full bg-purple-600 text-white transition-transform duration-150 hover:scale-105 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:bg-purple-500 dark:hover:bg-purple-600"
+                >
+                  <FileText className="h-4 w-4" />
+                  Add Note
+                </button>
+              </div>
+              <div className="flex flex-wrap justify-center sm:justify-start gap-2 text-sm">
+                <span className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full font-medium">
+                  {plant.status}
+                </span>
+              </div>
+              <div
+                className="w-full bg-gray-200 rounded-full h-2"
+                role="progressbar"
+                aria-label="Hydration"
+                aria-valuenow={progress.pct}
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-valuetext={`${progress.pct}% hydration`}
+              >
+                <div
+                  className={`h-2 rounded-full ${progress.barColor}`}
+                  style={{ width: `${progress.pct}%` }}
+                />
+                <span className="sr-only">{`${progress.pct}% hydration`}</span>
               </div>
             </section>
 
             {/* Quick Stats */}
-            <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-              {/* Care Timing */}
-              {[{ label: "Last Watered", value: plant.lastWatered, icon: Droplet },
+            <section className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+              {[
+                { label: "Last Watered", value: plant.lastWatered, icon: Droplet },
                 { label: "Next Water Due", value: plant.nextDue, icon: Calendar },
                 { label: "Last Fertilized", value: plant.lastFertilized, icon: Sprout },
-                { label: "Next Feed", value: calculateNextFeedDate(plant.lastFertilized, plant.nutrientLevel ?? 100), icon: Calendar }].map(({ label, value, icon: Icon }) => (
-                <div key={label} className="flex items-center justify-between rounded-lg border p-4 bg-white shadow-sm dark:bg-gray-900 dark:border-gray-700">
-                  <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-                    <Icon className="h-4 w-4" />
-                    {label}
-                  </div>
-                  <div className="text-sm font-semibold text-gray-900 dark:text-white">{value}</div>
-                </div>
-              ))}
-              {/* Plant State */}
-              {[{ label: "Hydration", value: `${plant.hydration}%`, icon: Droplet, spark: plant.hydrationLog?.map(h => h.value) ?? [] },
-                { label: "Stress Score", value: Math.round(calculateStressIndex({ overdueDays: plant.status === "Water overdue" ? 1 : 0, hydration: plant.hydration, temperature: weather?.temperature ?? 25, light: 50 })), icon: Activity, color: "text-orange-600" }].map(({ label, value, icon: Icon, spark, color }) => (
-                <div key={label} className="flex items-center justify-between rounded-lg border p-4 bg-white shadow-sm dark:bg-gray-900 dark:border-gray-700">
-                  <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-                    <Icon className={`h-4 w-4 ${color ?? ''}`} />
-                    {label}
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-semibold text-gray-900 dark:text-white">{value}</span>
-                    {spark && spark.length > 1 && <Sparkline data={spark} />}
-                  </div>
+                {
+                  label: "Next Feed",
+                  value: calculateNextFeedDate(
+                    plant.lastFertilized,
+                    plant.nutrientLevel ?? 100,
+                  ),
+                  icon: Calendar,
+                },
+                {
+                  label: "Hydration",
+                  value: `${plant.hydration}%`,
+                  icon: Droplet,
+                  spark: plant.hydrationLog?.map((h) => h.value) ?? [],
+                },
+                {
+                  label: "Stress Score",
+                  value: Math.round(
+                    calculateStressIndex({
+                      overdueDays: plant.status === "Water overdue" ? 1 : 0,
+                      hydration: plant.hydration,
+                      temperature: weather?.temperature ?? 25,
+                      light: 50,
+                    }),
+                  ),
+                  icon: Activity,
+                  color: "text-orange-600",
+                },
+              ].map(({ label, value, icon: Icon, spark, color }) => (
+                <div
+                  key={label}
+                  className="flex flex-col items-center justify-center gap-1 rounded-lg border p-4 bg-white shadow-sm dark:bg-gray-900 dark:border-gray-700"
+                >
+                  <Icon className={`h-5 w-5 text-gray-500 dark:text-gray-400 ${color ?? ""}`} />
+                  <span className="text-xl font-bold text-gray-900 dark:text-white">
+                    {value}
+                  </span>
+                  <span className="text-xs text-gray-500 dark:text-gray-400">{label}</span>
+                  {spark && spark.length > 1 && <Sparkline data={spark} />}
                 </div>
               ))}
             </section>
@@ -425,8 +446,28 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
 
             {/* Care Trends */}
             <section className="rounded-xl border p-6 shadow-sm bg-white dark:bg-gray-900">
-              <h2 className="text-lg font-semibold mb-4">Care Trends</h2>
-              <CareTrendsChart events={plant.events} />
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-semibold">Care Trends</h2>
+                <div className="flex gap-2 text-sm">
+                  {(["monthly", "weekly", "yearly"] as const).map((v) => (
+                    <button
+                      key={v}
+                      onClick={() => setTrendView(v)}
+                      className={`px-3 py-1 rounded-full capitalize transition-colors ${
+                        trendView === v
+                          ? "bg-blue-600 text-white"
+                          : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300"
+                      }`}
+                    >
+                      {v}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <p className="text-sm text-gray-500 mb-2">
+                100% tasks completed on time this month
+              </p>
+              <CareTrendsChart events={plant.events} view={trendView} />
             </section>
 
             {/* Timeline */}
@@ -436,35 +477,43 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
               {!plant.events || plant.events.length === 0 ? (
                 <p className="text-sm text-gray-500 dark:text-gray-400">No activity yet.</p>
               ) : (
-                <ul className="space-y-2">
+                <ol className="relative border-l ml-4">
                   {plant.events
                     .filter((e): e is PlantEvent => e !== null && e !== undefined)
                     .map((e) => {
                       const type =
                         EVENT_TYPES[e.type as keyof typeof EVENT_TYPES] ?? EVENT_TYPES.note
                       const Icon = type.icon
+                      const dot =
+                        e.type === "water"
+                          ? "bg-blue-500"
+                          : e.type === "fertilize"
+                          ? "bg-green-500"
+                          : "bg-purple-500"
+                      const open = expandedId === e.id
                       return (
-                        <li
-                          key={e.id}
-                          className="flex items-start gap-3 rounded-lg border p-3 bg-white dark:bg-gray-900 dark:border-gray-700"
-                        >
-                          <span className="w-16 text-xs font-medium text-gray-500">{e.date}</span>
-                          <span className="text-sm flex items-center gap-2">
-                            <span
-                              className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold ${type.color}`}
-                            >
-                              <span aria-hidden="true">
-                                <Icon className="h-3 w-3" />
-                              </span>
-                              <span aria-hidden="true">{type.label}</span>
-                              <span className="sr-only">{type.label}</span>
-                            </span>
-                            {e.type === "note" && e.note}
+                        <li key={e.id} className="mb-6 ml-6">
+                          <span
+                            className={`absolute -left-3 flex items-center justify-center w-6 h-6 rounded-full text-white ${dot} ring-2 ring-white transition-transform hover:scale-110`}
+                          >
+                            <Icon className="w-3 h-3" />
                           </span>
+                          <button
+                            onClick={() => setExpandedId(open ? null : e.id)}
+                            className="text-left w-full"
+                          >
+                            <time className="block text-xs text-gray-500">{e.date}</time>
+                            <span className="font-medium">{type.label}</span>
+                          </button>
+                          {open && (
+                            <div className="mt-2 p-3 rounded-lg border bg-white dark:bg-gray-900 dark:border-gray-700 text-sm">
+                              {e.type === "note" && e.note}
+                            </div>
+                          )}
                         </li>
                       )
                     })}
-                </ul>
+                </ol>
               )}
             </section>
 

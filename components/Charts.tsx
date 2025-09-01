@@ -127,7 +127,20 @@ export function HydrationTrendChart({
 }: {
   log: HydrationLogEntry[]
 }) {
-  const data = calculateHydrationTrend(log)
+  const history = calculateHydrationTrend(log)
+  const last = history[history.length - 1]?.avg ?? 50
+  const forecast = Array.from({ length: 7 }).map((_, idx) => {
+    const d = new Date()
+    d.setDate(d.getDate() + idx + 1)
+    return {
+      date: d.toLocaleDateString(undefined, { month: "short", day: "numeric" }),
+      forecast: last,
+    }
+  })
+  const data = [
+    ...history.map((h) => ({ date: h.date, actual: h.avg })),
+    ...forecast,
+  ]
   return (
     <ResponsiveContainer width="100%" height={250}>
       <LineChart data={data}>
@@ -138,9 +151,16 @@ export function HydrationTrendChart({
         <Legend />
         <Line
           type="monotone"
-          dataKey="avg"
+          dataKey="actual"
           stroke="#3b82f6"
           name="Hydration (%)"
+        />
+        <Line
+          type="monotone"
+          dataKey="forecast"
+          stroke="#93c5fd"
+          strokeDasharray="4 4"
+          name="Forecast"
         />
         <ReferenceLine
           y={40}
@@ -194,7 +214,14 @@ export function ComparativeChart({
   )
 }
 
-export function CareTrendsChart({ events }: { events: CareEvent[] }) {
+export function CareTrendsChart({
+  events,
+  view = "monthly",
+}: {
+  events: CareEvent[]
+  view?: "monthly" | "weekly" | "yearly"
+}) {
+  // currently only monthly view implemented
   const data = aggregateCareByMonth(events)
 
   return (
@@ -329,7 +356,7 @@ export function NutrientLevelChart({
   nutrientLevel?: number
 }) {
   const today = new Date()
-  const data = Array.from({ length: 7 }).map((_, idx) => {
+  const history = Array.from({ length: 7 }).map((_, idx) => {
     const d = new Date(today)
     d.setDate(d.getDate() - (6 - idx))
     const level = calculateNutrientAvailability(
@@ -342,6 +369,16 @@ export function NutrientLevelChart({
       level,
     }
   })
+  const last = history[history.length - 1]?.level ?? nutrientLevel
+  const forecast = Array.from({ length: 7 }).map((_, idx) => {
+    const d = new Date(today)
+    d.setDate(d.getDate() + idx + 1)
+    return {
+      day: d.toLocaleDateString(undefined, { month: "short", day: "numeric" }),
+      forecast: Math.max(0, last - (idx + 1) * 2),
+    }
+  })
+  const data = [...history, ...forecast]
 
   return (
     <ResponsiveContainer width="100%" height={250}>
@@ -352,6 +389,13 @@ export function NutrientLevelChart({
         <Tooltip />
         <Legend />
         <Line type="monotone" dataKey="level" stroke="#16a34a" name="Nutrients (%)" />
+        <Line
+          type="monotone"
+          dataKey="forecast"
+          stroke="#86efac"
+          strokeDasharray="4 4"
+          name="Forecast"
+        />
       </LineChart>
 
     </ResponsiveContainer>
