@@ -40,7 +40,7 @@ export default function CarePlan({ plan, nickname }: CarePlanProps) {
     { key: 'humidity', label: 'Humidity', icon: Wind },
     { key: 'temperature', label: 'Temperature', icon: Thermometer },
     { key: 'soil', label: 'Soil', icon: LandPlot },
-    { key: 'fertilization', label: 'Fertilization', icon: Sprout },
+    { key: 'fertilization', label: 'Fertilizer', icon: Sprout },
     { key: 'pruning', label: 'Pruning', icon: Scissors },
     { key: 'pests', label: 'Pests', icon: Bug },
   ]
@@ -57,6 +57,14 @@ export default function CarePlan({ plan, nickname }: CarePlanProps) {
     sections.map((s) => s.key)
   )
 
+  const overviewSection = sections.find((s) => s.key === 'Overview')
+  const leftSections = sections.filter((s) =>
+    ['Light', 'Water', 'Humidity', 'Temperature'].includes(s.key)
+  )
+  const rightSections = sections.filter((s) =>
+    ['Soil', 'Fertilizer', 'Pruning', 'Pests'].includes(s.key)
+  )
+
   const toggleSection = (key: string) => {
     setOpenSections((prev) =>
       prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]
@@ -66,6 +74,23 @@ export default function CarePlan({ plan, nickname }: CarePlanProps) {
   const allOpen = openSections.length === sections.length
   const toggleAll = () =>
     setOpenSections(allOpen ? [] : sections.map((s) => s.key))
+
+  const renderSection = ({ key, icon: Icon, text }: Section) => {
+    const isOpen = openSections.includes(key)
+    return (
+      <div key={key} className="border rounded-md">
+        <button
+          type="button"
+          className="w-full flex items-center p-2 text-left"
+          onClick={() => toggleSection(key)}
+        >
+          <Icon className="w-5 h-5 mr-2 flex-shrink-0" />
+          <span className="font-medium">{key}</span>
+        </button>
+        {isOpen && <div className="p-2 pt-0 text-sm">{text}</div>}
+      </div>
+    )
+  }
 
   return (
     <section className="rounded-xl p-6 bg-green-50 dark:bg-gray-800">
@@ -88,23 +113,12 @@ export default function CarePlan({ plan, nickname }: CarePlanProps) {
               {allOpen ? 'Collapse all' : 'Show all'}
             </button>
           </div>
-          <div className="space-y-2">
-            {sections.map(({ key, icon: Icon, text }) => {
-              const isOpen = openSections.includes(key)
-              return (
-                <div key={key} className="border rounded-md">
-                  <button
-                    type="button"
-                    className="w-full flex items-center p-2 text-left"
-                    onClick={() => toggleSection(key)}
-                  >
-                    <Icon className="w-5 h-5 mr-2 flex-shrink-0" />
-                    <span className="font-medium">{key}</span>
-                  </button>
-                  {isOpen && <div className="p-2 pt-0 text-sm">{text}</div>}
-                </div>
-              )
-            })}
+          {overviewSection && (
+            <div className="mb-2">{renderSection(overviewSection)}</div>
+          )}
+          <div className="grid grid-cols-1 md:grid-cols-2 md:gap-4">
+            <div className="space-y-2">{leftSections.map(renderSection)}</div>
+            <div className="space-y-2">{rightSections.map(renderSection)}</div>
           </div>
         </>
       ) : (
