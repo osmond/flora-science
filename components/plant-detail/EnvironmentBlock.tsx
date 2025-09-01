@@ -36,7 +36,7 @@ export default function EnvironmentBlock({ env, envChartData }: EnvironmentBlock
         Temperature, humidity, and vapor pressure deficit readings.
       </p>
       <EnvRow temperature={env.temperature} humidity={env.humidity} vpd={env.vpd} tempUnit="C" />
-      <div className="mt-4 flex gap-6 overflow-x-auto md:flex-col md:overflow-visible">
+      <div className="mt-4 flex gap-6 overflow-x-auto snap-x snap-mandatory md:flex-col md:overflow-visible">
         <ChartCard title="Temperature & Humidity" insight="Daily temperature and humidity readings.">
           <TempHumidityChart tempUnit="C" data={envChartData} />
         </ChartCard>

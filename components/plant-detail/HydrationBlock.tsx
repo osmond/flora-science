@@ -47,7 +47,7 @@ export default function HydrationBlock({
       <p className="text-sm text-gray-500 mb-4">
         Hydration history and nutrient levels.
       </p>
-      <div className="flex gap-6 overflow-x-auto md:flex-col md:overflow-visible">
+      <div className="flex gap-6 overflow-x-auto snap-x snap-mandatory md:flex-col md:overflow-visible">
         <ChartCard title="Nutrient Levels" insight="Nutrient availability over time">
           <NutrientLevelChart
             lastFertilized={plant.lastFertilized}
@@ -58,7 +58,7 @@ export default function HydrationBlock({
           <HydrationTrendChart log={plant.hydrationLog ?? []} />
         </ChartCard>
       </div>
-      <div className="mt-4 flex overflow-x-auto md:flex-col md:overflow-visible">
+      <div className="mt-4 flex overflow-x-auto snap-x snap-mandatory md:flex-col md:overflow-visible">
         <ChartCard title="Water Balance" insight="Water balance with ET0">
           <div className="mb-2 flex items-center gap-2">
             <div className="flex gap-1">
