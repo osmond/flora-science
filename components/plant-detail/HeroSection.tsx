@@ -2,8 +2,9 @@
 
 import Image from 'next/image'
 import { Droplet, Sprout, FileText } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { getHydrationProgress } from '@/components/PlantCard'
-import QuickStats from './QuickStats'
+import QuickStats, { calculateNextFeedDate } from './QuickStats'
 import type { Plant } from './types'
 import type { Weather } from '@/lib/weather'
 
@@ -23,6 +24,29 @@ export default function HeroSection({
   onAddNote,
 }: HeroSectionProps) {
   const progress = getHydrationProgress(plant.hydration)
+  const [nextWaterDue, setNextWaterDue] = useState(plant.nextDue)
+  const [nextFeedDate, setNextFeedDate] = useState(
+    calculateNextFeedDate(plant.lastFertilized, plant.nutrientLevel ?? 100)
+  )
+
+  useEffect(() => {
+    setNextWaterDue(plant.nextDue)
+  }, [plant.nextDue])
+
+  useEffect(() => {
+    setNextFeedDate(
+      calculateNextFeedDate(plant.lastFertilized, plant.nutrientLevel ?? 100)
+    )
+  }, [plant.lastFertilized, plant.nutrientLevel])
+
+  function isPast(dateStr: string) {
+    const year = new Date().getFullYear()
+    const date = new Date(`${dateStr} ${year}`)
+    return date < new Date()
+  }
+
+  const waterOverdue = isPast(nextWaterDue)
+  const feedOverdue = isPast(nextFeedDate)
 
   return (
     <section className="space-y-4">
@@ -56,18 +80,18 @@ export default function HeroSection({
         <button
           onClick={onWater}
           aria-label="Water plant"
-          className="flex items-center gap-1 px-4 py-2 rounded-full bg-blue-600 text-white transition-transform duration-150 hover:scale-105 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-blue-500 dark:hover:bg-blue-600"
+          className={`flex items-center gap-1 px-4 py-2 rounded-full bg-blue-600 ${waterOverdue ? 'text-amber-600' : 'text-white'} transition-transform duration-150 hover:scale-105 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-blue-500 dark:hover:bg-blue-600`}
         >
           <Droplet className="h-4 w-4" />
-          Water
+          {`Water (Due ${nextWaterDue})`}
         </button>
         <button
           onClick={onFertilize}
           aria-label="Fertilize plant"
-          className="flex items-center gap-1 px-4 py-2 rounded-full bg-green-600 text-white transition-transform duration-150 hover:scale-105 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 dark:bg-green-500 dark:hover:bg-green-600"
+          className={`flex items-center gap-1 px-4 py-2 rounded-full bg-green-600 ${feedOverdue ? 'text-amber-600' : 'text-white'} transition-transform duration-150 hover:scale-105 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 dark:bg-green-500 dark:hover:bg-green-600`}
         >
           <Sprout className="h-4 w-4" />
-          Fertilize
+          {`Fertilize (Due ${nextFeedDate})`}
         </button>
         <button
           onClick={onAddNote}

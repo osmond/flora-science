@@ -11,7 +11,10 @@ interface QuickStatsProps {
   weather: Weather | null
 }
 
-function calculateNextFeedDate(lastFertilized: string, nutrientLevel: number) {
+export function calculateNextFeedDate(
+  lastFertilized: string,
+  nutrientLevel: number
+) {
   const current = calculateNutrientAvailability(lastFertilized, nutrientLevel)
   const daysLeft = Math.max(0, Math.ceil((current - 30) / 2))
   const date = new Date()

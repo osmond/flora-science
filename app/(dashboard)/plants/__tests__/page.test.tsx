@@ -18,6 +18,7 @@ jest.mock('@/components/plant-detail/CareTrends', () => ({
 jest.mock('@/components/plant-detail/QuickStats', () => ({
   __esModule: true,
   default: () => <div>QuickStats</div>,
+  calculateNextFeedDate: () => 'Aug 5',
 }))
 
 describe('PlantDetailPage', () => {
