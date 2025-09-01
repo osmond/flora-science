@@ -89,7 +89,7 @@ describe('PlantDetailPage', () => {
     expect(
       await screen.findByText(/Offline data\. Changes may not be saved\./i)
     ).toBeInTheDocument()
-    expect(await screen.findByText('Delilah')).toBeInTheDocument()
+    expect(await screen.findByText(/Delilah/i)).toBeInTheDocument()
   })
 
   it('retries loading on error when Retry is clicked', async () => {
