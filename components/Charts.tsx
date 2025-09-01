@@ -14,7 +14,14 @@ import {
   BarChart,
   Bar,
   ComposedChart,
+  RadarChart,
+  Radar,
+  PolarGrid,
+  PolarAngleAxis,
+  PolarRadiusAxis,
+
   ReferenceLine,
+
 } from "recharts"
 import {
   aggregateCareByMonth,
@@ -24,10 +31,11 @@ import {
 } from "@/lib/seasonal-trends"
 import {
   calculateNutrientAvailability,
-  calculateHydrationTrend,
+  calculateStressIndex,
   type StressDatum,
-  type HydrationLogEntry,
 } from "@/lib/plant-metrics"
+import type { Weather } from "@/lib/weather"
+
 
 // Dummy dataset for environment over 7 days
 const envData = [
@@ -300,6 +308,53 @@ export function NutrientLevelChart({
         <Line type="monotone" dataKey="level" stroke="#16a34a" name="Nutrients (%)" />
       </LineChart>
 
+    </ResponsiveContainer>
+  )
+}
+
+export function PlantHealthRadar({
+  hydration,
+  lastFertilized,
+  nutrientLevel = 100,
+  events,
+  status,
+  weather,
+}: {
+  hydration: number
+  lastFertilized: string
+  nutrientLevel?: number
+  events: CareEvent[]
+  status: string
+  weather: Weather | null
+}) {
+  const nutrients = calculateNutrientAvailability(lastFertilized, nutrientLevel)
+  const light = Math.min(100, (weather?.solarRadiation ?? 50) * 4)
+  const stress = calculateStressIndex({
+    overdueDays: status === "Water overdue" ? 1 : 0,
+    hydration,
+    temperature: weather?.temperature ?? 25,
+    light,
+  })
+  const totals = aggregateTaskCompletion(events)
+  const completed = totals.reduce((sum, t) => sum + t.completed, 0)
+  const missed = totals.reduce((sum, t) => sum + t.missed, 0)
+  const consistency = completed + missed ? (completed / (completed + missed)) * 100 : 0
+  const data = [
+    { metric: "Hydration", value: hydration },
+    { metric: "Nutrients", value: nutrients },
+    { metric: "Light", value: light },
+    { metric: "Stress", value: stress },
+    { metric: "Consistency", value: consistency },
+  ]
+
+  return (
+    <ResponsiveContainer width={180} height={140}>
+      <RadarChart cx="50%" cy="50%" outerRadius="80%" data={data}>
+        <PolarGrid stroke="#e5e7eb" />
+        <PolarAngleAxis dataKey="metric" stroke="#6b7280" />
+        <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} />
+        <Radar dataKey="value" stroke="#64748b" fill="#94a3b8" fillOpacity={0.3} />
+      </RadarChart>
     </ResponsiveContainer>
   )
 }
