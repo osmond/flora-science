@@ -15,7 +15,13 @@ export default function TodayPage() {
   const [groupBy, setGroupBy] = useState<GroupBy>("none")
   const [sortBy, setSortBy] = useState<SortBy>("alpha")
 
-  const plants = useMemo(() => Object.entries(samplePlants), [])
+  const plants = useMemo(
+    () =>
+      Object.entries(samplePlants).filter(([, p]) =>
+        p.status.toLowerCase().includes("due")
+      ),
+    []
+  )
   const {
     plantsCount,
     avgHydration,
