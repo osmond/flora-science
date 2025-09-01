@@ -32,6 +32,7 @@ import {
 import {
   calculateNutrientAvailability,
   calculateStressIndex,
+  calculateHydrationTrend,
   type StressDatum,
 } from "@/lib/plant-metrics"
 import type { Weather } from "@/lib/weather"
@@ -63,12 +64,12 @@ export function TempHumidityChart({
 
   return (
     <ResponsiveContainer width="100%" height={250}>
-      <LineChart data={data}>
+      <LineChart data={data} className="text-xs font-sans">
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="day" />
-        <YAxis />
+        <XAxis dataKey="day" tick={{ fontSize: 12, fontFamily: 'var(--font-sans)' }} />
+        <YAxis tick={{ fontSize: 12, fontFamily: 'var(--font-sans)' }} />
         <Tooltip />
-        <Legend />
+        <Legend wrapperStyle={{ fontSize: 12, fontFamily: 'var(--font-sans)' }} />
         <Line
           type="monotone"
           dataKey="temp"
@@ -96,6 +97,7 @@ export function VPDGauge() {
         data={vpdData}
         startAngle={180}
         endAngle={0}
+        className="text-xs font-sans"
       >
         <RadialBar
           minAngle={15}
@@ -108,7 +110,7 @@ export function VPDGauge() {
           y="50%"
           textAnchor="middle"
           dominantBaseline="middle"
-          className="text-lg fill-gray-700"
+          className="text-lg font-mono fill-gray-700"
         >
           1.2 kPa
         </text>
@@ -125,12 +127,12 @@ export function HydrationTrendChart({
   const data = calculateHydrationTrend(log)
   return (
     <ResponsiveContainer width="100%" height={250}>
-      <LineChart data={data}>
+      <LineChart data={data} className="text-xs font-sans">
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="date" />
-        <YAxis domain={[0, 100]} />
+        <XAxis dataKey="date" tick={{ fontSize: 12, fontFamily: 'var(--font-sans)' }} />
+        <YAxis domain={[0, 100]} tick={{ fontSize: 12, fontFamily: 'var(--font-sans)' }} />
         <Tooltip />
-        <Legend />
+        <Legend wrapperStyle={{ fontSize: 12, fontFamily: 'var(--font-sans)' }} />
         <Line
           type="monotone"
           dataKey="avg"
@@ -153,12 +155,12 @@ export function CareTrendsChart({ events }: { events: CareEvent[] }) {
 
   return (
     <ResponsiveContainer width="100%" height={250}>
-      <BarChart data={data}>
+      <BarChart data={data} className="text-xs font-sans">
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="month" />
-        <YAxis allowDecimals={false} />
+        <XAxis dataKey="month" tick={{ fontSize: 12, fontFamily: 'var(--font-sans)' }} />
+        <YAxis allowDecimals={false} tick={{ fontSize: 12, fontFamily: 'var(--font-sans)' }} />
         <Tooltip />
-        <Legend />
+        <Legend wrapperStyle={{ fontSize: 12, fontFamily: 'var(--font-sans)' }} />
         <Bar dataKey="water" fill="#3b82f6" name="Water" />
         <Bar dataKey="fertilize" fill="#22c55e" name="Fertilize" />
       </BarChart>
@@ -178,12 +180,12 @@ export function TaskCompletionChart({ events }: { events: CareEvent[] }) {
 
   return (
     <ResponsiveContainer width="100%" height={250}>
-      <LineChart data={data}>
+      <LineChart data={data} className="text-xs font-sans">
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="month" />
-        <YAxis domain={[0, 100]} />
+        <XAxis dataKey="month" tick={{ fontSize: 12, fontFamily: 'var(--font-sans)' }} />
+        <YAxis domain={[0, 100]} tick={{ fontSize: 12, fontFamily: 'var(--font-sans)' }} />
         <Tooltip />
-        <Legend />
+        <Legend wrapperStyle={{ fontSize: 12, fontFamily: 'var(--font-sans)' }} />
         <Line
           type="monotone"
           dataKey="completed"
@@ -210,12 +212,12 @@ export interface WaterBalanceDatum {
 export function WaterBalanceChart({ data }: { data: WaterBalanceDatum[] }) {
   return (
     <ResponsiveContainer width="100%" height={250}>
-      <ComposedChart data={data}>
+      <ComposedChart data={data} className="text-xs font-sans">
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="date" />
-        <YAxis />
+        <XAxis dataKey="date" tick={{ fontSize: 12, fontFamily: 'var(--font-sans)' }} />
+        <YAxis tick={{ fontSize: 12, fontFamily: 'var(--font-sans)' }} />
         <Tooltip />
-        <Legend />
+        <Legend wrapperStyle={{ fontSize: 12, fontFamily: 'var(--font-sans)' }} />
         <Bar dataKey="water" fill="#3b82f6" name="Water (mm)" />
         <Line
           type="monotone"
@@ -242,6 +244,7 @@ export function StressIndexGauge({ value }: { value: number }) {
         data={data}
         startAngle={180}
         endAngle={0}
+        className="text-xs font-sans"
       >
         <RadialBar minAngle={15} background clockWise dataKey="value" />
         <text
@@ -249,7 +252,7 @@ export function StressIndexGauge({ value }: { value: number }) {
           y="50%"
           textAnchor="middle"
           dominantBaseline="middle"
-          className="text-lg fill-gray-700"
+          className="text-lg font-mono fill-gray-700"
         >
           {value}
         </text>
@@ -262,12 +265,12 @@ export function StressIndexGauge({ value }: { value: number }) {
 export function StressIndexChart({ data }: { data: StressDatum[] }) {
   return (
     <ResponsiveContainer width="100%" height={250}>
-      <LineChart data={data}>
+      <LineChart data={data} className="text-xs font-sans">
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="date" />
-        <YAxis domain={[0, 100]} />
+        <XAxis dataKey="date" tick={{ fontSize: 12, fontFamily: 'var(--font-sans)' }} />
+        <YAxis domain={[0, 100]} tick={{ fontSize: 12, fontFamily: 'var(--font-sans)' }} />
         <Tooltip />
-        <Legend />
+        <Legend wrapperStyle={{ fontSize: 12, fontFamily: 'var(--font-sans)' }} />
         <Line type="monotone" dataKey="stress" stroke="#ef4444" name="Stress" />
       </LineChart>
     </ResponsiveContainer>
@@ -299,12 +302,12 @@ export function NutrientLevelChart({
 
   return (
     <ResponsiveContainer width="100%" height={250}>
-      <LineChart data={data}>
+      <LineChart data={data} className="text-xs font-sans">
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="day" />
-        <YAxis domain={[0, 100]} />
+        <XAxis dataKey="day" tick={{ fontSize: 12, fontFamily: 'var(--font-sans)' }} />
+        <YAxis domain={[0, 100]} tick={{ fontSize: 12, fontFamily: 'var(--font-sans)' }} />
         <Tooltip />
-        <Legend />
+        <Legend wrapperStyle={{ fontSize: 12, fontFamily: 'var(--font-sans)' }} />
         <Line type="monotone" dataKey="level" stroke="#16a34a" name="Nutrients (%)" />
       </LineChart>
 
@@ -349,7 +352,7 @@ export function PlantHealthRadar({
 
   return (
     <ResponsiveContainer width={180} height={140}>
-      <RadarChart cx="50%" cy="50%" outerRadius="80%" data={data}>
+      <RadarChart cx="50%" cy="50%" outerRadius="80%" data={data} className="text-xs font-sans">
         <PolarGrid stroke="#e5e7eb" />
         <PolarAngleAxis dataKey="metric" stroke="#6b7280" />
         <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} />
@@ -369,12 +372,12 @@ export function TimelineHeatmap({ activity }: { activity: DailyActivity }) {
 
   return (
     <div className="overflow-x-auto">
-      <table className="border-collapse">
+      <table className="border-collapse font-sans text-xs">
         <thead>
           <tr>
-            <th className="p-1 text-xs"></th>
+            <th className="p-1"></th>
             {dates.map((date) => (
-              <th key={date} className="p-1 text-xs">
+              <th key={date} className="p-1">
                 {new Date(date).toLocaleDateString(undefined, {
                   month: "short",
                   day: "numeric",
@@ -386,7 +389,7 @@ export function TimelineHeatmap({ activity }: { activity: DailyActivity }) {
         <tbody>
           {types.map((type) => (
             <tr key={type}>
-              <td className="p-1 text-xs">{type}</td>
+              <td className="p-1">{type}</td>
               {dates.map((date) => {
                 const count = activity[date]?.[type] ?? 0
                 const intensity = count / max

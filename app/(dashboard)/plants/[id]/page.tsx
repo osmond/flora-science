@@ -11,6 +11,7 @@ import WaterModal from "@/components/WaterModal"
 import FertilizeModal from "@/components/FertilizeModal"
 import NoteModal from "@/components/NoteModal"
 import { ToastProvider, useToast } from "@/components/Toast"
+import Panel from "@/components/Panel"
 import {
   CareTrendsChart,
   HydrationTrendChart,
@@ -318,7 +319,7 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
         ) : (
           <>
 
-            <section className="flex flex-col md:flex-row gap-6 items-center md:items-start">
+            <Panel label="Overview" className="flex flex-col md:flex-row gap-6 items-center md:items-start">
               {plant.photos && plant.photos.length > 0 ? (
                 <Image
                   src={plant.photos[0]}
@@ -389,9 +390,9 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
                   Last fertilized: <strong>{plant.lastFertilized}</strong> · Next feed: <strong>{calculateNextFeedDate(plant.lastFertilized, plant.nutrientLevel ?? 100)}</strong>
                 </p>
               </div>
-            </section>
+            </Panel>
 
-            <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+            <Panel label="Stats" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
               {[
                 { label: "Status", value: plant.status },
                 { label: "Hydration", value: `${plant.hydration}%` },
@@ -408,10 +409,8 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
                   <p className="text-xl font-semibold text-gray-900 dark:text-white">{value}</p>
                 </div>
               ))}
-            </section>
-
-            <section>
-              <h2 className="text-lg font-semibold mb-3">Stress Level</h2>
+            </Panel>
+            <Panel label="Stress Level">
               <StressIndexGauge
                 value={calculateStressIndex({
                   overdueDays: plant.status === "Water overdue" ? 1 : 0,
@@ -420,18 +419,16 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
                   light: 50,
                 })}
               />
-            </section>
+            </Panel>
 
-            <section>
-              <h2 className="text-lg font-semibold mb-3">Nutrient Levels</h2>
+            <Panel label="Nutrient Levels">
               <NutrientLevelChart
                 lastFertilized={plant.lastFertilized}
                 nutrientLevel={plant.nutrientLevel ?? 100}
               />
-            </section>
+            </Panel>
 
-            <section>
-              <h2 className="text-lg font-semibold mb-3">Plant Health</h2>
+            <Panel label="Plant Health">
               <PlantHealthRadar
                 hydration={plant.hydration}
                 lastFertilized={plant.lastFertilized}
@@ -440,16 +437,17 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
                 status={plant.status}
                 weather={weather}
               />
-            </section>
+            </Panel>
 
-            <section>
-              <h2 className="text-lg font-semibold mb-3">Care Trends</h2>
+            <Panel label="Care Trends">
               <CareTrendsChart events={plant.events} />
+            </Panel>
 
-              <h2 className="text-lg font-semibold mb-3">Hydration Trend</h2>
+            <Panel label="Hydration Trend">
               <HydrationTrendChart log={plant.hydrationLog ?? []} />
+            </Panel>
 
-              <h2 className="text-lg font-semibold mb-3">Care Plan</h2>
+            <Panel label="Care Plan">
               {carePlanLoading ? (
                 <p className="text-sm text-gray-500 dark:text-gray-400">Generating care plan...</p>
               ) : carePlanError ? (
@@ -459,49 +457,46 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
               ) : (
                 <p className="text-sm text-gray-500 dark:text-gray-400">No care plan available.</p>
               )}
+            </Panel>
 
-            </section>
-
-              <section>
-                <h2 className="text-lg font-semibold mb-3">Timeline</h2>
-                <TimelineHeatmap activity={dailyActivity} />
-                {!plant.events || plant.events.length === 0 ? (
-                  <p className="text-sm text-gray-500 dark:text-gray-400">No activity yet.</p>
-                ) : (
-                  <ul className="space-y-2">
-                    {plant.events
-                      .filter((e): e is PlantEvent => e !== null && e !== undefined)
-                      .map((e) => {
-                        const type =
-                          EVENT_TYPES[e.type as keyof typeof EVENT_TYPES] ?? EVENT_TYPES.note
-                        const Icon = type.icon
-                        return (
-                          <li
-                            key={e.id}
-                            className="flex items-start gap-3 rounded-lg border p-3 bg-white dark:bg-gray-900 dark:border-gray-700"
-                          >
-                            <span className="w-16 text-xs font-medium text-gray-500">{e.date}</span>
-                            <span className="text-sm flex items-center gap-2">
-                              <span
-                                className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold ${type.color}`}
-                              >
-                                <span aria-hidden="true">
-                                  <Icon className="h-3 w-3" />
-                                </span>
-                                <span aria-hidden="true">{type.label}</span>
-                                <span className="sr-only">{type.label}</span>
+            <Panel label="Timeline">
+              <TimelineHeatmap activity={dailyActivity} />
+              {!plant.events || plant.events.length === 0 ? (
+                <p className="text-sm text-gray-500 dark:text-gray-400">No activity yet.</p>
+              ) : (
+                <ul className="space-y-2">
+                  {plant.events
+                    .filter((e): e is PlantEvent => e !== null && e !== undefined)
+                    .map((e) => {
+                      const type =
+                        EVENT_TYPES[e.type as keyof typeof EVENT_TYPES] ?? EVENT_TYPES.note
+                      const Icon = type.icon
+                      return (
+                        <li
+                          key={e.id}
+                          className="flex items-start gap-3 rounded-lg border p-3 bg-white dark:bg-gray-900 dark:border-gray-700"
+                        >
+                          <span className="w-16 text-xs font-medium text-gray-500">{e.date}</span>
+                          <span className="text-sm flex items-center gap-2">
+                            <span
+                              className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold ${type.color}`}
+                            >
+                              <span aria-hidden="true">
+                                <Icon className="h-3 w-3" />
                               </span>
-                              {e.type === "note" && e.note}
+                              <span aria-hidden="true">{type.label}</span>
+                              <span className="sr-only">{type.label}</span>
                             </span>
-                          </li>
-                        )
-                      })}
-                  </ul>
-                )}
-              </section>
+                            {e.type === "note" && e.note}
+                          </span>
+                        </li>
+                      )
+                    })}
+                </ul>
+              )}
+            </Panel>
 
-            <section>
-              <h2 className="text-lg font-semibold mb-3">Gallery</h2>
+            <Panel label="Gallery">
               {plant.photos && plant.photos.length > 0 ? (
                 <Lightbox
                   images={plant.photos.map((src, i) => ({
@@ -512,7 +507,7 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
               ) : (
                 <p className="text-sm text-gray-500 dark:text-gray-400">No photos available.</p>
               )}
-            </section>
+            </Panel>
           </>
         )}
       </div>

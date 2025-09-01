@@ -29,6 +29,20 @@ const config: Config = {
         xl: "1.25rem",
         "2xl": "1.5rem",
       },
+      fontFamily: {
+        sans: [
+          '"Source Sans Pro"',
+          'ui-sans-serif',
+          'system-ui',
+          'sans-serif',
+        ],
+        mono: [
+          '"IBM Plex Mono"',
+          'ui-monospace',
+          'SFMono-Regular',
+          'monospace',
+        ],
+      },
     },
   },
   plugins: [],
