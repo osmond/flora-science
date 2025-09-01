@@ -40,7 +40,7 @@ export default function CarePlan({ plan, nickname }: CarePlanProps) {
     { key: 'humidity', label: 'Humidity', icon: Wind },
     { key: 'temperature', label: 'Temperature', icon: Thermometer },
     { key: 'soil', label: 'Soil', icon: LandPlot },
-    { key: 'fertilization', label: 'Fertilizer', icon: Sprout },
+    { key: 'fertilizer', label: 'Fertilizer', icon: Sprout },
     { key: 'pruning', label: 'Pruning', icon: Scissors },
     { key: 'pests', label: 'Pests', icon: Bug },
   ]

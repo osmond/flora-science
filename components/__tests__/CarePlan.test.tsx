@@ -15,7 +15,7 @@ describe('CarePlan', () => {
       humidity: 'Moderate humidity',
       temperature: '65-75°F',
       soil: 'Well-draining potting mix',
-      fertilization: 'Feed monthly',
+      fertilizer: 'Feed monthly',
       pruning: 'Trim as needed',
       pests: 'Watch for aphids',
     }
@@ -29,12 +29,12 @@ describe('CarePlan', () => {
       humidity: 'wind',
       temperature: 'thermometer',
       soil: 'land-plot',
-      fertilization: 'sprout',
+      fertilizer: 'sprout',
       pruning: 'scissors',
       pests: 'bug',
     }
     const labelMap: Record<string, string> = {
-      fertilization: 'Fertilizer',
+      fertilizer: 'Fertilizer',
     }
 
     for (const [key, text] of Object.entries(plan)) {
