@@ -24,7 +24,7 @@ Flora-Science is a plant care companion designed for **clarity**, **low-friction
   - Quick Stats (hydration, last watered, next due)
   - Timeline of events (water, fertilize, notes, photos)
   - Gallery of plant photos
-- [ ] **Room Detail View**
+- [x] **Room Detail View**
   - Show all plants in room
   - Room-level stats
 
