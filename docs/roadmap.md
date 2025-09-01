@@ -13,18 +13,18 @@ Flora-Science is a plant care companion designed for **clarity**, **low-friction
 ---
 
 ## 🌱 Phase 1 – Core Views
-- [x] **Today View**
+- [ ] **Today View**
   - Show all plants due today
   - Hydration, fertilizing, and notes at a glance
-- [x] **Rooms View**
+- [ ] **Rooms View**
   - Group plants by room
   - Show average hydration + tasks due
-- [x] **Plant Detail View**
+- [ ] **Plant Detail View**
   - Hero image + nickname/species
   - Quick Stats (hydration, last watered, next due)
   - Timeline of events (water, fertilize, notes, photos)
   - Gallery of plant photos
-- [x] **Room Detail View**
+- [ ] **Room Detail View**
   - Show all plants in room
   - Room-level stats
 
@@ -50,7 +50,7 @@ Flora-Science is a plant care companion designed for **clarity**, **low-friction
 
 ## 🌳 Phase 4 – Polish
 - [ ] Refined UI polish (animations, micro-interactions)
-- [x] Dark mode
+- [ ] Dark mode
 - [ ] Mobile-first layout
 - [ ] Onboarding flow for new users
 
