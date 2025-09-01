@@ -107,7 +107,7 @@ export default function Lightbox({ images }: { images: LightboxImage[] }) {
         </div>
       )}
 
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
         {images.map((img, index) => (
           <button
             key={index}
