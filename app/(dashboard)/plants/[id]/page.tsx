@@ -1,7 +1,7 @@
 'use client'
 
 import Image from "next/image"
-import { useEffect, useState, useCallback, useMemo } from "react"
+import { useEffect, useState, useCallback } from "react"
 import Lightbox from "@/components/Lightbox"
 import Sparkline from "@/components/Sparkline"
 import { Droplet, Sprout, FileText, Calendar, Activity } from "lucide-react"
@@ -16,11 +16,9 @@ import {
   HydrationTrendChart,
   NutrientLevelChart,
   StressIndexGauge,
-  TimelineHeatmap,
   PlantHealthRadar,
 } from "@/components/Charts"
 import { calculateNutrientAvailability, calculateStressIndex } from "@/lib/plant-metrics"
-import { generateDailyActivity } from "@/lib/seasonal-trends"
 
 import { getWeatherForUser, type Weather } from "@/lib/weather"
 import { samplePlants } from "@/lib/plants"
@@ -80,10 +78,6 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
   const toast = useToast()
   const [weather, setWeather] = useState<Weather | null>(null)
   const [offline, setOffline] = useState(false)
-  const dailyActivity = useMemo(
-    () => generateDailyActivity(plant?.events || []),
-    [plant?.events]
-  )
 
   function calculateNextDue(lastWatered: string, w: Weather | null): string {
     const date = new Date(`${lastWatered} ${new Date().getFullYear()}`)
@@ -468,7 +462,6 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
             {/* Timeline */}
             <section className="rounded-xl border p-6 shadow-sm bg-white dark:bg-gray-900 space-y-4">
               <h2 className="text-lg font-semibold">Timeline</h2>
-              <TimelineHeatmap activity={dailyActivity} />
               {!plant.events || plant.events.length === 0 ? (
                 <p className="text-sm text-gray-500 dark:text-gray-400">No activity yet.</p>
               ) : (
