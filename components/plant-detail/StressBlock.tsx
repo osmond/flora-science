@@ -27,7 +27,7 @@ export default function StressBlock({ plant, weather, stressData }: StressBlockP
   return (
     <details id="plant-health" open={open}>
       <summary
-        className="text-lg font-semibold cursor-pointer"
+        className="flex items-center gap-1 text-lg font-semibold cursor-pointer py-2 hover:text-gray-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2"
         onClick={() => setOpen((o) => !o)}
       >
         Plant Health

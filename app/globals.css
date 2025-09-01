@@ -9,3 +9,21 @@ body {
 h1, h2, h3 {
   @apply font-semibold text-gray-800;
 }
+
+/* Hide default disclosure triangle on summary */
+summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Custom indicator for summary elements */
+summary::before {
+  content: '▸';
+  display: inline-block;
+  margin-right: 0.5rem;
+  transition: transform 0.2s ease-in-out;
+}
+
+/* Rotate indicator when details is open */
+details[open] > summary::before {
+  transform: rotate(90deg);
+}
