@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Droplet, Sprout, FileText } from 'lucide-react'
-import { format, formatDistanceToNow, startOfWeek } from 'date-fns'
+import { format, formatDistanceToNow, startOfWeek, parse } from 'date-fns'
 import type { PlantEvent } from './types'
 
 const EVENT_TYPES = {
@@ -17,15 +17,22 @@ const EVENT_TYPES = {
   },
 } as const
 
+const eventDate = (s: string) => {
+  const d = parse(s, 'MMM d', new Date())
+  return isNaN(d.getTime()) ? new Date(s) : d
+}
+
 export default function Timeline({ events }: { events: PlantEvent[] }) {
   const [expandedId, setExpandedId] = useState<number | null>(null)
 
   const processed = events
     ?.filter((e): e is PlantEvent => e !== null && e !== undefined)
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .sort(
+      (a, b) => eventDate(b.date).getTime() - eventDate(a.date).getTime(),
+    )
 
   const grouped = processed?.reduce((acc, e) => {
-    const weekStart = startOfWeek(new Date(e.date))
+    const weekStart = startOfWeek(eventDate(e.date))
     const key = format(weekStart, 'yyyy-MM-dd')
     acc[key] = acc[key] || []
     acc[key].push(e)
@@ -34,7 +41,9 @@ export default function Timeline({ events }: { events: PlantEvent[] }) {
 
   const weeks = grouped
     ? Object.keys(grouped).sort(
-        (a, b) => new Date(b).getTime() - new Date(a).getTime(),
+        (a, b) =>
+          parse(b, 'yyyy-MM-dd', new Date()).getTime() -
+          parse(a, 'yyyy-MM-dd', new Date()).getTime(),
       )
     : []
 
@@ -48,7 +57,7 @@ export default function Timeline({ events }: { events: PlantEvent[] }) {
       ) : (
         <div className="space-y-6">
           {weeks.map((week, index) => {
-            const weekDate = new Date(week)
+            const weekDate = parse(week, 'yyyy-MM-dd', new Date())
             const weekEvents = grouped[week]
             return (
               <div key={week}>
@@ -78,7 +87,7 @@ export default function Timeline({ events }: { events: PlantEvent[] }) {
                           className="text-left w-full"
                         >
                           <time className="text-sm text-gray-700 dark:text-gray-300">
-                            {formatDistanceToNow(new Date(e.date), {
+                            {formatDistanceToNow(eventDate(e.date), {
                               addSuffix: true,
                             })}
                           </time>
