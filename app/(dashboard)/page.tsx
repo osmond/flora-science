@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import PlantCard from "@/components/PlantCard"
 import Footer from "@/components/Footer"
 import Header from "@/components/Header"
@@ -38,66 +38,102 @@ export default function TodayPage() {
       return sum + differenceInDays(new Date(), parse(`${p.lastWatered} 2024`, "MMM d yyyy", new Date()))
     }, 0) / plantsCount
   )
-  const plantStreaks = plants.map(([, p]) => {
-    const dates = p.events.map((e) => parse(`${e.date} 2024`, "MMM d yyyy", new Date()))
-    const set = new Set(dates.map((d) => format(d, "yyyy-MM-dd")))
+  const plantStreaks = useMemo(
+    () =>
+      plants.map(([, p]) => {
+        const dates = p.events.map((e) => parse(`${e.date} 2024`, "MMM d yyyy", new Date()))
+        const set = new Set(dates.map((d) => format(d, "yyyy-MM-dd")))
+        let streak = 0
+        if (set.size > 0) {
+          let current = dates.reduce((a, b) => (a > b ? a : b))
+          while (set.has(format(current, "yyyy-MM-dd"))) {
+            streak++
+            current = subDays(current, 1)
+          }
+        }
+        return { plant: p.nickname, streak }
+      }),
+    [plants]
+  )
+  const longestStreakPlant = useMemo(
+    () =>
+      plantStreaks.reduce(
+        (max, p) => (p.streak > max.streak ? p : max),
+        { plant: "", streak: 0 }
+      ).plant,
+    [plantStreaks]
+  )
+  const nextDayTasks = useMemo(() => {
+    const tomorrow = addDays(new Date(), 1)
+    return plants.filter(([, p]) =>
+      isSameDay(parse(`${p.nextDue} 2024`, "MMM d yyyy", new Date()), tomorrow)
+    )
+  }, [plants])
+  const nextDayWaterTasks = useMemo(
+    () =>
+      nextDayTasks.filter(([, p]) => {
+        const s = p.status.toLowerCase()
+        return s.includes("water") || (!s.includes("fertilize") && !s.includes("note"))
+      }).length,
+    [nextDayTasks]
+  )
+  const nextDayFertilizeTasks = useMemo(
+    () =>
+      nextDayTasks.filter(([, p]) => p.status.toLowerCase().includes("fertilize")).length,
+    [nextDayTasks]
+  )
+  const nextDayNoteTasks = useMemo(
+    () =>
+      nextDayTasks.filter(([, p]) => p.status.toLowerCase().includes("note")).length,
+    [nextDayTasks]
+  )
+  const taskStreak = useMemo(() => {
+    const eventDates = plants.flatMap(([, p]) =>
+      p.events.map((e) => parse(`${e.date} 2024`, "MMM d yyyy", new Date()))
+    )
+    const dateSet = new Set(eventDates.map((d) => format(d, "yyyy-MM-dd")))
     let streak = 0
-    if (set.size > 0) {
-      let current = dates.reduce((a, b) => (a > b ? a : b))
-      while (set.has(format(current, "yyyy-MM-dd"))) {
+    if (dateSet.size > 0) {
+      let current = eventDates.reduce((a, b) => (a > b ? a : b))
+      while (dateSet.has(format(current, "yyyy-MM-dd"))) {
         streak++
         current = subDays(current, 1)
       }
     }
-    return { plant: p.nickname, streak }
-  })
-  const longestStreakPlant = plantStreaks.reduce((max, p) => (p.streak > max.streak ? p : max), { plant: "", streak: 0 }).plant
-  const tomorrow = addDays(new Date(), 1)
-  const nextDayTasks = plants.filter(([, p]) =>
-    isSameDay(parse(`${p.nextDue} 2024`, "MMM d yyyy", new Date()), tomorrow)
-  )
-  const nextDayWaterTasks = nextDayTasks.filter(([, p]) => {
-    const s = p.status.toLowerCase()
-    return s.includes("water") || (!s.includes("fertilize") && !s.includes("note"))
-  }).length
-  const nextDayFertilizeTasks = nextDayTasks.filter(([, p]) => p.status.toLowerCase().includes("fertilize")).length
-  const nextDayNoteTasks = nextDayTasks.filter(([, p]) => p.status.toLowerCase().includes("note")).length
-  const eventDates = plants.flatMap(([, p]) =>
-    p.events.map((e) => parse(`${e.date} 2024`, "MMM d yyyy", new Date()))
-  )
-  const dateSet = new Set(eventDates.map((d) => format(d, "yyyy-MM-dd")))
-  let taskStreak = 0
-  if (dateSet.size > 0) {
-    let current = eventDates.reduce((a, b) => (a > b ? a : b))
-    while (dateSet.has(format(current, "yyyy-MM-dd"))) {
-      taskStreak++
-      current = subDays(current, 1)
-    }
-  }
+    return streak
+  }, [plants])
   const avgHydrationHistory = [65, 70, 68, 72, 75]
 
-  const sortedPlants = [...plants].sort((a, b) => {
-    const [, pa] = a
-    const [, pb] = b
-    switch (sortBy) {
-      case "hydration":
-        return pb.hydration - pa.hydration
-      case "lastWatered":
-        return (
-          parse(`${pb.lastWatered} 2024`, "MMM d yyyy", new Date()).getTime() -
-          parse(`${pa.lastWatered} 2024`, "MMM d yyyy", new Date()).getTime()
-        )
-      default:
-        return pa.nickname.localeCompare(pb.nickname)
-    }
-  })
+  const sortedPlants = useMemo(() => {
+    return [...plants].sort((a, b) => {
+      const [, pa] = a
+      const [, pb] = b
+      switch (sortBy) {
+        case "hydration":
+          return pb.hydration - pa.hydration
+        case "lastWatered":
+          return (
+            parse(`${pb.lastWatered} 2024`, "MMM d yyyy", new Date()).getTime() -
+            parse(`${pa.lastWatered} 2024`, "MMM d yyyy", new Date()).getTime()
+          )
+        default:
+          return pa.nickname.localeCompare(pb.nickname)
+      }
+    })
+  }, [plants, sortBy])
 
-  const grouped = groupBy === "none" ? { All: sortedPlants } : sortedPlants.reduce<Record<string, typeof sortedPlants>>((acc, plant) => {
-    const key = groupBy === "status" ? plant[1].status : plant[1].room
-    if (!acc[key]) acc[key] = []
-    acc[key].push(plant)
-    return acc
-  }, {})
+  const grouped = useMemo(
+    () =>
+      groupBy === "none"
+        ? { All: sortedPlants }
+        : sortedPlants.reduce<Record<string, typeof sortedPlants>>((acc, plant) => {
+            const key = groupBy === "status" ? plant[1].status : plant[1].room
+            if (!acc[key]) acc[key] = []
+            acc[key].push(plant)
+            return acc
+          }, {}),
+    [groupBy, sortedPlants]
+  )
 
   return (
     <>
