@@ -125,3 +125,42 @@ export function stressTrend(
     stress: calculateStressIndex(r),
   }))
 }
+
+export interface HydrationLogEntry {
+  date: string
+  value: number
+}
+
+export interface HydrationTrendDatum {
+  date: string
+  value: number
+  avg: number
+  belowThreshold: boolean
+}
+
+/**
+ * Calculate rolling averages for hydration readings and flag when the average
+ * falls below a given threshold (default 40%).
+ */
+export function calculateHydrationTrend(
+  log: HydrationLogEntry[],
+  window: number = 3,
+  threshold: number = 40,
+): HydrationTrendDatum[] {
+  const sorted = [...log].sort(
+    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+  )
+  return sorted.map((entry, idx) => {
+    const start = Math.max(0, idx - window + 1)
+    const slice = sorted.slice(start, idx + 1)
+    const avg =
+      slice.reduce((sum, e) => sum + e.value, 0) / (slice.length || 1)
+    const rounded = Number(avg.toFixed(2))
+    return {
+      date: entry.date,
+      value: entry.value,
+      avg: rounded,
+      belowThreshold: rounded < threshold,
+    }
+  })
+}
