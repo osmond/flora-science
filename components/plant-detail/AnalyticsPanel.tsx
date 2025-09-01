@@ -7,6 +7,7 @@ import {
   type WaterEvent,
   type WeatherDay,
 } from '@/lib/plant-metrics'
+import VitalsSummary from './VitalsSummary'
 import type { Plant } from './types'
 import type { Weather } from '@/lib/weather'
 import EnvironmentBlock from './EnvironmentBlock'
@@ -141,6 +142,7 @@ export default function AnalyticsPanel({ plant, weather }: AnalyticsPanelProps) 
 
   return (
     <>
+      <VitalsSummary plant={plant} weather={weather} />
       <div className="mb-4 flex gap-2 md:hidden">
         {sections.map((s) => (
           <button
