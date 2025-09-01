@@ -38,7 +38,7 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
   const toast = useToast()
   const [weather, setWeather] = useState<Weather | null>(null)
   const [offline, setOffline] = useState(false)
-  const [carePlan, setCarePlan] = useState<string | null>(null)
+  const [carePlan, setCarePlan] = useState<Record<string, string> | null>(null)
   const [carePlanError, setCarePlanError] = useState<string | null>(null)
   const [carePlanLoading, setCarePlanLoading] = useState(false)
 
@@ -217,10 +217,10 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
     fetch(`/api/plants/${params.id}/care-plan`)
       .then((res) => {
         if (!res.ok) throw new Error(`Error ${res.status}`)
-        return res.text()
+        return res.json()
       })
-      .then((text) => {
-        if (active) setCarePlan(text)
+      .then((data) => {
+        if (active) setCarePlan(data.carePlan)
       })
       .catch((err) => {
         if (active)

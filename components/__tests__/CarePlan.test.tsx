@@ -8,21 +8,31 @@ describe('CarePlan', () => {
     expect(screen.getByText(/No care plan available/i)).toBeInTheDocument()
   })
 
-  it('renders provided plan sections with collapsible details', async () => {
-    render(
-      <CarePlan
-        plan={'Light: Bright, indirect light\nWater: Every 7–10 days'}
-        nickname="Delilah"
-      />
-    )
+  it('renders provided plan sections with icons and collapsible details', async () => {
+    const plan = {
+      overview: 'General care overview',
+      light: 'Bright, indirect light',
+      water: 'Every 7–10 days',
+      humidity: 'Moderate humidity',
+      temperature: '65-75°F',
+      soil: 'Well-draining potting mix',
+      fertilization: 'Feed monthly',
+      pruning: 'Trim as needed',
+      pests: 'Watch for aphids',
+    }
+
+    render(<CarePlan plan={plan} nickname="Delilah" />)
     const user = userEvent.setup()
 
     expect(screen.getByText(/Care Plan for Delilah/i)).toBeInTheDocument()
-    // Summary is shown
-    expect(screen.getAllByText(/Bright, indirect light/i)).toHaveLength(1)
-    // Expand details
-    await user.click(screen.getByRole('button', { name: /Light/i }))
-    expect(screen.getAllByText(/Bright, indirect light/i)).toHaveLength(2)
+
+    for (const [key, text] of Object.entries(plan)) {
+      const label = key.charAt(0).toUpperCase() + key.slice(1)
+      const button = screen.getByRole('button', { name: new RegExp(label, 'i') })
+      expect(button.querySelector('svg')).toBeInTheDocument()
+      await user.click(button)
+      expect(screen.getByText(text)).toBeInTheDocument()
+    }
   })
 })
 
