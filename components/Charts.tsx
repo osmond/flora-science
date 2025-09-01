@@ -41,17 +41,6 @@ import {
 import type { Plant } from "@/lib/plants"
 import type { Weather } from "@/lib/weather"
 
-const axisTickStyle = {
-  fill: "#374151",
-  fontSize: 12,
-  fontFamily: "Helvetica Neue, Arial, sans-serif",
-}
-
-const legendStyle = {
-  fontSize: 12,
-  color: "#374151",
-  fontFamily: "Helvetica Neue, Arial, sans-serif",
-}
 
 // Dummy dataset for environment over 7 days
 const envData = [
@@ -81,10 +70,10 @@ export function TempHumidityChart({
     <ResponsiveContainer width="100%" height={250}>
       <LineChart data={data}>
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="day" tick={axisTickStyle} />
-        <YAxis tick={axisTickStyle} />
+        <XAxis dataKey="day" />
+        <YAxis />
         <Tooltip />
-        <Legend wrapperStyle={legendStyle} />
+        <Legend />
         <Line
           type="monotone"
           dataKey="temp"
@@ -124,7 +113,7 @@ export function VPDGauge() {
           y="50%"
           textAnchor="middle"
           dominantBaseline="middle"
-          className="text-lg font-sans fill-gray-700"
+          className="text-lg fill-gray-700"
         >
           1.2 kPa
         </text>
@@ -143,10 +132,10 @@ export function HydrationTrendChart({
     <ResponsiveContainer width="100%" height={250}>
       <LineChart data={data}>
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="date" tick={axisTickStyle} />
-        <YAxis domain={[0, 100]} tick={axisTickStyle} />
+        <XAxis dataKey="date" />
+        <YAxis domain={[0, 100]} />
         <Tooltip />
-        <Legend wrapperStyle={legendStyle} />
+        <Legend />
         <Line
           type="monotone"
           dataKey="avg"
@@ -186,10 +175,10 @@ export function ComparativeChart({
     <ResponsiveContainer width="100%" height={250}>
       <LineChart data={data}>
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="date" tick={axisTickStyle} />
-        <YAxis domain={[0, 100]} tick={axisTickStyle} />
+        <XAxis dataKey="date" />
+        <YAxis domain={[0, 100]} />
         <Tooltip />
-        <Legend wrapperStyle={legendStyle} />
+        <Legend />
         {plants.map((p, idx) => (
           <Line
             key={p.nickname}
@@ -212,10 +201,10 @@ export function CareTrendsChart({ events }: { events: CareEvent[] }) {
     <ResponsiveContainer width="100%" height={250}>
       <BarChart data={data}>
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="month" tick={axisTickStyle} />
-        <YAxis allowDecimals={false} tick={axisTickStyle} />
+        <XAxis dataKey="month" />
+        <YAxis allowDecimals={false} />
         <Tooltip />
-        <Legend wrapperStyle={legendStyle} />
+        <Legend />
         <Bar dataKey="water" fill="#3b82f6" name="Water" />
         <Bar dataKey="fertilize" fill="#22c55e" name="Fertilize" />
       </BarChart>
@@ -237,10 +226,10 @@ export function TaskCompletionChart({ events }: { events: CareEvent[] }) {
     <ResponsiveContainer width="100%" height={250}>
       <LineChart data={data}>
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="month" tick={axisTickStyle} />
-        <YAxis domain={[0, 100]} tick={axisTickStyle} />
+        <XAxis dataKey="month" />
+        <YAxis domain={[0, 100]} />
         <Tooltip />
-        <Legend wrapperStyle={legendStyle} />
+        <Legend />
         <Line
           type="monotone"
           dataKey="completed"
@@ -269,10 +258,10 @@ export function WaterBalanceChart({ data }: { data: WaterBalanceDatum[] }) {
     <ResponsiveContainer width="100%" height={250}>
       <ComposedChart data={data}>
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="date" tick={axisTickStyle} />
-        <YAxis tick={axisTickStyle} />
+        <XAxis dataKey="date" />
+        <YAxis />
         <Tooltip />
-        <Legend wrapperStyle={legendStyle} />
+        <Legend />
         <Bar dataKey="water" fill="#3b82f6" name="Water (mm)" />
         <Line
           type="monotone"
@@ -306,7 +295,7 @@ export function StressIndexGauge({ value }: { value: number }) {
           y="50%"
           textAnchor="middle"
           dominantBaseline="middle"
-          className="text-lg font-sans fill-gray-700"
+          className="text-lg fill-gray-700"
         >
           {value}
         </text>
@@ -321,10 +310,10 @@ export function StressIndexChart({ data }: { data: StressDatum[] }) {
     <ResponsiveContainer width="100%" height={250}>
       <LineChart data={data}>
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="date" tick={axisTickStyle} />
-        <YAxis domain={[0, 100]} tick={axisTickStyle} />
+        <XAxis dataKey="date" />
+        <YAxis domain={[0, 100]} />
         <Tooltip />
-        <Legend wrapperStyle={legendStyle} />
+        <Legend />
         <Line type="monotone" dataKey="stress" stroke="#ef4444" name="Stress" />
       </LineChart>
     </ResponsiveContainer>
@@ -358,10 +347,10 @@ export function NutrientLevelChart({
     <ResponsiveContainer width="100%" height={250}>
       <LineChart data={data}>
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="day" tick={axisTickStyle} />
-        <YAxis domain={[0, 100]} tick={axisTickStyle} />
+        <XAxis dataKey="day" />
+        <YAxis domain={[0, 100]} />
         <Tooltip />
-        <Legend wrapperStyle={legendStyle} />
+        <Legend />
         <Line type="monotone" dataKey="level" stroke="#16a34a" name="Nutrients (%)" />
       </LineChart>
 
@@ -408,11 +397,7 @@ export function PlantHealthRadar({
     <ResponsiveContainer width={180} height={140}>
       <RadarChart cx="50%" cy="50%" outerRadius="80%" data={data}>
         <PolarGrid stroke="#e5e7eb" />
-        <PolarAngleAxis
-          dataKey="metric"
-          stroke="#6b7280"
-          tick={{ ...axisTickStyle }}
-        />
+        <PolarAngleAxis dataKey="metric" stroke="#6b7280" />
         <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} />
         <Radar dataKey="value" stroke="#64748b" fill="#94a3b8" fillOpacity={0.3} />
       </RadarChart>
