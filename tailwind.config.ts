@@ -10,17 +10,17 @@ const config: Config = {
     extend: {
       colors: {
         flora: {
-          leaf: "#4CAF50",
+          leaf: "#1A7D1E",
           soil: "#6B4226",
-          sky: "#3B82F6",
+          sky: "#0950C4",
           light: "#F0FDF4",
         },
-        water: "#3B82F6",
-        fertilize: "#4CAF50",
-        notes: "#A855F7",
+        water: "#0950C4",
+        fertilize: "#1A7D1E",
+        notes: "#7623C5",
         alert: {
-          DEFAULT: "#FACC15",
-          red: "#EF4444",
+          DEFAULT: "#8E6B00",
+          red: "#BD1212",
         },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

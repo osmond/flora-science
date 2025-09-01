@@ -101,14 +101,14 @@ export function TempHumidityChart({
         <Line
           type="monotone"
           dataKey="temp"
-          stroke="#f87171"
+          stroke="#BD1212"
           strokeWidth={3}
           name={tempUnit === 'F' ? 'Temp (°F)' : 'Temp (°C)'}
         />
         <Line
           type="monotone"
           dataKey="rh"
-          stroke="#60a5fa"
+          stroke="#2262CA"
           strokeWidth={3}
           name="RH (%)"
         />
@@ -119,7 +119,7 @@ export function TempHumidityChart({
 
 export function VPDGauge({ value = 1.2 }: { value?: number }) {
   const max = 3
-  const data = [{ name: "VPD", value, fill: "#4CAF50" }]
+  const data = [{ name: "VPD", value, fill: "#1A7D1E" }]
   return (
     <ResponsiveContainer width="100%" height={250}>
       <RadialBarChart
@@ -202,14 +202,14 @@ export function HydrationTrendChart({
         <Line
           type="monotone"
           dataKey="actual"
-          stroke="#3b82f6"
+          stroke="#0950C4"
           strokeWidth={3}
           name="Hydration (%)"
         />
         <Line
           type="monotone"
           dataKey="forecast"
-          stroke="#93c5fd"
+          stroke="#2E6ACD"
           strokeDasharray="4 4"
           strokeWidth={3}
           name="Forecast"
@@ -227,14 +227,14 @@ export function ComparativeChart({
   data: ComparativeDatum[]
 }) {
   const colors = [
-    "#3b82f6",
-    "#ef4444",
-    "#16a34a",
-    "#f59e0b",
-    "#8b5cf6",
-    "#ec4899",
-    "#0ea5e9",
-    "#fde047",
+    "#0950C4",
+    "#BD1212",
+    "#1A7D1E",
+    "#8E6B00",
+    "#7623C5",
+    "#C61B6F",
+    "#2E6ACD",
+    "#258429",
   ]
 
   const searchParams = useSearchParams()
@@ -350,14 +350,14 @@ export function TaskCompletionChart({ events }: { events: CareEvent[] }) {
         <Line
           type="monotone"
           dataKey="completed"
-          stroke="#22c55e"
+          stroke="#1A7D1E"
           strokeWidth={2}
           name="Completed (%)"
         />
         <Line
           type="monotone"
           dataKey="missed"
-          stroke="#ef4444"
+          stroke="#BD1212"
           strokeWidth={2}
           name="Missed (%)"
         />
@@ -388,12 +388,12 @@ export function WaterBalanceChart({
         <YAxis tickLine={false} axisLine={false} />
         <Tooltip content={<CustomTooltip />} />
         <ReferenceArea y1={0} y2={5} fill="#e0f2fe" fillOpacity={0.3} />
-        {showWater && <Bar dataKey="water" fill="#3b82f6" name="Water (mm)" />}
+        {showWater && <Bar dataKey="water" fill="#0950C4" name="Water (mm)" />}
         {showEt && (
           <Line
             type="monotone"
             dataKey="et0"
-            stroke="#f59e0b"
+            stroke="#8E6B00"
             strokeWidth={3}
             name="ET₀ (mm)"
           />
@@ -408,10 +408,10 @@ export function StressIndexGauge({ value }: { value: number }) {
   const data = [{ name: 'stress', value }]
   const { label, color } =
     value < 30
-      ? { label: 'Low', color: '#22c55e' }
+      ? { label: 'Low', color: '#1A7D1E' }
       : value <= 70
-        ? { label: 'Moderate', color: '#eab308' }
-        : { label: 'High', color: '#ef4444' }
+        ? { label: 'Moderate', color: '#8E6B00' }
+        : { label: 'High', color: '#BD1212' }
   return (
     <ResponsiveContainer width="100%" height={250}>
       <RadialBarChart
@@ -426,9 +426,9 @@ export function StressIndexGauge({ value }: { value: number }) {
       >
         <defs>
           <linearGradient id="stressGradient" x1="0" y1="1" x2="1" y2="0">
-            <stop offset="0%" stopColor="#22c55e" />
-            <stop offset="50%" stopColor="#eab308" />
-            <stop offset="100%" stopColor="#ef4444" />
+            <stop offset="0%" stopColor="#1A7D1E" />
+            <stop offset="50%" stopColor="#8E6B00" />
+            <stop offset="100%" stopColor="#BD1212" />
           </linearGradient>
         </defs>
         <RadialBar
@@ -474,7 +474,7 @@ export function StressIndexChart({ data }: { data: StressDatum[] }) {
         <Line
           type="monotone"
           dataKey="stress"
-          stroke="#ef4444"
+          stroke="#BD1212"
           strokeWidth={3}
           name="Stress"
         />
@@ -526,14 +526,14 @@ export function NutrientLevelChart({
         <Line
           type="monotone"
           dataKey="level"
-          stroke="#16a34a"
+          stroke="#1A7D1E"
           strokeWidth={3}
           name="Nutrients (%)"
         />
         <Line
           type="monotone"
           dataKey="forecast"
-          stroke="#86efac"
+          stroke="#258429"
           strokeDasharray="4 4"
           strokeWidth={3}
           name="Forecast"
@@ -630,7 +630,7 @@ export function TimelineHeatmap({ activity }: { activity: DailyActivity }) {
                     title={`${type} on ${date}: ${count}`}
                     style={{
                       backgroundColor: count
-                        ? `rgba(34,197,94,${intensity})`
+                        ? `rgba(26,125,30,${intensity})`
                         : "#e5e7eb",
                       width: "1rem",
                       height: "1rem",
