@@ -15,6 +15,13 @@ const config: Config = {
           sky: "#3B82F6",
           light: "#F0FDF4",
         },
+        water: "#3B82F6",
+        fertilize: "#4CAF50",
+        notes: "#A855F7",
+        alert: {
+          DEFAULT: "#FACC15",
+          red: "#EF4444",
+        },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
