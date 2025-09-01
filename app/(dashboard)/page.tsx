@@ -6,7 +6,8 @@ import PlantCard from "@/components/PlantCard"
 import Footer from "@/components/Footer"
 import Header from "@/components/Header"
 import { samplePlants } from "@/lib/plants"
-import { parse, format, subDays, differenceInDays, addDays, isSameDay } from "date-fns"
+import { format, subDays, differenceInDays, addDays, isSameDay } from "date-fns"
+import { parsePlantDate } from "@/lib/date"
 
 type GroupBy = "status" | "room" | "none"
 type SortBy = "hydration" | "alpha" | "lastWatered"
@@ -35,11 +36,11 @@ export default function TodayPage() {
   )
   const avgWateringInterval = Math.round(
     plants.reduce((sum, [, p]) => {
-      return sum + differenceInDays(new Date(), parse(`${p.lastWatered} 2024`, "MMM d yyyy", new Date()))
+      return sum + differenceInDays(new Date(), parsePlantDate(p.lastWatered))
     }, 0) / plantsCount
   )
   const plantStreaks = plants.map(([, p]) => {
-    const dates = p.events.map((e) => parse(`${e.date} 2024`, "MMM d yyyy", new Date()))
+    const dates = p.events.map((e) => parsePlantDate(e.date))
     const set = new Set(dates.map((d) => format(d, "yyyy-MM-dd")))
     let streak = 0
     if (set.size > 0) {
@@ -54,7 +55,7 @@ export default function TodayPage() {
   const longestStreakPlant = plantStreaks.reduce((max, p) => (p.streak > max.streak ? p : max), { plant: "", streak: 0 }).plant
   const tomorrow = addDays(new Date(), 1)
   const nextDayTasks = plants.filter(([, p]) =>
-    isSameDay(parse(`${p.nextDue} 2024`, "MMM d yyyy", new Date()), tomorrow)
+    isSameDay(parsePlantDate(p.nextDue, true), tomorrow)
   )
   const nextDayWaterTasks = nextDayTasks.filter(([, p]) => {
     const s = p.status.toLowerCase()
@@ -63,7 +64,7 @@ export default function TodayPage() {
   const nextDayFertilizeTasks = nextDayTasks.filter(([, p]) => p.status.toLowerCase().includes("fertilize")).length
   const nextDayNoteTasks = nextDayTasks.filter(([, p]) => p.status.toLowerCase().includes("note")).length
   const eventDates = plants.flatMap(([, p]) =>
-    p.events.map((e) => parse(`${e.date} 2024`, "MMM d yyyy", new Date()))
+    p.events.map((e) => parsePlantDate(e.date))
   )
   const dateSet = new Set(eventDates.map((d) => format(d, "yyyy-MM-dd")))
   let taskStreak = 0
@@ -84,8 +85,8 @@ export default function TodayPage() {
         return pb.hydration - pa.hydration
       case "lastWatered":
         return (
-          parse(`${pb.lastWatered} 2024`, "MMM d yyyy", new Date()).getTime() -
-          parse(`${pa.lastWatered} 2024`, "MMM d yyyy", new Date()).getTime()
+          parsePlantDate(pb.lastWatered).getTime() -
+          parsePlantDate(pa.lastWatered).getTime()
         )
       default:
         return pa.nickname.localeCompare(pb.nickname)
