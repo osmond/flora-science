@@ -25,11 +25,24 @@ describe('CarePlan', () => {
     const user = userEvent.setup()
 
     expect(screen.getByText(/Care Plan for Delilah/i)).toBeInTheDocument()
+    const iconMap: Record<string, string> = {
+      overview: 'book-open',
+      light: 'sun',
+      water: 'droplet',
+      humidity: 'wind',
+      temperature: 'thermometer',
+      soil: 'land-plot',
+      fertilization: 'sprout',
+      pruning: 'scissors',
+      pests: 'bug',
+    }
 
     for (const [key, text] of Object.entries(plan)) {
       const label = key.charAt(0).toUpperCase() + key.slice(1)
       const button = screen.getByRole('button', { name: new RegExp(label, 'i') })
-      expect(button.querySelector('svg')).toBeInTheDocument()
+      const svg = button.querySelector('svg')
+      expect(svg).toBeInTheDocument()
+      expect(svg).toHaveClass(`lucide-${iconMap[key]}`)
       await user.click(button)
       expect(screen.getByText(text)).toBeInTheDocument()
     }
