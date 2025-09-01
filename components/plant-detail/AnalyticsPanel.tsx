@@ -10,6 +10,7 @@ import {
   type WeatherDay,
 } from '@/lib/plant-metrics'
 import EnvRow from '@/components/EnvRow'
+import VitalsSummary from './VitalsSummary'
 import type { Plant } from './types'
 import type { Weather } from '@/lib/weather'
 
@@ -125,68 +126,71 @@ export default function AnalyticsPanel({ plant, weather }: AnalyticsPanelProps) 
   }, [waterData, weatherHistory, waterEvents])
 
   return (
-    <section className="rounded-xl p-6 shadow-sm bg-gray-50 dark:bg-gray-800 space-y-6">
-      <details open>
-        <summary className="text-lg font-semibold cursor-pointer">Environment</summary>
-        <p className="text-sm text-gray-500 mb-4">
-          Temperature, humidity, and vapor pressure deficit readings.
-        </p>
-        <EnvRow
-          temperature={env.temperature}
-          humidity={env.humidity}
-          vpd={env.vpd}
-          tempUnit="C"
-        />
-        <div className="mt-4 grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <TempHumidityChart tempUnit="C" data={envChartData} />
-          <VPDGauge value={env.vpd} />
-        </div>
-      </details>
+    <>
+      <VitalsSummary plant={plant} weather={weather} />
+      <section className="rounded-xl p-6 shadow-sm bg-gray-50 dark:bg-gray-800 space-y-6">
+        <details id="environment" open>
+          <summary className="text-lg font-semibold cursor-pointer">Environment</summary>
+          <p className="text-sm text-gray-500 mb-4">
+            Temperature, humidity, and vapor pressure deficit readings.
+          </p>
+          <EnvRow
+            temperature={env.temperature}
+            humidity={env.humidity}
+            vpd={env.vpd}
+            tempUnit="C"
+          />
+          <div className="mt-4 grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <TempHumidityChart tempUnit="C" data={envChartData} />
+            <VPDGauge value={env.vpd} />
+          </div>
+        </details>
 
-      <details open>
-        <summary className="text-lg font-semibold cursor-pointer">Plant Health</summary>
-        <p className="text-sm text-gray-500 mb-4">
-          Stress index overview and overall health radar.
-        </p>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <StressIndexGauge
-            value={calculateStressIndex({
-              overdueDays: plant.status === 'Water overdue' ? 1 : 0,
-              hydration: plant.hydration,
-              temperature: weather?.temperature ?? 25,
-              light: 50,
-            })}
-          />
-          <PlantHealthRadar
-            hydration={plant.hydration}
-            lastFertilized={plant.lastFertilized}
-            nutrientLevel={plant.nutrientLevel ?? 100}
-            events={plant.events}
-            status={plant.status}
-            weather={weather}
-          />
-        </div>
-        <div className="mt-4">
-          <StressIndexChart data={stressData} />
-        </div>
-      </details>
+        <details id="plant-health" open>
+          <summary className="text-lg font-semibold cursor-pointer">Plant Health</summary>
+          <p className="text-sm text-gray-500 mb-4">
+            Stress index overview and overall health radar.
+          </p>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <StressIndexGauge
+              value={calculateStressIndex({
+                overdueDays: plant.status === 'Water overdue' ? 1 : 0,
+                hydration: plant.hydration,
+                temperature: weather?.temperature ?? 25,
+                light: 50,
+              })}
+            />
+            <PlantHealthRadar
+              hydration={plant.hydration}
+              lastFertilized={plant.lastFertilized}
+              nutrientLevel={plant.nutrientLevel ?? 100}
+              events={plant.events}
+              status={plant.status}
+              weather={weather}
+            />
+          </div>
+          <div className="mt-4">
+            <StressIndexChart data={stressData} />
+          </div>
+        </details>
 
-      <details open>
-        <summary className="text-lg font-semibold cursor-pointer">Hydration & Nutrients</summary>
-        <p className="text-sm text-gray-500 mb-4">
-          Hydration history and nutrient levels.
-        </p>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <NutrientLevelChart
-            lastFertilized={plant.lastFertilized}
-            nutrientLevel={plant.nutrientLevel ?? 100}
-          />
-          <HydrationTrendChart log={plant.hydrationLog ?? []} />
-        </div>
-        <div className="mt-4">
-          <WaterBalanceChart data={waterData} />
-        </div>
-      </details>
-    </section>
+        <details id="hydration" open>
+          <summary className="text-lg font-semibold cursor-pointer">Hydration & Nutrients</summary>
+          <p className="text-sm text-gray-500 mb-4">
+            Hydration history and nutrient levels.
+          </p>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <NutrientLevelChart
+              lastFertilized={plant.lastFertilized}
+              nutrientLevel={plant.nutrientLevel ?? 100}
+            />
+            <HydrationTrendChart log={plant.hydrationLog ?? []} />
+          </div>
+          <div className="mt-4">
+            <WaterBalanceChart data={waterData} />
+          </div>
+        </details>
+      </section>
+    </>
   )
 }
