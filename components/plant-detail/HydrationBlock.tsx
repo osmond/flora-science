@@ -9,10 +9,6 @@ const NutrientLevelChart = dynamic(
   () => import('@/components/Charts').then((m) => m.NutrientLevelChart),
   { ssr: false, loading: () => <p>Loading chart...</p> }
 )
-const HydrationTrendChart = dynamic(
-  () => import('@/components/Charts').then((m) => m.HydrationTrendChart),
-  { ssr: false, loading: () => <p>Loading chart...</p> }
-)
 const WaterBalanceChart = dynamic(
   () => import('@/components/Charts').then((m) => m.WaterBalanceChart),
   { ssr: false, loading: () => <p>Loading chart...</p> }
@@ -45,21 +41,26 @@ export default function HydrationBlock({
     <details id="hydration" open>
       <summary className="text-lg font-semibold cursor-pointer">Hydration & Nutrients</summary>
       <p className="text-sm text-gray-500 mb-4">
-        Hydration history and nutrient levels.
+        Nutrient levels and water balance.
       </p>
       <div className="flex gap-6 overflow-x-auto snap-x snap-mandatory md:flex-col md:overflow-visible">
-        <ChartCard title="Nutrient Levels" insight="Nutrient availability over time">
+        <ChartCard
+          title="Nutrient Levels"
+          insight={`Next feed due ${(() => {
+            const d = new Date(plant.lastFertilized)
+            d.setMonth(d.getMonth() + 1)
+            return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
+          })()}`}
+          variant="secondary"
+        >
           <NutrientLevelChart
             lastFertilized={plant.lastFertilized}
             nutrientLevel={plant.nutrientLevel ?? 100}
           />
         </ChartCard>
-        <ChartCard title="Hydration Trend" insight="Hydration history">
-          <HydrationTrendChart log={plant.hydrationLog ?? []} />
-        </ChartCard>
       </div>
       <div className="mt-4 flex overflow-x-auto snap-x snap-mandatory md:flex-col md:overflow-visible">
-        <ChartCard title="Water Balance" insight="Water balance with ET0">
+        <ChartCard title="Water Balance" insight="ET₀ vs water" variant="secondary">
           <div className="mb-2 flex items-center gap-2">
             <div className="flex gap-1">
               {(['day', 'week', 'month'] as (keyof typeof ranges)[]).map((tf) => (

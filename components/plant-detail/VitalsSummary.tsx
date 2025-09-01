@@ -1,10 +1,19 @@
 'use client'
 
-import Link from 'next/link'
-import { Activity, Droplet, Calendar } from 'lucide-react'
+import dynamic from 'next/dynamic'
 import { calculateStressIndex } from '@/lib/plant-metrics'
+import ChartCard from '@/components/ChartCard'
 import type { Plant } from './types'
 import type { Weather } from '@/lib/weather'
+
+const StressIndexGauge = dynamic(
+  () => import('@/components/Charts').then((m) => m.StressIndexGauge),
+  { ssr: false, loading: () => <p>Loading chart...</p> },
+)
+const HydrationTrendChart = dynamic(
+  () => import('@/components/Charts').then((m) => m.HydrationTrendChart),
+  { ssr: false, loading: () => <p>Loading chart...</p> },
+)
 
 interface VitalsSummaryProps {
   plant: Plant
@@ -20,25 +29,17 @@ export default function VitalsSummary({ plant, weather }: VitalsSummaryProps) {
       light: 50,
     }),
   )
-
   const stressLabel =
     stressValue < 30 ? 'Low' : stressValue <= 70 ? 'Moderate' : 'High'
 
   return (
-    <div className="flex justify-around mb-6">
-      <Link href="#plant-health" className="flex flex-col items-center gap-2">
-        <Activity className="h-8 w-8" strokeWidth={3} />
-        <span className="text-2xl font-bold">{stressLabel} Stress</span>
-      </Link>
-      <Link href="#hydration" className="flex flex-col items-center gap-2">
-        <Droplet className="h-8 w-8" strokeWidth={3} />
-        <span className="text-2xl font-bold">{plant.hydration}% Hydration</span>
-      </Link>
-      <Link href="#hydration" className="flex flex-col items-center gap-2">
-        <Calendar className="h-8 w-8" strokeWidth={3} />
-        <span className="text-2xl font-bold">Next water {plant.nextDue}</span>
-      </Link>
+    <div className="grid gap-6 mb-6 md:grid-cols-2">
+      <ChartCard title="Stress" insight={stressLabel} variant="primary">
+        <StressIndexGauge value={stressValue} />
+      </ChartCard>
+      <ChartCard title="Hydration" insight="Hydration stable this week" variant="primary">
+        <HydrationTrendChart log={plant.hydrationLog ?? []} />
+      </ChartCard>
     </div>
   )
 }
-

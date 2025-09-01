@@ -26,6 +26,7 @@ export default function AnalyticsPanel({ plant, weather }: AnalyticsPanelProps) 
   const [timeframe, setTimeframe] = useState<keyof typeof ranges>('week')
   const [showEt, setShowEt] = useState(true)
   const [showWater, setShowWater] = useState(true)
+  const [tab, setTab] = useState<'plant' | 'environment' | 'hydration'>('plant')
 
   const weatherHistory = useMemo<WeatherDay[]>(() => {
     const base = {
@@ -108,12 +109,23 @@ export default function AnalyticsPanel({ plant, weather }: AnalyticsPanelProps) 
     return stressTrend(readings)
   }, [waterData, weatherHistory, filteredWaterEvents])
 
-  return (
-    <>
-      <VitalsSummary plant={plant} weather={weather} />
-      <section className="rounded-xl p-6 shadow-sm bg-gray-50 dark:bg-gray-800 space-y-6">
-        <EnvironmentBlock env={env} envChartData={envChartData} />
+  const sections = [
+    {
+      key: 'plant' as const,
+      label: 'Plant Health',
+      content: (
         <StressBlock plant={plant} weather={weather} stressData={stressData} />
+      ),
+    },
+    {
+      key: 'environment' as const,
+      label: 'Environment',
+      content: <EnvironmentBlock env={env} envChartData={envChartData} />,
+    },
+    {
+      key: 'hydration' as const,
+      label: 'Hydration & Nutrients',
+      content: (
         <HydrationBlock
           plant={plant}
           waterData={waterData}
@@ -124,6 +136,37 @@ export default function AnalyticsPanel({ plant, weather }: AnalyticsPanelProps) 
           showWater={showWater}
           setShowWater={setShowWater}
         />
+      ),
+    },
+  ]
+
+  return (
+    <>
+      <VitalsSummary plant={plant} weather={weather} />
+      <div className="mb-4 flex gap-2 md:hidden">
+        {sections.map((s) => (
+          <button
+            key={s.key}
+            onClick={() => setTab(s.key)}
+            className={`px-3 py-1 text-sm rounded ${
+              tab === s.key
+                ? 'bg-gray-200 dark:bg-gray-700'
+                : 'bg-transparent'
+            }`}
+          >
+            {s.label}
+          </button>
+        ))}
+      </div>
+      <section className="rounded-xl p-6 shadow-sm bg-gray-50 dark:bg-gray-800 space-y-6">
+        {sections.map((s) => (
+          <div
+            key={s.key}
+            className={`${tab === s.key ? 'block' : 'hidden'} md:block`}
+          >
+            {s.content}
+          </div>
+        ))}
       </section>
     </>
   )
