@@ -30,8 +30,10 @@ import {
   type DailyActivity,
 } from "@/lib/seasonal-trends"
 import {
+  calculateHydrationTrend,
   calculateNutrientAvailability,
   calculateStressIndex,
+  type HydrationLogEntry,
   type StressDatum,
 } from "@/lib/plant-metrics"
 import type { Weather } from "@/lib/weather"
