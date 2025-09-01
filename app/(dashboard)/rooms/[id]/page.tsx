@@ -1,7 +1,6 @@
 import Link from "next/link"
 import PlantCard from "@/components/PlantCard"
 import { CareTrendsChart } from "@/components/Charts"
-import Panel from "@/components/Panel"
 
 const sampleRooms = {
   "living-room": {
@@ -62,24 +61,21 @@ export default function RoomDetailPage({ params }: { params: { id: string } }) {
               <p className="text-gray-500">{room.tasks} tasks due</p>
             </header>
 
-            <Panel label="Plants">
+            <section>
+              <h2 className="font-semibold mb-2">Plants</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {room.plants.map((p) => (
                   <Link key={p.id} href={`/plants/${p.id}`} className="block">
-                    <PlantCard
-                      nickname={p.nickname}
-                      species={p.species}
-                      status={p.status}
-                      hydration={p.hydration}
-                    />
+                    <PlantCard nickname={p.nickname} species={p.species} status={p.status} hydration={p.hydration} />
                   </Link>
                 ))}
               </div>
-            </Panel>
+            </section>
 
-            <Panel label="Care Trends">
+            <section>
+              <h2 className="font-semibold mb-2">Care Trends</h2>
               <CareTrendsChart events={room.events ?? []} />
-            </Panel>
+            </section>
           </>
         )}
       </div>
