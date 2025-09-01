@@ -9,6 +9,7 @@ import {
   type WaterEvent,
   type WeatherDay,
 } from '@/lib/plant-metrics'
+import EnvRow from '@/components/EnvRow'
 import type { Plant } from './types'
 import type { Weather } from '@/lib/weather'
 
@@ -36,6 +37,14 @@ const StressIndexChart = dynamic(
   () => import('@/components/Charts').then((m) => m.StressIndexChart),
   { ssr: false, loading: () => <p>Loading chart...</p> }
 )
+const TempHumidityChart = dynamic(
+  () => import('@/components/Charts').then((m) => m.TempHumidityChart),
+  { ssr: false, loading: () => <p>Loading chart...</p> }
+)
+const VPDGauge = dynamic(
+  () => import('@/components/Charts').then((m) => m.VPDGauge),
+  { ssr: false, loading: () => <p>Loading chart...</p> }
+)
 
 interface AnalyticsPanelProps {
   plant: Plant
@@ -56,6 +65,25 @@ export default function AnalyticsPanel({ plant, weather }: AnalyticsPanelProps) 
       return { date: d.toISOString().split('T')[0], ...base }
     })
   }, [weather])
+
+  const env = useMemo(() => {
+    const temperature = weather?.temperature ?? 25
+    const humidity = weather?.humidity ?? 50
+    const es = 0.6108 * Math.exp((17.27 * temperature) / (temperature + 237.3))
+    const ea = es * (humidity / 100)
+    const vpd = Number((es - ea).toFixed(2))
+    return { temperature, humidity, vpd }
+  }, [weather])
+
+  const envChartData = useMemo(
+    () =>
+      weatherHistory.map((w) => ({
+        day: new Date(w.date).toLocaleDateString(undefined, { weekday: 'short' }),
+        temp: w.temperature,
+        rh: w.humidity,
+      })),
+    [weatherHistory],
+  )
 
   const waterEvents = useMemo<WaterEvent[]>(
     () =>
@@ -98,6 +126,18 @@ export default function AnalyticsPanel({ plant, weather }: AnalyticsPanelProps) 
 
   return (
     <section className="rounded-xl p-6 shadow-sm bg-gray-50 dark:bg-gray-800 space-y-6">
+      <div>
+        <EnvRow
+          temperature={env.temperature}
+          humidity={env.humidity}
+          vpd={env.vpd}
+          tempUnit="C"
+        />
+        <div className="mt-4 grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <TempHumidityChart tempUnit="C" data={envChartData} />
+          <VPDGauge value={env.vpd} />
+        </div>
+      </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <StressIndexGauge
           value={calculateStressIndex({
