@@ -53,7 +53,9 @@ export default function CarePlan({ plan, nickname }: CarePlanProps) {
     .filter((s): s is Section => s !== null)
 
   const hasPlan = !!planObj
-  const [openSections, setOpenSections] = useState<string[]>([])
+  const [openSections, setOpenSections] = useState<string[]>(
+    sections.map((s) => s.key)
+  )
 
   const toggleSection = (key: string) => {
     setOpenSections((prev) =>
