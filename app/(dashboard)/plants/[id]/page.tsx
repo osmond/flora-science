@@ -4,7 +4,8 @@ import Link from "next/link"
 import Image from "next/image"
 import { useEffect, useState, useCallback, useMemo } from "react"
 import Lightbox from "@/components/Lightbox"
-import { Droplet, Sprout, FileText } from "lucide-react"
+import Sparkline from "@/components/Sparkline"
+import { Droplet, Sprout, FileText, Calendar, Activity } from "lucide-react"
 import { getHydrationProgress } from "@/components/PlantCard"
 import PlantDetailSkeleton from "./PlantDetailSkeleton"
 import WaterModal from "@/components/WaterModal"
@@ -45,7 +46,6 @@ interface Plant {
   nutrientLevel?: number
   events: PlantEvent[]
   photos: string[]
-  carePlan?: string
 }
 
 const EVENT_TYPES = {
@@ -70,8 +70,6 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
   const [plant, setPlant] = useState<Plant | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [carePlanLoading, setCarePlanLoading] = useState(true)
-  const [carePlanError, setCarePlanError] = useState<string | null>(null)
   const progress = getHydrationProgress(plant?.hydration ?? 0)
   const [waterOpen, setWaterOpen] = useState(false)
   const [fertilizeOpen, setFertilizeOpen] = useState(false)
@@ -249,36 +247,9 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
     }
   }, [params.id])
 
-  const loadCarePlan = useCallback(async () => {
-    setCarePlanLoading(true)
-    setCarePlanError(null)
-    try {
-      const res = await fetch(`/api/plants/${params.id}/care-plan`)
-      if (res.ok) {
-        const data = await res.json()
-        setPlant((prev) =>
-          prev && !prev.carePlan ? { ...prev, carePlan: data.carePlan } : prev
-        )
-      } else {
-        setCarePlanError(`Error ${res.status}`)
-      }
-    } catch (err) {
-      setCarePlanError(err instanceof Error ? err.message : String(err))
-    } finally {
-      setCarePlanLoading(false)
-    }
-  }, [params.id])
-
   useEffect(() => {
     loadPlant()
   }, [loadPlant])
-
-  useEffect(() => {
-    if (plant && !plant.carePlan) {
-      loadCarePlan()
-    }
-    // Only depend on plant id to avoid repeated fetches when carePlan updates
-  }, [plant?.id, loadCarePlan])
 
   return (
     <main className="flex-1 bg-white dark:bg-gray-900">
@@ -318,7 +289,8 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
         ) : (
           <>
 
-            <section className="flex flex-col md:flex-row gap-6 items-center md:items-start">
+            {/* Hero Section */}
+            <section className="rounded-xl border p-6 shadow-sm bg-white dark:bg-gray-900 flex flex-col md:flex-row gap-6 items-center md:items-start">
               {plant.photos && plant.photos.length > 0 ? (
                 <Image
                   src={plant.photos[0]}
@@ -326,18 +298,22 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
                   width={800}
                   height={600}
                   sizes="(max-width: 768px) 100vw, 50vw"
-                  className="w-full md:w-1/2 rounded-xl border object-cover max-h-72"
+                  className="w-full md:w-1/2 rounded-lg object-cover max-h-72"
                   loading="lazy"
                 />
               ) : (
-                <div className="w-full md:w-1/2 rounded-xl border flex items-center justify-center bg-gray-100 dark:bg-gray-800 max-h-72">
+                <div className="w-full md:w-1/2 rounded-lg flex items-center justify-center bg-gray-100 dark:bg-gray-800 max-h-72">
                   <span className="text-gray-500 dark:text-gray-400">No photo</span>
                 </div>
               )}
 
-              <div className="space-y-2 md:w-1/2 text-center md:text-left">
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{plant.nickname}</h1>
-                <p className="italic text-gray-500">{plant.species}</p>
+              <div className="space-y-3 md:w-1/2 text-center md:text-left">
+                <div>
+                  <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                    {plant.nickname}
+                  </h1>
+                  <p className="italic text-gray-500">{plant.species}</p>
+                </div>
                 <div className="flex flex-wrap justify-center md:justify-start gap-2 mt-2">
                   <button
                     onClick={handleWater}
@@ -365,7 +341,9 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
                   </button>
                 </div>
                 <div className="flex flex-wrap justify-center md:justify-start gap-2 text-sm">
-                  <span className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full font-medium">{plant.status}</span>
+                  <span className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full font-medium">
+                    {plant.status}
+                  </span>
                 </div>
                 <div
                   className="w-full bg-gray-200 rounded-full h-2"
@@ -382,126 +360,117 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
                   />
                   <span className="sr-only">{`${progress.pct}% hydration`}</span>
                 </div>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Last watered: <strong>{plant.lastWatered}</strong> · Next due: <strong>{plant.nextDue}</strong>
-                </p>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Last fertilized: <strong>{plant.lastFertilized}</strong> · Next feed: <strong>{calculateNextFeedDate(plant.lastFertilized, plant.nutrientLevel ?? 100)}</strong>
-                </p>
               </div>
             </section>
 
-            <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-              {[
-                { label: "Status", value: plant.status },
-                { label: "Hydration", value: `${plant.hydration}%` },
-                { label: "Last Watered", value: plant.lastWatered },
-                { label: "Next Due", value: plant.nextDue },
-                { label: "Last Fertilized", value: plant.lastFertilized },
-                { label: "Next Feed", value: calculateNextFeedDate(plant.lastFertilized, plant.nutrientLevel ?? 100) }
-              ].map(({ label, value }) => (
-                <div
-                  key={label}
-                  className="rounded-xl border p-4 bg-gray-50 dark:bg-gray-800 dark:border-gray-700"
-                >
-                  <p className="text-sm text-gray-500 dark:text-gray-400">{label}</p>
-                  <p className="text-xl font-semibold text-gray-900 dark:text-white">{value}</p>
+            {/* Quick Stats */}
+            <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+              {/* Care Timing */}
+              {[{ label: "Last Watered", value: plant.lastWatered, icon: Droplet },
+                { label: "Next Water Due", value: plant.nextDue, icon: Calendar },
+                { label: "Last Fertilized", value: plant.lastFertilized, icon: Sprout },
+                { label: "Next Feed", value: calculateNextFeedDate(plant.lastFertilized, plant.nutrientLevel ?? 100), icon: Calendar }].map(({ label, value, icon: Icon }) => (
+                <div key={label} className="flex items-center justify-between rounded-lg border p-4 bg-white shadow-sm dark:bg-gray-900 dark:border-gray-700">
+                  <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+                    <Icon className="h-4 w-4" />
+                    {label}
+                  </div>
+                  <div className="text-sm font-semibold text-gray-900 dark:text-white">{value}</div>
+                </div>
+              ))}
+              {/* Plant State */}
+              {[{ label: "Hydration", value: `${plant.hydration}%`, icon: Droplet, spark: plant.hydrationLog?.map(h => h.value) ?? [] },
+                { label: "Stress Score", value: Math.round(calculateStressIndex({ overdueDays: plant.status === "Water overdue" ? 1 : 0, hydration: plant.hydration, temperature: weather?.temperature ?? 25, light: 50 })), icon: Activity, color: "text-orange-600" }].map(({ label, value, icon: Icon, spark, color }) => (
+                <div key={label} className="flex items-center justify-between rounded-lg border p-4 bg-white shadow-sm dark:bg-gray-900 dark:border-gray-700">
+                  <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+                    <Icon className={`h-4 w-4 ${color ?? ''}`} />
+                    {label}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-semibold text-gray-900 dark:text-white">{value}</span>
+                    {spark && spark.length > 1 && <Sparkline data={spark} />}
+                  </div>
                 </div>
               ))}
             </section>
 
-            <section>
-              <h2 className="text-lg font-semibold mb-3">Stress Level</h2>
-              <StressIndexGauge
-                value={calculateStressIndex({
-                  overdueDays: plant.status === "Water overdue" ? 1 : 0,
-                  hydration: plant.hydration,
-                  temperature: weather?.temperature ?? 25,
-                  light: 50,
-                })}
-              />
+            {/* Analytics Panel */}
+            <section className="rounded-xl border p-6 shadow-sm bg-white dark:bg-gray-900 space-y-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <StressIndexGauge
+                  value={calculateStressIndex({
+                    overdueDays: plant.status === "Water overdue" ? 1 : 0,
+                    hydration: plant.hydration,
+                    temperature: weather?.temperature ?? 25,
+                    light: 50,
+                  })}
+                />
+                <PlantHealthRadar
+                  hydration={plant.hydration}
+                  lastFertilized={plant.lastFertilized}
+                  nutrientLevel={plant.nutrientLevel ?? 100}
+                  events={plant.events}
+                  status={plant.status}
+                  weather={weather}
+                />
+              </div>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <NutrientLevelChart
+                  lastFertilized={plant.lastFertilized}
+                  nutrientLevel={plant.nutrientLevel ?? 100}
+                />
+                <HydrationTrendChart log={plant.hydrationLog ?? []} />
+              </div>
             </section>
 
-            <section>
-              <h2 className="text-lg font-semibold mb-3">Nutrient Levels</h2>
-              <NutrientLevelChart
-                lastFertilized={plant.lastFertilized}
-                nutrientLevel={plant.nutrientLevel ?? 100}
-              />
-            </section>
-
-            <section>
-              <h2 className="text-lg font-semibold mb-3">Plant Health</h2>
-              <PlantHealthRadar
-                hydration={plant.hydration}
-                lastFertilized={plant.lastFertilized}
-                nutrientLevel={plant.nutrientLevel ?? 100}
-                events={plant.events}
-                status={plant.status}
-                weather={weather}
-              />
-            </section>
-
-            <section>
-              <h2 className="text-lg font-semibold mb-3">Care Trends</h2>
+            {/* Care Trends */}
+            <section className="rounded-xl border p-6 shadow-sm bg-white dark:bg-gray-900">
+              <h2 className="text-lg font-semibold mb-4">Care Trends</h2>
               <CareTrendsChart events={plant.events} />
-
-              <h2 className="text-lg font-semibold mb-3">Hydration Trend</h2>
-              <HydrationTrendChart log={plant.hydrationLog ?? []} />
-
-              <h2 className="text-lg font-semibold mb-3">Care Plan</h2>
-              {carePlanLoading ? (
-                <p className="text-sm text-gray-500 dark:text-gray-400">Generating care plan...</p>
-              ) : carePlanError ? (
-                <p className="text-sm text-red-500">{carePlanError}</p>
-              ) : plant.carePlan ? (
-                <p className="text-sm whitespace-pre-line text-gray-700 dark:text-gray-300">{plant.carePlan}</p>
-              ) : (
-                <p className="text-sm text-gray-500 dark:text-gray-400">No care plan available.</p>
-              )}
-
             </section>
 
-              <section>
-                <h2 className="text-lg font-semibold mb-3">Timeline</h2>
-                <TimelineHeatmap activity={dailyActivity} />
-                {!plant.events || plant.events.length === 0 ? (
-                  <p className="text-sm text-gray-500 dark:text-gray-400">No activity yet.</p>
-                ) : (
-                  <ul className="space-y-2">
-                    {plant.events
-                      .filter((e): e is PlantEvent => e !== null && e !== undefined)
-                      .map((e) => {
-                        const type =
-                          EVENT_TYPES[e.type as keyof typeof EVENT_TYPES] ?? EVENT_TYPES.note
-                        const Icon = type.icon
-                        return (
-                          <li
-                            key={e.id}
-                            className="flex items-start gap-3 rounded-lg border p-3 bg-white dark:bg-gray-900 dark:border-gray-700"
-                          >
-                            <span className="w-16 text-xs font-medium text-gray-500">{e.date}</span>
-                            <span className="text-sm flex items-center gap-2">
-                              <span
-                                className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold ${type.color}`}
-                              >
-                                <span aria-hidden="true">
-                                  <Icon className="h-3 w-3" />
-                                </span>
-                                <span aria-hidden="true">{type.label}</span>
-                                <span className="sr-only">{type.label}</span>
+            {/* Timeline */}
+            <section className="rounded-xl border p-6 shadow-sm bg-white dark:bg-gray-900 space-y-4">
+              <h2 className="text-lg font-semibold">Timeline</h2>
+              <TimelineHeatmap activity={dailyActivity} />
+              {!plant.events || plant.events.length === 0 ? (
+                <p className="text-sm text-gray-500 dark:text-gray-400">No activity yet.</p>
+              ) : (
+                <ul className="space-y-2">
+                  {plant.events
+                    .filter((e): e is PlantEvent => e !== null && e !== undefined)
+                    .map((e) => {
+                      const type =
+                        EVENT_TYPES[e.type as keyof typeof EVENT_TYPES] ?? EVENT_TYPES.note
+                      const Icon = type.icon
+                      return (
+                        <li
+                          key={e.id}
+                          className="flex items-start gap-3 rounded-lg border p-3 bg-white dark:bg-gray-900 dark:border-gray-700"
+                        >
+                          <span className="w-16 text-xs font-medium text-gray-500">{e.date}</span>
+                          <span className="text-sm flex items-center gap-2">
+                            <span
+                              className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold ${type.color}`}
+                            >
+                              <span aria-hidden="true">
+                                <Icon className="h-3 w-3" />
                               </span>
-                              {e.type === "note" && e.note}
+                              <span aria-hidden="true">{type.label}</span>
+                              <span className="sr-only">{type.label}</span>
                             </span>
-                          </li>
-                        )
-                      })}
-                  </ul>
-                )}
-              </section>
+                            {e.type === "note" && e.note}
+                          </span>
+                        </li>
+                      )
+                    })}
+                </ul>
+              )}
+            </section>
 
-            <section>
-              <h2 className="text-lg font-semibold mb-3">Gallery</h2>
+            {/* Gallery */}
+            <section className="rounded-xl border p-6 shadow-sm bg-white dark:bg-gray-900">
+              <h2 className="text-lg font-semibold mb-4">Gallery</h2>
               {plant.photos && plant.photos.length > 0 ? (
                 <Lightbox
                   images={plant.photos.map((src, i) => ({
