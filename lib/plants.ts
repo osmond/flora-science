@@ -21,6 +21,13 @@ export interface Plant {
   carePlan?: string
 }
 
+export function sanitizeEvents(events: unknown): PlantEvent[] {
+  return (Array.isArray(events) ? events : []).filter(
+    (e: any): e is PlantEvent =>
+      e !== null && e !== undefined && typeof e.id !== "undefined"
+  )
+}
+
 export const samplePlants: Record<string, Plant> = {
   "1": {
     nickname: "Delilah",
