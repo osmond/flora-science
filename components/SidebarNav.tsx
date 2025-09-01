@@ -21,8 +21,11 @@ export default function SidebarNav({ collapsed, toggle }: SidebarNavProps) {
       className={`hidden md:flex flex-col bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-950 border-r border-gray-200 dark:border-gray-700 ${collapsed ? "p-2 items-center" : "p-6"} overflow-hidden`}
     >
       <button
+        id="sidebar-toggle"
         onClick={toggle}
         aria-label="Toggle sidebar"
+        aria-expanded={collapsed ? "false" : "true"}
+        aria-controls="sidebar-nav"
         className="self-end mb-4 p-2 rounded-md text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-800"
       >
         {collapsed ? (
@@ -32,6 +35,7 @@ export default function SidebarNav({ collapsed, toggle }: SidebarNavProps) {
         )}
       </button>
       <nav
+        id="sidebar-nav"
         className={`flex flex-col gap-3 text-sm text-gray-700 dark:text-gray-200 ${collapsed ? "items-center" : ""}`}
         role="navigation"
         aria-label="Sidebar navigation"
