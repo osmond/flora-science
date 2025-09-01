@@ -43,10 +43,7 @@ export const samplePlants: Record<string, Plant> = {
       { id: 1, type: "water", date: "Aug 25" },
       { id: 2, type: "note", date: "Aug 20", note: "New leaf unfurling" }
     ],
-    photos: [
-      "https://placehold.co/800x400.png?text=Delilah",
-      "https://placehold.co/300x300.png?text=Delilah"
-    ]
+    photos: ["/example-plant.png"]
   },
   "2": {
     nickname: "Sunny",
