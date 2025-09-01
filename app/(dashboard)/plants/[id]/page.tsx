@@ -277,20 +277,20 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
               onAddNote={handleAddNote}
             />
             <div className="mt-8">
-              <AnalyticsPanel plant={plant} weather={weather} />
-            </div>
-            <div className="mt-8">
               {carePlanLoading ? (
-                <div className="rounded-xl p-6 bg-gray-50 dark:bg-gray-800 text-center text-sm text-gray-500">
+                <div className="rounded-xl p-6 bg-green-50 dark:bg-gray-800 text-center text-sm text-gray-500">
                   Loading care plan...
                 </div>
               ) : carePlanError ? (
-                <div className="rounded-xl p-6 bg-gray-50 dark:bg-gray-800 text-sm text-red-500">
+                <div className="rounded-xl p-6 bg-green-50 dark:bg-gray-800 text-sm text-red-500">
                   {carePlanError}
                 </div>
               ) : (
-                <CarePlan plan={carePlan} />
+                <CarePlan plan={carePlan} nickname={plant.nickname} />
               )}
+            </div>
+            <div className="mt-8">
+              <AnalyticsPanel plant={plant} weather={weather} />
             </div>
             <div className="mt-8">
               <Timeline events={plant.events} />
