@@ -33,9 +33,12 @@ describe('CarePlan', () => {
       pruning: 'scissors',
       pests: 'bug',
     }
+    const labelMap: Record<string, string> = {
+      fertilization: 'Fertilizer',
+    }
 
     for (const [key, text] of Object.entries(plan)) {
-      const label = key.charAt(0).toUpperCase() + key.slice(1)
+      const label = labelMap[key] ?? key.charAt(0).toUpperCase() + key.slice(1)
       const button = screen.getByRole('button', { name: new RegExp(label, 'i') })
       const svg = button.querySelector('svg')
       expect(svg).toBeInTheDocument()
