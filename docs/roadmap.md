@@ -13,9 +13,9 @@ Flora-Science is a plant care companion designed for **clarity**, **low-friction
 ---
 
 ## 🌱 Phase 1 – Core Views
-- [ ] **Today View**
-  - Show all plants due today
-  - Hydration, fertilizing, and notes at a glance
+- [x] **Today View**
+  - [x] Show all plants due today
+  - [x] Hydration, fertilizing, and notes at a glance
 - [ ] **Rooms View**
   - Group plants by room
   - Show average hydration + tasks due

@@ -14,4 +14,12 @@ describe('Dashboard page layout', () => {
     expect(grid).toHaveClass('lg:grid-cols-3')
     expect(grid).toHaveClass('xl:grid-cols-4')
   })
+
+  it('renders only plants with due tasks', () => {
+    const { queryByText } = render(<TodayPage />)
+    expect(queryByText('Delilah')).toBeInTheDocument()
+    expect(queryByText('Ivy')).toBeInTheDocument()
+    expect(queryByText('Sunny')).not.toBeInTheDocument()
+    expect(queryByText('Figgy')).not.toBeInTheDocument()
+  })
 })
