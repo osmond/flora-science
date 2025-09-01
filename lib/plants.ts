@@ -19,7 +19,7 @@ export interface Plant {
   nutrientLevel?: number
   events: PlantEvent[]
   photos: string[]
-  carePlan?: string
+  carePlan?: Record<string, string>
 }
 
 export const samplePlants: Record<string, Plant> = {
