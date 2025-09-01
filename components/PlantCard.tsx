@@ -3,16 +3,24 @@
 import { motion } from 'framer-motion'
 import { cardVariants, hover, tap, defaultTransition } from '@/lib/motion'
 import Sparkline from './Sparkline'
+import TaskIcons from './TaskIcons'
+
+type TaskCounts = {
+  water: number
+  fertilize: number
+  notes: number
+}
 
 type PlantCardProps = {
   nickname: string
   species: string
   status: string
   hydration: number
-  tasksDue?: number
+  tasks?: TaskCounts
   note?: string
   hydrationHistory?: number[]
   photo?: string
+  onMarkDone?: () => void
 }
 
 export function getHydrationProgress(hydration: number) {
@@ -26,13 +34,13 @@ export default function PlantCard({
   species,
   status,
   hydration,
-  tasksDue = 0,
+  tasks = { water: 0, fertilize: 0, notes: 0 },
   note,
   hydrationHistory,
   photo,
+  onMarkDone,
 }: PlantCardProps) {
   const { pct, barColor } = getHydrationProgress(hydration)
-  const badgeColor = tasksDue > 0 ? 'bg-red-500 text-white' : 'bg-flora-leaf text-white'
   const statusColor =
     status === 'Water overdue'
       ? 'bg-red-500 text-white'
@@ -97,14 +105,24 @@ export default function PlantCard({
             ))}
           </div>
         </div>
-        <div className="flex items-center gap-1">
-          <span className="text-xs text-gray-500 dark:text-gray-400">Tasks</span>
-          <span
-            className={`text-xs font-semibold px-2 py-0.5 rounded-full ${badgeColor}`}
-            aria-label={`${tasksDue} tasks due`}
-          >
-            {tasksDue}
-          </span>
+        <div className="flex items-center gap-2">
+          <TaskIcons
+            water={tasks.water}
+            fertilize={tasks.fertilize}
+            notes={tasks.notes}
+          />
+          {onMarkDone && (
+            <button
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                onMarkDone()
+              }}
+              className="text-xs px-2 py-1 rounded bg-flora-leaf text-white"
+            >
+              Mark done
+            </button>
+          )}
         </div>
       </div>
     </motion.div>
