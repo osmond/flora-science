@@ -5,6 +5,8 @@ import {
   WaterEvent,
   calculateHydrationTrend,
   collectPlantMetrics,
+  calculateStressIndex,
+  stressTrend,
 } from '../plant-metrics'
 import { samplePlants } from '../plants'
 
@@ -37,5 +39,48 @@ describe('plant metrics', () => {
     const metrics = collectPlantMetrics(plants)
     expect(metrics[0]).toMatchObject({ date: '2024-08-21', Delilah: 80 })
     expect(metrics.some((m) => m.Sunny === 92)).toBe(true)
+  })
+
+  it('calculates stress index with weighted factors', () => {
+    const input = {
+      overdueDays: 2,
+      hydration: 50,
+      temperature: 35,
+      light: 70,
+    }
+    const stress = calculateStressIndex(input)
+    expect(stress).toBe(61)
+  })
+
+  it('maps stress trend with edge cases', () => {
+    const readings = [
+      {
+        date: '2024-08-01',
+        overdueDays: -3,
+        hydration: 100,
+        temperature: 100,
+        light: 50,
+      },
+      {
+        date: '2024-08-02',
+        overdueDays: 5,
+        hydration: 0,
+        temperature: -10,
+        light: 0,
+      },
+    ]
+    const trend = stressTrend(readings)
+    expect(trend).toEqual([
+      {
+        date: '2024-08-01',
+        stress: 15,
+        factors: { overdue: 0, hydration: 0, temperature: 15, light: 0 },
+      },
+      {
+        date: '2024-08-02',
+        stress: 100,
+        factors: { overdue: 30, hydration: 40, temperature: 15, light: 15 },
+      },
+    ])
   })
 })
