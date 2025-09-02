@@ -22,6 +22,10 @@ const NoteModal = dynamic(() => import("@/components/NoteModal"), {
   ssr: false,
   loading: () => null,
 })
+const EditPlantModal = dynamic(() => import("@/components/EditPlantModal"), {
+  ssr: false,
+  loading: () => null,
+})
 import type { Plant, PlantEvent } from "@/components/plant-detail/types"
 import { getWeatherForUser, type Weather } from "@/lib/weather"
 import { samplePlants } from "@/lib/plants"
@@ -35,6 +39,7 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
   const [waterOpen, setWaterOpen] = useState(false)
   const [fertilizeOpen, setFertilizeOpen] = useState(false)
   const [noteOpen, setNoteOpen] = useState(false)
+  const [editOpen, setEditOpen] = useState(false)
   const toast = useToast()
   const [weather, setWeather] = useState<Weather | null>(null)
   const [offline, setOffline] = useState(false)
@@ -69,6 +74,10 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
 
   function handleAddNote() {
     setNoteOpen(true)
+  }
+
+  function handleEdit() {
+    setEditOpen(true)
   }
 
   function handleWaterSubmit(amount: string) {
@@ -120,6 +129,40 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
         : prev
     )
     toast("Note added")
+  }
+
+  function handleEditSubmit({
+    nickname,
+    species,
+    photo,
+  }: {
+    nickname: string
+    species: string
+    photo: string
+  }) {
+    setPlant((prev) =>
+      prev
+        ? {
+            ...prev,
+            nickname,
+            species,
+            photos: photo ? [photo, ...prev.photos.slice(1)] : prev.photos,
+          }
+        : prev,
+    )
+
+    fetch(`/api/plants/${params.id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ nickname, species, photo }),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed")
+        return res.json()
+      })
+      .then((data) => setPlant(data))
+      .then(() => toast("Plant updated"))
+      .catch(() => toast("Failed to update plant"))
   }
 
   async function fetchWeatherForPlant(): Promise<Weather | null> {
@@ -275,6 +318,7 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
               onWater={handleWater}
               onFertilize={handleFertilize}
               onAddNote={handleAddNote}
+              onEdit={handleEdit}
             />
             <div className="mt-8">
               {carePlanLoading ? (
@@ -316,6 +360,14 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
         onClose={() => setNoteOpen(false)}
         onSubmit={handleNoteSubmit}
       />
+      {plant && (
+        <EditPlantModal
+          isOpen={editOpen}
+          onClose={() => setEditOpen(false)}
+          plant={plant}
+          onSubmit={handleEditSubmit}
+        />
+      )}
     </main>
   )
 }
