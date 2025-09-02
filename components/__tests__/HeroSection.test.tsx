@@ -26,6 +26,7 @@ function renderHero(hydration: number) {
       onWater={() => {}}
       onFertilize={() => {}}
       onAddNote={() => {}}
+      onEdit={() => {}}
     />,
   )
 }
@@ -47,5 +48,10 @@ describe('HeroSection hydration bar', () => {
     const bar = progress.querySelector('div') as HTMLElement
     expect(bar).toHaveClass('from-alert')
     expect(bar).toHaveClass('to-alert-red')
+  })
+
+  it('renders an Edit button', () => {
+    renderHero(80)
+    expect(screen.getByRole('button', { name: /edit plant/i })).toBeInTheDocument()
   })
 })

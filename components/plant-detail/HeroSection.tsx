@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { Droplet, Sprout, FileText } from 'lucide-react'
+import { Droplet, Sprout, FileText, Edit } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { formatDistanceToNow } from 'date-fns'
 import { getHydrationProgress } from '@/components/PlantCard'
@@ -15,6 +15,7 @@ interface HeroSectionProps {
   onWater: () => void
   onFertilize: () => void
   onAddNote: () => void
+  onEdit: () => void
 }
 
 export default function HeroSection({
@@ -23,6 +24,7 @@ export default function HeroSection({
   onWater,
   onFertilize,
   onAddNote,
+  onEdit,
 }: HeroSectionProps) {
   const progress = getHydrationProgress(plant.hydration)
   const [nextWaterDue, setNextWaterDue] = useState(plant.nextDue)
@@ -94,6 +96,15 @@ export default function HeroSection({
           <span className="pointer-events-none absolute inset-0 rounded-full bg-purple-200/60 opacity-0 group-hover:opacity-40 group-hover:animate-[ping_0.6s_ease-out] group-focus:opacity-40 group-focus:animate-[ping_0.6s_ease-out]" />
           <FileText className="h-4 w-4" />
           Add Note
+        </button>
+        <button
+          onClick={onEdit}
+          aria-label="Edit plant"
+          className="relative group flex items-center gap-1 px-4 py-1 rounded-full border border-orange-300 text-sm text-orange-700 bg-white/30 hover:bg-orange-50 dark:border-orange-400 dark:text-orange-400 transition-colors"
+        >
+          <span className="pointer-events-none absolute inset-0 rounded-full bg-orange-200/60 opacity-0 group-hover:opacity-40 group-hover:animate-[ping_0.6s_ease-out] group-focus:opacity-40 group-focus:animate-[ping_0.6s_ease-out]" />
+          <Edit className="h-4 w-4" />
+          Edit
         </button>
       </div>
       <div className="flex flex-wrap justify-center sm:justify-start gap-2 text-sm">
