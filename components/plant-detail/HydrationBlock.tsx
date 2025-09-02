@@ -40,15 +40,17 @@ export default function HydrationBlock({
 }: HydrationBlockProps) {
   const [open, setOpen] = useState(false)
   return (
-    <details id="hydration" open={open}>
+    <details id="hydration" open={open} aria-label="Hydration and nutrients metrics" role="region">
       <summary
         className="flex items-center gap-1 text-lg font-semibold cursor-pointer py-2 hover:text-gray-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2"
         onClick={() => setOpen((o) => !o)}
+        tabIndex={0}
+        aria-label="Show hydration and nutrients metrics"
       >
         Hydration & Nutrients
       </summary>
-      <p className="text-sm text-gray-500 mb-4">
-        Nutrient levels and water balance.
+      <p className="text-sm text-gray-500 mb-4" aria-live="polite">
+        <strong>Metrics:</strong> Nutrient levels and water balance help track plant health. ET₀ is reference evapotranspiration. Hover charts for details.
       </p>
       <div className="flex gap-6 overflow-x-auto snap-x snap-mandatory md:flex-col md:overflow-visible">
         <ChartCard
@@ -60,10 +62,12 @@ export default function HydrationBlock({
           })()}`}
           variant="secondary"
         >
-          <NutrientLevelChart
-            lastFertilized={plant.lastFertilized}
-            nutrientLevel={plant.nutrientLevel ?? 100}
-          />
+          <div tabIndex={0} aria-label="Nutrient level chart. Shows nutrient status for this plant." title="Nutrient level chart. Shows nutrient status for this plant.">
+            <NutrientLevelChart
+              lastFertilized={plant.lastFertilized}
+              nutrientLevel={plant.nutrientLevel ?? 100}
+            />
+          </div>
         </ChartCard>
       </div>
       <div className="mt-4 flex overflow-x-auto snap-x snap-mandatory md:flex-col md:overflow-visible">
@@ -77,6 +81,7 @@ export default function HydrationBlock({
                   className={`rounded px-2 py-1 text-xs capitalize border ${
                     timeframe === tf ? 'bg-gray-200 dark:bg-gray-700' : 'bg-transparent'
                   }`}
+                  aria-label={`Show ${tf} water balance`}
                 >
                   {tf}
                 </button>
@@ -88,16 +93,19 @@ export default function HydrationBlock({
                   type="checkbox"
                   checked={showWater}
                   onChange={(e) => setShowWater(e.target.checked)}
+                  aria-label="Toggle water data"
                 />
                 Water
               </label>
               <label className="flex items-center gap-1">
-                <input type="checkbox" checked={showEt} onChange={(e) => setShowEt(e.target.checked)} />
+                <input type="checkbox" checked={showEt} onChange={(e) => setShowEt(e.target.checked)} aria-label="Toggle ET₀ data" />
                 ET₀
               </label>
             </div>
           </div>
-          <WaterBalanceChart data={waterData} showEt={showEt} showWater={showWater} />
+          <div tabIndex={0} aria-label="Water balance chart. Shows ET₀ and water applied." title="Water balance chart. Shows ET₀ and water applied.">
+            <WaterBalanceChart data={waterData} showEt={showEt} showWater={showWater} />
+          </div>
         </ChartCard>
       </div>
     </details>

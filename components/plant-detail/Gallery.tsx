@@ -113,8 +113,12 @@ export default function Gallery({
   }
 
   return (
-    <section className="rounded-xl p-6 bg-gray-50 dark:bg-gray-800">
+    <section className="rounded-xl p-6 bg-gray-50 dark:bg-gray-800" role="region" aria-label="Plant photo gallery">
       <h2 className="h2 mb-4">Gallery</h2>
+      {/* Metric explanation for scientific clarity */}
+      <div className="text-xs text-gray-500 dark:text-gray-400 mb-2" aria-live="polite">
+        <span><strong>Gallery:</strong> View and upload plant photos. Use keyboard arrows to navigate images.</span>
+      </div>
       {openIndex !== null && (
         <div
           role="dialog"
@@ -160,7 +164,7 @@ export default function Gallery({
         </div>
       )}
       {length === 0 && uploads.length === 0 && (
-        <p className="mb-4 text-sm text-gray-500 dark:text-gray-400">
+        <p className="mb-4 text-sm text-gray-500 dark:text-gray-400" aria-live="polite">
           No photos available.
         </p>
       )}
@@ -171,6 +175,7 @@ export default function Gallery({
         onDragOver={onDragOver}
         onDragLeave={onDragLeave}
         onDrop={onDrop}
+        aria-label="Gallery photo grid"
       >
         {galleryPhotos.map((src, i) => (
           <button
@@ -178,6 +183,7 @@ export default function Gallery({
             onClick={() => setOpenIndex(i)}
             className="group relative w-full focus:outline-none"
             aria-label={`View image ${i + 1} of ${length}`}
+            title={`View image ${i + 1} of ${length}`}
           >
             <div className="relative aspect-square w-full overflow-hidden rounded-lg shadow-sm">
               <Image
@@ -198,17 +204,24 @@ export default function Gallery({
           <div
             key={u.id}
             className="relative aspect-square w-full overflow-hidden rounded-lg bg-gray-200"
+            aria-label="Uploading photo"
+            title="Uploading photo"
           >
             <div className="absolute inset-0 flex items-center justify-center text-sm text-gray-600">
               {u.progress}%
             </div>
             <div
-              className="absolute bottom-0 left-0 h-1 bg-green-500"
+              className={`absolute bottom-0 left-0 h-1 bg-green-500`}
               style={{ width: `${u.progress}%` }}
+              aria-valuenow={Number(u.progress)}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              role="progressbar"
+              title={`Upload progress: ${u.progress}%`}
             />
           </div>
         ))}
-        <label className="flex aspect-square w-full cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-gray-300 text-sm text-gray-500 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-400 dark:hover:bg-gray-700">
+        <label className="flex aspect-square w-full cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-gray-300 text-sm text-gray-500 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-400 dark:hover:bg-gray-700" aria-label="Upload photo" title="Upload photo">
           Upload Photo
           <input
             type="file"

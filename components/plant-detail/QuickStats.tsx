@@ -78,14 +78,23 @@ export default function QuickStats({ plant, weather }: QuickStatsProps) {
   ]
 
   return (
-    <ul className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-gray-700 dark:text-gray-200">
-      {stats.map(({ icon: Icon, text }) => (
+    <ul
+      className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-gray-700 dark:text-gray-200"
+      role="list"
+      aria-label="Quick plant statistics"
+    >
+      {/* Metric explanations for scientific clarity */}
+      <li className="w-full text-xs text-gray-500 dark:text-gray-400 mb-1" aria-live="polite">
+        <span><strong>Stats:</strong> Last watered, next feed, hydration, and stress are calculated from your plant’s data and environment.</span>
+      </li>
+      {stats.map(({ icon: Icon, text }, idx) => (
         <li
           key={text}
           className="flex items-center gap-1 after:content-['|'] last:after:content-[''] after:mx-2 after:text-gray-300"
+          role="listitem"
         >
-          <Icon className="h-4 w-4" />
-          {text}
+          <Icon className="h-4 w-4" aria-hidden="true" />
+          <span tabIndex={0} aria-label={text} title={text}>{text}</span>
         </li>
       ))}
     </ul>

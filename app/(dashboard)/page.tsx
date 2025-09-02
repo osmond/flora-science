@@ -7,6 +7,8 @@ import Header from "@/components/Header"
 import ControlsBar from "@/components/ControlsBar"
 import PlantList from "@/components/PlantList"
 import InsightsBlock from "@/components/InsightsBlock"
+import EmptyState from "@/components/EmptyState"
+import ErrorState from "@/components/ErrorState"
 import { samplePlants } from "@/lib/plants"
 import { GroupBy, SortBy } from "@/lib/dashboardTypes"
 import usePlantMetrics from "@/hooks/usePlantMetrics"
@@ -60,6 +62,9 @@ export default function TodayPage() {
     })
   }, [plants, sortBy])
 
+  // Simulate error state for demonstration (replace with real error logic)
+  const [hasError, setHasError] = useState(false);
+
   return (
     <>
       <Header
@@ -75,11 +80,11 @@ export default function TodayPage() {
         fertilizeOverdue={fertilizeOverdue}
         noteOverdue={noteOverdue}
       />
-      <main className="flex-1 p-4 md:p-6 pb-20 md:pb-6">
+      <main className="flex-1 p-4 md:p-6 pb-20 md:pb-6" role="main" aria-label="Dashboard main content">
         <div className="max-w-7xl mx-auto">
           <header className="sticky top-0 z-10 backdrop-blur bg-white/70 dark:bg-gray-900/70 p-2 flex items-center justify-between md:hidden">
             <span className="font-medium">Today</span>
-            <button className="p-2 rounded-full bg-green-500 text-white">＋</button>
+            <button className="p-2 rounded-full bg-green-500 text-white" aria-label="Add new plant">＋</button>
           </header>
 
           <header className="mt-4 mb-4 hidden md:block">
@@ -95,7 +100,13 @@ export default function TodayPage() {
             onSortChange={setSortBy}
           />
 
-          <PlantList plants={sortedPlants} groupBy={groupBy} />
+          {hasError ? (
+            <ErrorState message="Unable to load plant data." onRetry={() => setHasError(false)} />
+          ) : sortedPlants.length === 0 ? (
+            <EmptyState title="No plants due today" description="Add a plant or check back later." actionLabel="Add Plant" onAction={() => {}} />
+          ) : (
+            <PlantList plants={sortedPlants} groupBy={groupBy} />
+          )}
 
           <InsightsBlock
             overduePercent={overduePercent}
@@ -105,7 +116,6 @@ export default function TodayPage() {
             nextDayFertilizeTasks={nextDayFertilizeTasks}
             nextDayNoteTasks={nextDayNoteTasks}
           />
-
 
           <Footer />
         </div>
