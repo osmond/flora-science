@@ -11,7 +11,6 @@ import {
   Scissors,
   Bug,
   BookOpen,
-  Leaf,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 
@@ -91,7 +90,7 @@ export default function CarePlan({ plan, nickname }: CarePlanProps) {
           onClick={() => toggleSection(key)}
           title={guidance ?? undefined}
         >
-          <Icon className="w-5 h-5 mr-2 flex-shrink-0" />
+          <Icon className="w-4 h-4 mr-2 flex-shrink-0 text-gray-500 dark:text-gray-400" />
           <span className="font-medium">
             {key}
             {guidance && (
@@ -108,10 +107,7 @@ export default function CarePlan({ plan, nickname }: CarePlanProps) {
 
   return (
     <section className="rounded-xl p-6 bg-green-50 dark:bg-gray-800">
-      <h2 className="h2 mb-4 flex items-center">
-        <Leaf className="w-6 h-6 mr-2" />
-        Care Plan for {nickname}
-      </h2>
+      <h2 className="h2 mb-4">Care Plan for {nickname}</h2>
       {!hasPlan ? (
         <p className="text-sm text-gray-600 dark:text-gray-400">
           No care plan available
