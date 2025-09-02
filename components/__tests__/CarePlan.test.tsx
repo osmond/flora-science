@@ -1,5 +1,4 @@
 import { render, screen } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
 import CarePlan from '../plant-detail/CarePlan'
 
 describe('CarePlan', () => {
@@ -8,7 +7,7 @@ describe('CarePlan', () => {
     expect(screen.getByText(/No care plan available/i)).toBeInTheDocument()
   })
 
-  it('renders primary sections and toggles secondary tips', async () => {
+  it('renders all care sections', () => {
     const plan = {
       overview: 'General care overview',
       light: 'Bright, indirect light',
@@ -23,15 +22,11 @@ describe('CarePlan', () => {
     render(<CarePlan plan={plan} nickname="Delilah" />)
     expect(screen.getByText(/Care Plan for Delilah/i)).toBeInTheDocument()
 
-    // primary sections visible
-    expect(screen.getByText(/Light Needs/i)).toBeInTheDocument()
-    expect(screen.getByText(/Watering Frequency/i)).toBeInTheDocument()
-    expect(screen.getByText(/Pests/i)).not.toBeVisible()
-
-    const toggle = screen.getByText(/More care tips/i)
-    await userEvent.click(toggle)
-
+    expect(screen.getByText(/Light Needs/i)).toBeVisible()
+    expect(screen.getByText(/Watering Frequency/i)).toBeVisible()
     expect(screen.getByText(/Pests/i)).toBeVisible()
+
+    expect(screen.queryByText(/More care tips/i)).not.toBeInTheDocument()
   })
 })
 
