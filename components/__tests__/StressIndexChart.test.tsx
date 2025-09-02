@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import { StressIndexChart } from '../Charts'
+import { STRESS_LOW_MAX, STRESS_HIGH_MIN } from '@/lib/constants'
 
 jest.mock('recharts', () => {
   const original = jest.requireActual('recharts')
@@ -72,9 +73,15 @@ describe('StressIndexChart', () => {
       },
     ]
     render(<StressIndexChart data={data} />)
-    expect(screen.getByLabelText('Low (0-30)')).toBeInTheDocument()
-    expect(screen.getByLabelText('Moderate (30-60)')).toBeInTheDocument()
-    expect(screen.getByLabelText('High (60-100)')).toBeInTheDocument()
+    expect(
+      screen.getByLabelText(`Low (0-${STRESS_LOW_MAX})`)
+    ).toBeInTheDocument()
+    expect(
+      screen.getByLabelText(`Moderate (${STRESS_LOW_MAX}-${STRESS_HIGH_MIN})`)
+    ).toBeInTheDocument()
+    expect(
+      screen.getByLabelText(`High (${STRESS_HIGH_MIN}-100)`)
+    ).toBeInTheDocument()
   })
 })
 
