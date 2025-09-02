@@ -5,6 +5,7 @@ import {
   WaterEvent,
   calculateHydrationTrend,
   collectPlantMetrics,
+  stressTrend,
 } from '../plant-metrics'
 import { samplePlants } from '../plants'
 
@@ -37,5 +38,34 @@ describe('plant metrics', () => {
     const metrics = collectPlantMetrics(plants)
     expect(metrics[0]).toMatchObject({ date: '2024-08-21', Delilah: 80 })
     expect(metrics.some((m) => m.Sunny === 92)).toBe(true)
+  })
+
+  it('computes stress trend with moving average', () => {
+    const readings = [
+      {
+        date: '2024-01-01',
+        overdueDays: 0,
+        hydration: 100,
+        temperature: 25,
+        light: 50,
+      },
+      {
+        date: '2024-01-02',
+        overdueDays: 1,
+        hydration: 80,
+        temperature: 25,
+        light: 50,
+      },
+      {
+        date: '2024-01-03',
+        overdueDays: 2,
+        hydration: 60,
+        temperature: 25,
+        light: 50,
+      },
+    ]
+    const trend = stressTrend(readings, 2)
+    expect(trend[1].avg).toBeCloseTo((trend[0].stress + trend[1].stress) / 2)
+    expect(trend[2].avg).toBeGreaterThan(0)
   })
 })
