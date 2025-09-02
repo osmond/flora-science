@@ -72,11 +72,11 @@ export default function CarePlan({ plan, nickname }: CarePlanProps) {
 
   const renderSection = ({ key, icon: Icon, text }: Section) => (
     <section key={key} className="space-y-1">
-      <h3 className="flex items-center font-medium">
+      <h3 className="flex items-center h3">
         <Icon className="w-4 h-4 mr-2 text-gray-500 dark:text-gray-400" />
         {key}
       </h3>
-      <p className="text-sm">{text}</p>
+      <p className="body-text">{text}</p>
     </section>
   )
 
@@ -84,7 +84,7 @@ export default function CarePlan({ plan, nickname }: CarePlanProps) {
     <section className="rounded-xl p-6 bg-green-50 dark:bg-gray-800">
       <h2 className="h2 mb-4">Care Plan for {nickname}</h2>
       {!hasPlan ? (
-        <p className="text-sm text-gray-600 dark:text-gray-400">
+        <p className="body-text text-gray-600 dark:text-gray-400">
           No care plan available
         </p>
       ) : sections.length > 0 ? (
@@ -110,7 +110,7 @@ export default function CarePlan({ plan, nickname }: CarePlanProps) {
           )}
         </>
       ) : (
-        <pre className="whitespace-pre-line text-sm">
+        <pre className="whitespace-pre-line body-text">
           {typeof plan === 'string' ? plan : JSON.stringify(plan, null, 2)}
         </pre>
       )}
