@@ -38,10 +38,10 @@ export default function Header({
     overdue ? "text-red-600" : count > 0 ? "text-yellow-600" : "text-green-600"
 
   return (
-    <header className="backdrop-blur bg-white/80 dark:bg-gray-900/80 sticky top-0 z-10 p-4 flex items-center justify-between shadow-sm">
+    <header className="backdrop-blur bg-white/80 dark:bg-gray-900/80 sticky top-0 z-10 p-[var(--space-lg)] flex items-center justify-between shadow-sm">
       <div>
         <p className="text-sm text-gray-600 dark:text-gray-400">{currentDate}</p>
-        <div className="font-medium text-gray-800 dark:text-gray-100 flex items-center gap-1">
+        <div className="font-medium text-gray-800 dark:text-gray-100 flex items-center gap-[var(--space-xs)]">
           <span>
             {plantsCount} plants · Avg hydration
           </span>
@@ -49,17 +49,17 @@ export default function Header({
           <Sparkline data={avgHydrationHistory} />
           <span>· {tasksDue} tasks due today</span>
         </div>
-        <div className="text-xs text-gray-600 dark:text-gray-400 flex items-center gap-2 mt-1">
+        <div className="text-xs text-gray-600 dark:text-gray-400 flex items-center gap-[var(--space-sm)] mt-[var(--space-xs)]">
           <span>{taskStreak}-day completion streak</span>
           <span className={getBadgeClass(waterOverdue, waterTasks)}>💧 {waterTasks}</span>
           <span className={getBadgeClass(fertilizeOverdue, fertilizeTasks)}>🌱 {fertilizeTasks}</span>
           <span className={getBadgeClass(noteOverdue, noteTasks)}>📝 {noteTasks}</span>
         </div>
       </div>
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-[var(--space-md)]">
         <button
           aria-label="Add plant"
-          className="flex items-center gap-1 px-3 py-2 rounded-lg bg-flora-leaf text-white hover:bg-green-600 transition"
+          className="flex items-center gap-[var(--space-xs)] px-[var(--space-md)] py-[var(--space-sm)] rounded-lg bg-flora-leaf text-white hover:bg-green-600 transition"
         >
           <PlusCircle className="w-4 h-4" aria-hidden="true" />
           <span aria-hidden="true">Add</span>
@@ -68,7 +68,7 @@ export default function Header({
         <button
           onClick={toggleTheme}
           aria-label="Toggle theme"
-          className="p-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+          className="p-[var(--space-sm)] rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
         >
           {theme === "dark" ? (
             <Moon className="w-5 h-5 text-gray-200" aria-hidden="true" />
