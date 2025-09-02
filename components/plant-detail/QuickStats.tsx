@@ -7,6 +7,8 @@ import {
   Activity,
   Battery,
 } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
+import type { ReactNode } from 'react'
 import {
   calculateNutrientAvailability,
   calculateStressIndex,
@@ -47,18 +49,24 @@ export default function QuickStats({ plant, weather }: QuickStatsProps) {
         ? 'Moderate'
         : 'High'
 
-  const stats = [
+  const stats: { icon: LucideIcon; text: ReactNode }[] = [
     {
       icon: Droplet,
       text: `${plant.lastWatered} (Last watered)`,
     },
     {
       icon: Calendar,
-      text: `${plant.nextDue}${
-        plant.recommendedWaterMl !== undefined
-          ? ` (~${plant.recommendedWaterMl} ml)`
-          : ''
-      }`,
+      text: (
+        <>
+          {plant.nextDue}
+          {plant.recommendedWaterMl !== undefined && (
+            <>
+              {' '}
+              (<span className="data-metric">~{plant.recommendedWaterMl} ml</span>)
+            </>
+          )}
+        </>
+      ),
     },
     {
       icon: Sprout,
@@ -69,19 +77,27 @@ export default function QuickStats({ plant, weather }: QuickStatsProps) {
     },
     {
       icon: Battery,
-      text: `${plant.hydration}% Hydration`,
+      text: (
+        <>
+          <span className="data-metric">{plant.hydration}%</span> Hydration
+        </>
+      ),
     },
     {
       icon: Activity,
-      text: `${stressLabel} Stress`,
+      text: (
+        <>
+          <span className="data-metric">{stressValue}</span> Stress ({stressLabel})
+        </>
+      ),
     },
   ]
 
   return (
     <ul className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-gray-700 dark:text-gray-200">
-      {stats.map(({ icon: Icon, text }) => (
+      {stats.map(({ icon: Icon, text }, i) => (
         <li
-          key={text}
+          key={i}
           className="flex items-center gap-1 after:content-['|'] last:after:content-[''] after:mx-2 after:text-gray-300"
         >
           <Icon className="h-4 w-4" />

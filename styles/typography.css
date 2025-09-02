@@ -1,7 +1,7 @@
 @tailwind components;
 @layer components {
   .h1 {
-    @apply text-[32px] font-bold leading-tight;
+    @apply text-[40px] font-serif font-bold leading-tight;
   }
   .h2 {
     @apply text-[24px] font-semibold leading-snug;
@@ -16,6 +16,12 @@
     @apply text-sm font-medium leading-snug;
   }
   .body-text {
-    @apply text-base leading-normal;
+    @apply text-base leading-relaxed;
+  }
+  .section-heading {
+    @apply text-[20px] font-serif uppercase tracking-wide font-semibold;
+  }
+  .data-metric {
+    @apply font-semibold text-flora-sky;
   }
 }
