@@ -9,6 +9,7 @@ import AnalyticsPanel from "@/components/plant-detail/AnalyticsPanel"
 import Timeline from "@/components/plant-detail/Timeline"
 import Gallery from "@/components/plant-detail/Gallery"
 import CarePlan from "@/components/plant-detail/CarePlan"
+import FloatingActions from "@/components/plant-detail/FloatingActions"
 
 const WaterModal = dynamic(() => import("@/components/WaterModal"), {
   ssr: false,
@@ -301,6 +302,13 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
           </>
         )}
       </div>
+      {plant && (
+        <FloatingActions
+          onWater={handleWater}
+          onFertilize={handleFertilize}
+          onAddNote={handleAddNote}
+        />
+      )}
       <WaterModal
         isOpen={waterOpen}
         onClose={() => setWaterOpen(false)}
