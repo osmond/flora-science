@@ -68,7 +68,7 @@ export default function Timeline({ events }: { events: PlantEvent[] }) {
 
   return (
     <section className="rounded-xl p-6 bg-gray-50 dark:bg-gray-800 space-y-4">
-      <h2 className="h2">Timeline</h2>
+      <h2 className="section-heading">Timeline</h2>
       <div className="flex gap-2">
         {FILTERS.map((f) => (
           <button

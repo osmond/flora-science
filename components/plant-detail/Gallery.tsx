@@ -114,7 +114,7 @@ export default function Gallery({
 
   return (
     <section className="rounded-xl p-6 bg-gray-50 dark:bg-gray-800">
-      <h2 className="h2 mb-4">Gallery</h2>
+      <h2 className="section-heading mb-4">Gallery</h2>
       {openIndex !== null && (
         <div
           role="dialog"
