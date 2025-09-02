@@ -141,7 +141,10 @@ export function calculateStressIndex({
   return Math.round(Math.max(0, Math.min(100, total)))
 }
 
-// Generate a series of stress index values for trend visualisation.
+/**
+ * Generate a stress trend series where each datum exposes the overall score
+ * and the individual factor contributions.
+ */
 export function stressTrend(
   readings: (StressInput & { date: string })[],
 ): StressDatum[] {
