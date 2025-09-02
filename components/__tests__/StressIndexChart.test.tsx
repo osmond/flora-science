@@ -44,5 +44,23 @@ describe('StressIndexChart', () => {
     rerender(<StressIndexChart data={data} showAverage />)
     expect(screen.getByText('Avg')).toBeInTheDocument()
   })
+
+  it('shows legend entry for events', () => {
+    const data = [
+      {
+        date: '2024-01-01',
+        stress: 20,
+        factors: { overdue: 5, hydration: 5, temperature: 5, light: 5 },
+      },
+      {
+        date: '2024-01-02',
+        stress: 40,
+        factors: { overdue: 10, hydration: 15, temperature: 5, light: 10 },
+      },
+    ]
+    const events = [{ date: '2024-01-02', type: 'Watered' }]
+    render(<StressIndexChart data={data} events={events} />)
+    expect(screen.getByText('Event')).toBeInTheDocument()
+  })
 })
 

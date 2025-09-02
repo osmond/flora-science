@@ -23,6 +23,11 @@ const sampleData: StressDatum[] = [
   },
 ]
 
+const sampleEvents = [
+  { date: "2024-01-02", type: "Watered" },
+  { date: "2024-01-03", type: "Fertilized" },
+]
+
 const meta: Meta<typeof StressIndexChart> = {
   title: "Charts/StressIndexChart",
   component: StressIndexChart,
@@ -35,6 +40,7 @@ export const Default: Story = {
     data: sampleData,
     showFactors: true,
     showAverage: true,
+    events: sampleEvents,
   },
 }
 

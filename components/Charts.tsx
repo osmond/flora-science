@@ -20,6 +20,7 @@ import {
   PolarRadiusAxis,
 
   ReferenceArea,
+  Scatter,
 
 } from "recharts"
 import {
@@ -80,7 +81,7 @@ export interface StressTooltipProps {
   /** Whether the tooltip is active (provided by Recharts). */
   active?: boolean
   /** Data for the hovered point including factor scores. */
-  payload?: { payload: StressDatum }[]
+  payload?: any[]
   /** Label for the hovered entry, typically the date. */
   label?: string
 }
@@ -91,8 +92,11 @@ export interface StressTooltipProps {
  */
 export function StressTooltip({ active, payload, label }: StressTooltipProps) {
   if (active && payload?.length) {
-    const datum = payload[0].payload
+    const stressEntry = payload.find((p: any) => p.name === "Stress")
+    if (!stressEntry) return null
+    const datum: StressDatum = stressEntry.payload
     const { overdue, hydration, temperature, light } = datum.factors
+    const eventEntries = payload.filter((p: any) => p.name === "Event")
     return (
       <div className="rounded border bg-white p-2 shadow text-xs">
         <p className="font-medium">{label}</p>
@@ -103,6 +107,14 @@ export function StressTooltip({ active, payload, label }: StressTooltipProps) {
         <p>Hydration: {hydration}</p>
         <p>Temperature: {temperature}</p>
         <p>Light: {light}</p>
+        {eventEntries.length > 0 && (
+          <>
+            <p className="mt-1">Events</p>
+            {eventEntries.map((e: any, idx: number) => (
+              <p key={idx}>{e.payload.type}</p>
+            ))}
+          </>
+        )}
       </div>
     )
   }
@@ -510,12 +522,15 @@ export interface StressIndexChartProps {
   showFactors?: boolean
   /** When true, displays the rolling average stress line. */
   showAverage?: boolean
+  /** Care events to mark on the stress line. */
+  events?: { date: string; type: string }[]
 }
 
 export function StressIndexChart({
   data,
   showFactors = false,
   showAverage = false,
+  events = [],
 }: StressIndexChartProps) {
   const [visible, setVisible] = useState({
     overdue: true,
@@ -555,6 +570,13 @@ export function StressIndexChart({
     { id: "high", label: "High (60-100)", range: [60, 100], color: "#fee2e2" },
   ]
 
+  const eventPoints = events
+    .map((e) => {
+      const d = data.find((datum) => datum.date === e.date)
+      return d ? { date: e.date, stress: d.stress, type: e.type } : null
+    })
+    .filter(Boolean) as { date: string; stress: number; type: string }[]
+
   const legendPayload = [
     { value: "Stress", type: "line", color: "#BD1212", id: "stress" },
     ...(showAverage
@@ -566,6 +588,9 @@ export function StressIndexChart({
       color: t.color,
       id: t.id,
     })),
+    ...(eventPoints.length
+      ? [{ value: "Event", type: "circle", color: "#0f172a", id: "event" }]
+      : []),
   ]
 
   return (
@@ -664,6 +689,15 @@ export function StressIndexChart({
             strokeWidth={3}
             name="Stress"
           />
+          {eventPoints.length > 0 && (
+            <Scatter
+              data={eventPoints}
+              dataKey="stress"
+              name="Event"
+              shape="diamond"
+              fill="#0f172a"
+            />
+          )}
         </LineChart>
       </ResponsiveContainer>
     </div>
