@@ -341,7 +341,11 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
               <Timeline events={plant.events} />
             </div>
             <div className="mt-8">
-              <Gallery photos={plant.photos} nickname={plant.nickname} />
+              <Gallery
+                photos={plant.photos}
+                nickname={plant.nickname}
+                plantId={params.id}
+              />
             </div>
           </>
         )}
