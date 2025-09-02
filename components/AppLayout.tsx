@@ -6,9 +6,9 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   return (
     <div className="flex min-h-screen bg-gray-50">
       {/* Sidebar */}
-      <aside className="w-56 border-r bg-white p-4 space-y-3">
+      <aside className="w-56 border-r bg-white p-[var(--space-lg)] space-y-[var(--space-md)]">
         <h1 className="h1 text-green-700">Flora-Science</h1>
-        <nav className="flex flex-col space-y-2 text-sm">
+        <nav className="flex flex-col space-y-[var(--space-sm)] text-sm">
           <motion.div whileHover={{ scale: 1.03 }} whileFocus={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
             <Link href="/" className="hover:text-green-600">
               Today
@@ -33,7 +33,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
       </aside>
 
       {/* Main content */}
-      <main className="flex-1 p-6">{children}</main>
+      <main className="flex-1 p-[var(--space-xl)]">{children}</main>
     </div>
   )
 }

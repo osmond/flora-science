@@ -59,7 +59,7 @@ export default function PlantCard({
 
   return (
     <motion.div
-      className="rounded-lg border border-gray-200 dark:border-gray-700 p-4 shadow-md hover:shadow-lg transition bg-white/90 dark:bg-gray-800/90"
+      className="rounded-lg border border-gray-200 dark:border-gray-700 p-[var(--space-lg)] shadow-md hover:shadow-lg transition bg-white/90 dark:bg-gray-800/90"
       variants={cardVariants}
       initial="initial"
       animate="animate"
@@ -72,7 +72,7 @@ export default function PlantCard({
         <img
           src={photo}
           alt={nickname}
-          className="w-full h-32 object-cover rounded-md mb-2"
+          className="w-full h-32 object-cover rounded-md mb-[var(--space-sm)]"
         />
       )}
       <div className="flex items-start justify-between">
@@ -80,11 +80,11 @@ export default function PlantCard({
           <h3 className="h3 font-bold text-gray-900 dark:text-gray-100">{nickname}</h3>
           <p className="text-sm text-gray-500 dark:text-gray-400">{species}</p>
         </div>
-        <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${statusColor}`}>{status}</span>
+        <span className={`text-xs font-semibold px-[var(--space-sm)] py-[calc(var(--space-xs)/2)] rounded-full ${statusColor}`}>{status}</span>
       </div>
       {note && <p className="text-xs text-gray-600 dark:text-gray-400">{note}</p>}
       <div
-        className="w-full bg-gray-200 rounded-full h-2 mt-2 overflow-hidden"
+        className="w-full bg-gray-200 rounded-full h-2 mt-[var(--space-sm)] overflow-hidden"
         role="progressbar"
         aria-valuenow={pct}
         aria-valuemin={0}
@@ -95,10 +95,10 @@ export default function PlantCard({
           style={{ width: `${pct}%` }}
         />
       </div>
-      <div className="flex items-center justify-between mt-2">
-        <div className="text-xs text-gray-500 dark:text-gray-400 flex flex-col gap-1">
+      <div className="flex items-center justify-between mt-[var(--space-sm)]">
+        <div className="text-xs text-gray-500 dark:text-gray-400 flex flex-col gap-[var(--space-xs)]">
           {hydrationHistory && <Sparkline data={hydrationHistory} />}
-          <div className="flex gap-1">
+          <div className="flex gap-[var(--space-xs)]">
             {wateringStreak.map((w, i) => (
               <span
                 key={i}
@@ -108,7 +108,7 @@ export default function PlantCard({
             ))}
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-[var(--space-sm)]">
           <TaskIcons
             water={tasks.water}
             fertilize={tasks.fertilize}
@@ -121,7 +121,7 @@ export default function PlantCard({
                 e.stopPropagation()
                 onMarkDone()
               }}
-              className="text-xs px-2 py-1 rounded bg-fertilize text-white"
+              className="text-xs px-[var(--space-sm)] py-[var(--space-xs)] rounded bg-fertilize text-white"
             >
               Mark done
             </button>
