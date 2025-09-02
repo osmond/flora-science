@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
 import CarePlan from '../plant-detail/CarePlan'
 
 describe('CarePlan', () => {
@@ -7,7 +7,7 @@ describe('CarePlan', () => {
     expect(screen.getByText(/No care plan available/i)).toBeInTheDocument()
   })
 
-  it('renders provided plan sections with icons and collapsible details', () => {
+  it('renders provided plan sections with icons', () => {
     const plan = {
       overview: 'General care overview',
       light: 'Bright, indirect light',
@@ -33,14 +33,14 @@ describe('CarePlan', () => {
       pruning: 'scissors',
       pests: 'bug',
     }
-    const labelMap: Record<string, string> = {
-      fertilizer: 'Fertilizer',
-    }
+    fireEvent.click(screen.getByText(/Additional care/i))
 
     for (const [key, text] of Object.entries(plan)) {
-      const label = labelMap[key] ?? key.charAt(0).toUpperCase() + key.slice(1)
-      const button = screen.getByRole('button', { name: new RegExp(label, 'i') })
-      const svg = button.querySelector('svg')
+      const label = key.charAt(0).toUpperCase() + key.slice(1)
+      const heading = screen.getByRole('heading', {
+        name: new RegExp(label, 'i'),
+      })
+      const svg = heading.querySelector('svg')
       expect(svg).toBeInTheDocument()
       expect(svg).toHaveClass(`lucide-${iconMap[key]}`)
       expect(screen.getByText(text)).toBeInTheDocument()
