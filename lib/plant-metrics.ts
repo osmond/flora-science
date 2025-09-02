@@ -96,9 +96,22 @@ export interface StressInput {
   light: number
 }
 
+export interface StressFactors {
+  /** Points contributed by overdue watering */
+  overdue: number
+  /** Points contributed by low hydration */
+  hydration: number
+  /** Points contributed by temperature deviation */
+  temperature: number
+  /** Points contributed by light deviation */
+  light: number
+}
+
 export interface StressDatum {
   date: string
   stress: number
+  /** Breakdown of stress index contributions */
+  factors: StressFactors
 }
 
 // Calculate a simple stress index on a 0-100 scale. Higher values indicate
@@ -132,10 +145,22 @@ export function calculateStressIndex({
 export function stressTrend(
   readings: (StressInput & { date: string })[],
 ): StressDatum[] {
-  return readings.map((r) => ({
-    date: r.date,
-    stress: calculateStressIndex(r),
-  }))
+  return readings.map((r) => {
+    // Recalculate individual factor scores so they can be exposed
+    const overdue = Math.min(30, Math.max(0, r.overdueDays) * 10)
+    const hydration = Math.min(40, Math.max(0, 40 * (1 - r.hydration / 100)))
+    const temperature = Math.min(15, Math.abs(r.temperature - 25) * 1.5)
+    const light = Math.min(15, Math.abs(r.light - 50) * 0.3)
+    const stress = Math.round(
+      Math.max(0, Math.min(100, overdue + hydration + temperature + light)),
+    )
+
+    return {
+      date: r.date,
+      stress,
+      factors: { overdue, hydration, temperature, light },
+    }
+  })
 }
 
 export interface HydrationLogEntry {
