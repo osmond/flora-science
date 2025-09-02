@@ -10,19 +10,16 @@ const EVENT_TYPES = {
     icon: Droplet,
     label: 'Water',
     badge: 'bg-blue-100 text-blue-700',
-    emoji: '💧',
   },
   fertilize: {
     icon: Sprout,
     label: 'Feed',
     badge: 'bg-green-100 text-green-700',
-    emoji: '🌱',
   },
   note: {
     icon: FileText,
     label: 'Note',
     badge: 'bg-yellow-100 text-yellow-700',
-    emoji: '📝',
   },
 } as const
 
@@ -108,6 +105,7 @@ export default function Timeline({ events }: { events: PlantEvent[] }) {
                     const type =
                       EVENT_TYPES[e.type as keyof typeof EVENT_TYPES] ??
                       EVENT_TYPES.note
+                    const Icon = type.icon
                     const open = expandedId === e.id
                     const preview =
                       e.note && e.note.length > 80
@@ -116,7 +114,7 @@ export default function Timeline({ events }: { events: PlantEvent[] }) {
                     return (
                       <li key={e.id} className="mb-6 ml-6">
                         <span className="absolute -left-3 flex items-center justify-center w-6 h-6 rounded-full bg-white shadow ring-1 ring-gray-200 dark:bg-gray-700 dark:ring-gray-600">
-                          {type.emoji}
+                          <Icon className="w-3 h-3" />
                         </span>
                         <button
                           type="button"
