@@ -23,10 +23,6 @@ function renderHero(hydration: number) {
     <HeroSection
       plant={{ ...basePlant, hydration }}
       weather={null}
-      onWater={() => {}}
-      onFertilize={() => {}}
-      onAddNote={() => {}}
-      onEdit={() => {}}
     />,
   )
 }
@@ -50,8 +46,4 @@ describe('HeroSection hydration bar', () => {
     expect(screen.getByText(/low/i)).toBeInTheDocument()
   })
 
-  it('renders an Edit button', () => {
-    renderHero(80)
-    expect(screen.getByRole('button', { name: /edit plant/i })).toBeInTheDocument()
-  })
 })

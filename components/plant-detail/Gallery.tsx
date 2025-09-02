@@ -165,7 +165,7 @@ export default function Gallery({
         </p>
       )}
       <div
-        className={`grid grid-cols-3 gap-4 ${
+        className={`grid grid-cols-2 sm:grid-cols-3 gap-4 ${
           dragActive ? 'ring-2 ring-green-500' : ''
         }`}
         onDragOver={onDragOver}
@@ -176,21 +176,21 @@ export default function Gallery({
           <button
             key={i}
             onClick={() => setOpenIndex(i)}
-            className="group relative aspect-square w-full focus:outline-none"
+            className="group relative w-full focus:outline-none"
             aria-label={`View image ${i + 1} of ${length}`}
           >
-            <Image
-              src={src}
-              alt={`${nickname} photo ${i + 1}`}
-              fill
-              sizes="200px"
-              className="object-cover rounded-lg"
-              loading="lazy"
-            />
-            <span className="absolute inset-0 flex items-end justify-start rounded-lg bg-black/0 hover:bg-black/40 transition-colors">
-              <span className="m-1 rounded px-1 text-xs text-white opacity-0 group-hover:opacity-100">
-                Photo {i + 1}
-              </span>
+            <div className="relative aspect-square w-full overflow-hidden rounded-lg shadow-sm">
+              <Image
+                src={src}
+                alt={`${nickname} photo ${i + 1}`}
+                fill
+                sizes="200px"
+                className="object-cover"
+                loading="lazy"
+              />
+            </div>
+            <span className="absolute bottom-1 left-1 rounded bg-black/50 px-1 text-xs text-white opacity-0 group-hover:opacity-100">
+              Photo {i + 1}
             </span>
           </button>
         ))}

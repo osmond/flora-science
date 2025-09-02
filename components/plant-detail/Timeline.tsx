@@ -10,16 +10,19 @@ const EVENT_TYPES = {
     icon: Droplet,
     label: 'Water',
     badge: 'bg-blue-100 text-blue-700',
+    emoji: '💧',
   },
   fertilize: {
     icon: Sprout,
     label: 'Feed',
     badge: 'bg-green-100 text-green-700',
+    emoji: '🌱',
   },
   note: {
     icon: FileText,
     label: 'Note',
     badge: 'bg-yellow-100 text-yellow-700',
+    emoji: '📝',
   },
 } as const
 
@@ -46,9 +49,7 @@ export default function Timeline({ events }: { events: PlantEvent[] }) {
   const processed = events
     ?.filter((e): e is PlantEvent => e !== null && e !== undefined)
     .filter((e) => filter === 'all' || e.type === filter)
-    .sort(
-      (a, b) => eventDate(b.date).getTime() - eventDate(a.date).getTime(),
-    )
+    .sort((a, b) => eventDate(b.date).getTime() - eventDate(a.date).getTime())
 
   const grouped = processed?.reduce((acc, e) => {
     const weekStart = startOfWeek(eventDate(e.date))
@@ -85,14 +86,12 @@ export default function Timeline({ events }: { events: PlantEvent[] }) {
         ))}
       </div>
       {!weeks.length ? (
-        <p className="text-sm text-gray-500 dark:text-gray-400">
-          No activity yet.
-        </p>
+        <p className="text-sm text-gray-500 dark:text-gray-400">No activity yet.</p>
       ) : (
         <div className="space-y-6">
           {weeks.map((week, index) => {
             const weekDate = parse(week, 'yyyy-MM-dd', new Date())
-            const weekEvents = grouped[week]
+            const weekEvents = grouped![week]
             return (
               <div key={week}>
                 <h3 className="h3 mb-2">
@@ -109,7 +108,6 @@ export default function Timeline({ events }: { events: PlantEvent[] }) {
                     const type =
                       EVENT_TYPES[e.type as keyof typeof EVENT_TYPES] ??
                       EVENT_TYPES.note
-                    const Icon = type.icon
                     const open = expandedId === e.id
                     const preview =
                       e.note && e.note.length > 80
@@ -117,10 +115,8 @@ export default function Timeline({ events }: { events: PlantEvent[] }) {
                         : e.note
                     return (
                       <li key={e.id} className="mb-6 ml-6">
-                        <span
-                          className={`absolute -left-3 flex items-center justify-center w-6 h-6 rounded-full ${type.badge}`}
-                        >
-                          <Icon className="w-4 h-4" />
+                        <span className="absolute -left-3 flex items-center justify-center w-6 h-6 rounded-full bg-white shadow ring-1 ring-gray-200 dark:bg-gray-700 dark:ring-gray-600">
+                          {type.emoji}
                         </span>
                         <button
                           type="button"
@@ -131,24 +127,26 @@ export default function Timeline({ events }: { events: PlantEvent[] }) {
                           }
                           className="text-left w-full"
                         >
-                          <time className="text-sm text-gray-700 dark:text-gray-300">
-                            {formatDistanceToNow(eventDate(e.date), {
-                              addSuffix: true,
-                            })}
-                          </time>
-                          <span
-                            className={`ml-2 px-2 py-0.5 rounded-full text-xs font-medium ${type.badge}`}
-                          >
-                            {type.label}
-                          </span>
-                          {e.type === 'note' && (
-                            <div
-                              className="mt-2 p-3 rounded-lg bg-gray-50 dark:bg-gray-800 text-sm overflow-hidden transition-all duration-300"
-                              style={{ maxHeight: open ? '200px' : '48px' }}
+                          <div className="p-3 rounded-lg bg-gray-50 dark:bg-gray-800">
+                            <time className="text-sm text-gray-700 dark:text-gray-300">
+                              {formatDistanceToNow(eventDate(e.date), {
+                                addSuffix: true,
+                              })}
+                            </time>
+                            <span
+                              className={`ml-2 px-2 py-0.5 rounded-full text-xs font-medium ${type.badge}`}
                             >
-                              {open ? e.note : preview}
-                            </div>
-                          )}
+                              {type.label}
+                            </span>
+                            {e.type === 'note' && (
+                              <div
+                                className="mt-2 text-sm overflow-hidden transition-all duration-300"
+                                style={{ maxHeight: open ? '200px' : '48px' }}
+                              >
+                                {open ? e.note : preview}
+                              </div>
+                            )}
+                          </div>
                         </button>
                       </li>
                     )
