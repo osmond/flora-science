@@ -2,8 +2,8 @@
 
 // The CarePlan component presents plant care guidance grouped by importance.
 // Primary care details (light, water, fertilizer) are surfaced directly while
-// secondary tips like pests and pruning are tucked into a collapsible section
-// to reduce visual clutter.
+// secondary tips like pests and pruning appear afterward in subtle bordered cards
+// for clear separation.
 import {
   Sun,
   Droplet,
@@ -99,14 +99,16 @@ export default function CarePlan({ plan, nickname }: CarePlanProps) {
             <div className="mt-4 space-y-4">{otherSections.map(renderSection)}</div>
           )}
           {secondarySections.length > 0 && (
-            <details className="mt-4">
-              <summary className="cursor-pointer text-sm font-medium text-blue-600 dark:text-blue-400">
-                More care tips
-              </summary>
-              <div className="mt-2 space-y-4">
-                {secondarySections.map(renderSection)}
-              </div>
-            </details>
+            <div className="mt-4 space-y-4">
+              {secondarySections.map((section) => (
+                <div
+                  key={section.key}
+                  className="p-4 rounded-lg border border-gray-200 dark:border-gray-700"
+                >
+                  {renderSection(section)}
+                </div>
+              ))}
+            </div>
           )}
         </>
       ) : (
