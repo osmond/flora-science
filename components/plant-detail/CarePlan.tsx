@@ -35,8 +35,8 @@ export default function CarePlan({ plan, nickname }: CarePlanProps) {
 
   const sectionsConfig: { key: string; label: string; icon: LucideIcon }[] = [
     { key: 'overview', label: 'Overview', icon: BookOpen },
-    { key: 'light', label: 'Light', icon: Sun },
-    { key: 'water', label: 'Water', icon: Droplet },
+    { key: 'light', label: 'Light Needs', icon: Sun },
+    { key: 'water', label: 'Watering Frequency', icon: Droplet },
     { key: 'humidity', label: 'Humidity', icon: Wind },
     { key: 'temperature', label: 'Temperature', icon: Thermometer },
     { key: 'soil', label: 'Soil', icon: LandPlot },
@@ -59,7 +59,7 @@ export default function CarePlan({ plan, nickname }: CarePlanProps) {
 
   const overviewSection = sections.find((s) => s.key === 'Overview')
   const leftSections = sections.filter((s) =>
-    ['Light', 'Water', 'Humidity', 'Temperature'].includes(s.key)
+    ['Light Needs', 'Watering Frequency', 'Humidity', 'Temperature'].includes(s.key)
   )
   const rightSections = sections.filter((s) =>
     ['Soil', 'Fertilizer', 'Pruning', 'Pests'].includes(s.key)
@@ -77,15 +77,29 @@ export default function CarePlan({ plan, nickname }: CarePlanProps) {
 
   const renderSection = ({ key, icon: Icon, text }: Section) => {
     const isOpen = openSections.includes(key)
+    const guidance =
+      key === 'Light Needs'
+        ? 'Prefers bright, indirect sunlight.'
+        : key === 'Watering Frequency'
+          ? 'Water when the top inch of soil is dry.'
+          : null
     return (
       <div key={key} className="border rounded-md">
         <button
           type="button"
           className="w-full flex items-center p-2 text-left"
           onClick={() => toggleSection(key)}
+          title={guidance ?? undefined}
         >
           <Icon className="w-5 h-5 mr-2 flex-shrink-0" />
-          <span className="font-medium">{key}</span>
+          <span className="font-medium">
+            {key}
+            {guidance && (
+              <small aria-hidden="true" className="block ml-2 text-gray-500">
+                {guidance}
+              </small>
+            )}
+          </span>
         </button>
         {isOpen && <div className="p-2 pt-0 text-sm">{text}</div>}
       </div>
