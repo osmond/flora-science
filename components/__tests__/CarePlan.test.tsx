@@ -19,9 +19,10 @@ describe('CarePlan', () => {
       pruning: 'Trim as needed',
       pests: 'Watch for aphids',
     }
-
     render(<CarePlan plan={plan} nickname="Delilah" />)
     expect(screen.getByText(/Care Plan for Delilah/i)).toBeInTheDocument()
+    expect(screen.getByText(/More care tips/i)).toBeInTheDocument()
+
     const iconMap: Record<string, string> = {
       overview: 'book-open',
       light: 'sun',
@@ -39,8 +40,10 @@ describe('CarePlan', () => {
 
     for (const [key, text] of Object.entries(plan)) {
       const label = labelMap[key] ?? key.charAt(0).toUpperCase() + key.slice(1)
-      const button = screen.getByRole('button', { name: new RegExp(label, 'i') })
-      const svg = button.querySelector('svg')
+      const heading = screen.getByRole('heading', {
+        name: new RegExp(label, 'i'),
+      })
+      const svg = heading.querySelector('svg')
       expect(svg).toBeInTheDocument()
       expect(svg).toHaveClass(`lucide-${iconMap[key]}`)
       expect(screen.getByText(text)).toBeInTheDocument()
