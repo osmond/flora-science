@@ -75,6 +75,38 @@ function CustomTooltip({ active, payload, label }: any) {
   return null
 }
 
+interface StressTooltipProps {
+  /** Whether the tooltip is active (provided by Recharts). */
+  active?: boolean
+  /** Data for the hovered point including factor scores. */
+  payload?: { payload: StressDatum }[]
+  /** Label for the hovered entry, typically the date. */
+  label?: string
+}
+
+/**
+ * Tooltip for stress charts that displays each factor's contribution to the
+ * overall stress index.
+ */
+function StressTooltip({ active, payload, label }: StressTooltipProps) {
+  if (active && payload?.length) {
+    const datum = payload[0].payload
+    const { overdue, hydration, temperature, light } = datum.factors
+    return (
+      <div className="rounded border bg-white p-2 shadow text-xs">
+        <p className="font-medium">{label}</p>
+        <p>Stress: {datum.stress}</p>
+        <p className="mt-1">Factors</p>
+        <p>Overdue: {overdue}</p>
+        <p>Hydration: {hydration}</p>
+        <p>Temperature: {temperature}</p>
+        <p>Light: {light}</p>
+      </div>
+    )
+  }
+  return null
+}
+
 export function TempHumidityChart({
   tempUnit = "F",
   data = defaultEnvData,
@@ -462,8 +494,16 @@ export function StressIndexGauge({ value }: { value: number }) {
   )
 }
 
-// Line chart for stress index trends
-export function StressIndexChart({ data }: { data: StressDatum[] }) {
+/**
+ * Line chart for stress index trends. Utilises {@link StressTooltip} to show
+ * each factor's contribution to the overall stress value.
+ */
+export interface StressIndexChartProps {
+  /** Trend data with total stress and factor breakdowns. */
+  data: StressDatum[]
+}
+
+export function StressIndexChart({ data }: StressIndexChartProps) {
   const legendPayload = [
     { value: "Stress", type: "line", color: "#BD1212", id: "stress" },
     {
@@ -501,7 +541,7 @@ export function StressIndexChart({ data }: { data: StressDatum[] }) {
           axisLine={false}
           label={{ value: 'Stress Index', angle: -90, position: 'insideLeft' }}
         />
-        <Tooltip content={<CustomTooltip />} />
+        <Tooltip content={<StressTooltip />} />
         <Legend payload={legendPayload} />
         <ReferenceArea y1={0} y2={30} fill="#dcfce7" fillOpacity={0.5} />
         <ReferenceArea y1={30} y2={60} fill="#fef9c3" fillOpacity={0.5} />
