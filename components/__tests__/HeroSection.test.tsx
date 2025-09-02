@@ -32,22 +32,22 @@ function renderHero(hydration: number) {
 }
 
 describe('HeroSection hydration bar', () => {
-  it('uses fertilize to water gradient when hydration is at least 60', () => {
-    renderHero(60)
+  it('shows water color and High label when hydration is above 70', () => {
+    renderHero(80)
     const progress = screen.getByRole('progressbar', { name: /hydration/i })
     const bar = progress.querySelector('div') as HTMLElement
-    expect(bar).toHaveClass('from-fertilize')
-    expect(bar).toHaveClass('to-water')
-    expect(progress).toHaveAttribute('aria-valuenow', '60')
-    expect(progress).toHaveAttribute('aria-valuetext', '60% hydration')
+    expect(bar).toHaveClass('bg-water')
+    expect(progress).toHaveAttribute('aria-valuenow', '80')
+    expect(progress).toHaveAttribute('aria-valuetext', '80% hydration')
+    expect(screen.getByText(/high/i)).toBeInTheDocument()
   })
 
-  it('uses alert gradient when hydration is below 60', () => {
-    renderHero(59)
+  it('shows alert-red color and Low label when hydration is below 30', () => {
+    renderHero(20)
     const progress = screen.getByRole('progressbar', { name: /hydration/i })
     const bar = progress.querySelector('div') as HTMLElement
-    expect(bar).toHaveClass('from-alert')
-    expect(bar).toHaveClass('to-alert-red')
+    expect(bar).toHaveClass('bg-alert-red')
+    expect(screen.getByText(/low/i)).toBeInTheDocument()
   })
 
   it('renders an Edit button', () => {

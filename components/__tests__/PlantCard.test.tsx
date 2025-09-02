@@ -22,6 +22,7 @@ describe('PlantCard', () => {
     expect(progress).toHaveAttribute('aria-valuenow', '55')
     expect(progress).toHaveAttribute('aria-valuemin', '0')
     expect(progress).toHaveAttribute('aria-valuemax', '100')
+    expect(screen.getByText(/moderate/i)).toBeInTheDocument()
 
     expect(screen.getByRole('img')).toHaveAttribute('src', 'https://example.com/fern.jpg')
     expect(screen.getByText(/fern/i)).toBeInTheDocument()

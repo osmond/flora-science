@@ -112,20 +112,22 @@ export default function HeroSection({
           {plant.status}
         </span>
       </div>
-      <div
-        className="w-full bg-gray-200 rounded-full h-2"
-        role="progressbar"
-        aria-label="Hydration"
-        aria-valuenow={progress.pct}
-        aria-valuemin={0}
-        aria-valuemax={100}
-        aria-valuetext={`${progress.pct}% hydration`}
-      >
+      <div className="flex items-center gap-2" aria-live="polite">
         <div
-          className={`h-2 rounded-full ${progress.barClass}`}
-          style={{ width: `${progress.pct}%` }}
-        />
-        <span className="sr-only">{`${progress.pct}% hydration`}</span>
+          className="w-full bg-gray-200 rounded-full h-2"
+          role="progressbar"
+          aria-label="Hydration"
+          aria-valuenow={progress.pct}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuetext={`${progress.pct}% hydration`}
+        >
+          <div
+            className={`h-2 rounded-full ${progress.colorClass}`}
+            style={{ width: `${progress.pct}%` }}
+          />
+        </div>
+        <span className="text-sm text-gray-700 dark:text-gray-300">{progress.status}</span>
       </div>
     </section>
   )

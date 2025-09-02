@@ -25,11 +25,13 @@ type PlantCardProps = {
 
 export function getHydrationProgress(hydration: number) {
   const pct = Math.max(0, Math.min(100, Math.round(hydration)))
-  const barClass =
-    pct < 60
-      ? 'bg-gradient-to-r from-alert to-alert-red'
-      : 'bg-gradient-to-r from-fertilize to-water'
-  return { pct, barClass }
+  if (pct < 30) {
+    return { pct, colorClass: 'bg-alert-red', status: 'Low' }
+  }
+  if (pct <= 70) {
+    return { pct, colorClass: 'bg-alert', status: 'Moderate' }
+  }
+  return { pct, colorClass: 'bg-water', status: 'High' }
 }
 
 export default function PlantCard({
@@ -43,7 +45,7 @@ export default function PlantCard({
   photo,
   onMarkDone,
 }: PlantCardProps) {
-  const { pct, barClass } = getHydrationProgress(hydration)
+  const { pct, colorClass, status: hydrationStatus } = getHydrationProgress(hydration)
   const statusColor =
     status === 'Water overdue'
       ? 'bg-alert-red text-white'
@@ -83,17 +85,18 @@ export default function PlantCard({
         <span className={`text-xs font-semibold px-[var(--space-sm)] py-[calc(var(--space-xs)/2)] rounded-full ${statusColor}`}>{status}</span>
       </div>
       {note && <p className="text-xs text-gray-600 dark:text-gray-400">{note}</p>}
-      <div
-        className="w-full bg-gray-200 rounded-full h-2 mt-[var(--space-sm)] overflow-hidden"
-        role="progressbar"
-        aria-valuenow={pct}
-        aria-valuemin={0}
-        aria-valuemax={100}
-      >
+      <div className="flex items-center gap-[var(--space-sm)] mt-[var(--space-sm)]" aria-live="polite">
         <div
-          className={`h-2 ${barClass}`}
-          style={{ width: `${pct}%` }}
-        />
+          className="w-full bg-gray-200 rounded-full h-2 overflow-hidden"
+          role="progressbar"
+          aria-valuenow={pct}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuetext={`${pct}% hydration`}
+        >
+          <div className={`h-2 ${colorClass}`} style={{ width: `${pct}%` }} />
+        </div>
+        <span className="text-xs text-gray-600 dark:text-gray-400">{hydrationStatus}</span>
       </div>
       <div className="flex items-center justify-between mt-[var(--space-sm)]">
         <div className="text-xs text-gray-500 dark:text-gray-400 flex flex-col gap-[var(--space-xs)]">
