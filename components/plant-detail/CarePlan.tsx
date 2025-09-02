@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import {
   Sun,
   Droplet,
@@ -18,6 +19,7 @@ import type { LucideIcon } from 'lucide-react'
 interface CarePlanProps {
   plan?: string | Record<string, string> | null
   nickname: string
+  photo?: string
 }
 
 interface Section {
@@ -26,7 +28,7 @@ interface Section {
   text: string
 }
 
-export default function CarePlan({ plan, nickname }: CarePlanProps) {
+export default function CarePlan({ plan, nickname, photo }: CarePlanProps) {
   const planObj: Record<string, string> | null = plan
     ? typeof plan === 'string'
       ? JSON.parse(plan)
@@ -107,39 +109,58 @@ export default function CarePlan({ plan, nickname }: CarePlanProps) {
   }
 
   return (
-    <section className="rounded-xl p-6 bg-green-50 dark:bg-gray-800">
-      <h2 className="h2 mb-4 flex items-center">
-        <Leaf className="w-6 h-6 mr-2" />
-        Care Plan for {nickname}
-      </h2>
-      {!hasPlan ? (
-        <p className="text-sm text-gray-600 dark:text-gray-400">
-          No care plan available
-        </p>
-      ) : sections.length > 0 ? (
-        <>
-          <div className="flex justify-end mb-2">
-            <button
-              type="button"
-              className="text-xs text-blue-600 dark:text-blue-400"
-              onClick={toggleAll}
-            >
-              {allOpen ? 'Collapse all' : 'Show all'}
-            </button>
+    <section className="rounded-xl overflow-hidden bg-green-50 dark:bg-gray-800">
+      <div className="relative h-48 sm:h-64">
+        {photo ? (
+          <Image
+            src={photo}
+            alt={nickname}
+            fill
+            sizes="100vw"
+            className="object-cover"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-gray-200 dark:bg-gray-700">
+            <span className="text-gray-500 dark:text-gray-400">No photo</span>
           </div>
-          {overviewSection && (
-            <div className="mb-2">{renderSection(overviewSection)}</div>
-          )}
-          <div className="grid grid-cols-1 md:grid-cols-2 md:gap-4">
-            <div className="space-y-2">{leftSections.map(renderSection)}</div>
-            <div className="space-y-2">{rightSections.map(renderSection)}</div>
-          </div>
-        </>
-      ) : (
-        <pre className="whitespace-pre-line text-sm">
-          {typeof plan === 'string' ? plan : JSON.stringify(plan, null, 2)}
-        </pre>
-      )}
+        )}
+        <div className="absolute inset-x-0 bottom-0 bg-black/40 p-4">
+          <h2 className="h2 flex items-center text-white">
+            <Leaf className="w-6 h-6 mr-2" />
+            Care Plan for {nickname}
+          </h2>
+        </div>
+      </div>
+      <div className="p-6">
+        {!hasPlan ? (
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            No care plan available
+          </p>
+        ) : sections.length > 0 ? (
+          <>
+            <div className="flex justify-end mb-2">
+              <button
+                type="button"
+                className="text-xs text-blue-600 dark:text-blue-400"
+                onClick={toggleAll}
+              >
+                {allOpen ? 'Collapse all' : 'Show all'}
+              </button>
+            </div>
+            {overviewSection && (
+              <div className="mb-2">{renderSection(overviewSection)}</div>
+            )}
+            <div className="grid grid-cols-1 md:grid-cols-2 md:gap-4">
+              <div className="space-y-2">{leftSections.map(renderSection)}</div>
+              <div className="space-y-2">{rightSections.map(renderSection)}</div>
+            </div>
+          </>
+        ) : (
+          <pre className="whitespace-pre-line text-sm">
+            {typeof plan === 'string' ? plan : JSON.stringify(plan, null, 2)}
+          </pre>
+        )}
+      </div>
     </section>
   )
 }
