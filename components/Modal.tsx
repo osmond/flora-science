@@ -59,7 +59,7 @@ export default function Modal({ isOpen, onClose, children }: ModalProps) {
         >
           <motion.div
             ref={dialogRef}
-            className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg max-w-sm w-full"
+            className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg max-w-sm w-full relative"
             variants={modalContentVariants}
             initial="initial"
             animate="animate"
@@ -67,6 +67,7 @@ export default function Modal({ isOpen, onClose, children }: ModalProps) {
             transition={defaultTransition}
           >
             {children}
+            <button aria-label="Close modal" onClick={onClose} className="absolute top-2 right-2">×</button>
           </motion.div>
         </motion.div>
       )}

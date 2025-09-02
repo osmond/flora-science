@@ -40,6 +40,19 @@ export function calculateEt0(day: WeatherDay): number {
   return Number(et0.toFixed(2))
 }
 
+/**
+ * Calculate reference evapotranspiration (ET₀) using a simplified formula.
+ * This is less accurate than the FAO-56 Penman-Monteith method above, but useful for quick estimates.
+ * @param temp - Air temperature (°C)
+ * @param humidity - Relative humidity (%)
+ * @param wind - Wind speed (m/s)
+ * @returns ET₀ value (mm/day)
+ */
+export function calculateET0Simple(temp: number, humidity: number, wind: number): number {
+  // Placeholder: replace with a more accurate formula if needed
+  return 0.408 * (temp + humidity) - wind * 0.2;
+}
+
 export function calculateWaterRecommendation(
   potSize: number,
   et0: number,
