@@ -1,9 +1,8 @@
 'use client'
 
-// The CarePlan component presents plant care guidance grouped by importance.
-// Primary care details (light, water, fertilizer) are surfaced directly while
-// secondary tips like pests and pruning are tucked into a collapsible section
-// to reduce visual clutter.
+// The CarePlan component presents plant care guidance as digestible tips.
+// Each care aspect is shown in a card with an icon and description to keep
+// information scannable and easy to read.
 import {
   Sun,
   Droplet,
@@ -16,6 +15,7 @@ import {
   BookOpen,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
+import CareTipCard from './CareTipCard'
 
 interface CarePlanProps {
   plan?: string | Record<string, string> | null
@@ -56,59 +56,24 @@ export default function CarePlan({ plan, nickname }: CarePlanProps) {
 
   const hasPlan = !!planObj
 
-  const overviewSection = sections.find((s) => s.key === 'Overview')
-
-  const primarySections = sections.filter((s) =>
-    ['Light Needs', 'Watering Frequency', 'Fertilizer'].includes(s.key)
-  )
-
-  const secondarySections = sections.filter((s) =>
-    ['Pests', 'Pruning'].includes(s.key)
-  )
-
-  const otherSections = sections.filter((s) =>
-    ![...primarySections, ...secondarySections].includes(s) && s.key !== 'Overview'
-  )
-
-  const renderSection = ({ key, icon: Icon, text }: Section) => (
-    <section key={key} className="space-y-1">
-      <h3 className="flex items-center font-medium">
-        <Icon className="w-4 h-4 mr-2 text-gray-500 dark:text-gray-400" />
-        {key}
-      </h3>
-      <p className="text-sm">{text}</p>
-    </section>
-  )
-
   return (
     <section className="rounded-xl p-6 bg-green-50 dark:bg-gray-800">
-      <h2 className="h2 mb-4">Care Plan for {nickname}</h2>
+      <h2 className="h2 mb-6">Care Plan for {nickname}</h2>
       {!hasPlan ? (
         <p className="text-sm text-gray-600 dark:text-gray-400">
           No care plan available
         </p>
       ) : sections.length > 0 ? (
-        <>
-          {overviewSection && (
-            <div className="mb-4">{renderSection(overviewSection)}</div>
-          )}
-          {primarySections.length > 0 && (
-            <div className="space-y-4">{primarySections.map(renderSection)}</div>
-          )}
-          {otherSections.length > 0 && (
-            <div className="mt-4 space-y-4">{otherSections.map(renderSection)}</div>
-          )}
-          {secondarySections.length > 0 && (
-            <details className="mt-4">
-              <summary className="cursor-pointer text-sm font-medium text-blue-600 dark:text-blue-400">
-                More care tips
-              </summary>
-              <div className="mt-2 space-y-4">
-                {secondarySections.map(renderSection)}
-              </div>
-            </details>
-          )}
-        </>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {sections.map(({ key, icon, text }) => (
+            <CareTipCard
+              key={key}
+              icon={icon}
+              title={key}
+              description={text}
+            />
+          ))}
+        </div>
       ) : (
         <pre className="whitespace-pre-line text-sm">
           {typeof plan === 'string' ? plan : JSON.stringify(plan, null, 2)}

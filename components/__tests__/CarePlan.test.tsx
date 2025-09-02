@@ -7,7 +7,7 @@ describe('CarePlan', () => {
     expect(screen.getByText(/No care plan available/i)).toBeInTheDocument()
   })
 
-  it('renders provided plan sections with icons and collapsible details', () => {
+  it('renders provided plan sections with icons', () => {
     const plan = {
       overview: 'General care overview',
       light: 'Bright, indirect light',
@@ -21,7 +21,6 @@ describe('CarePlan', () => {
     }
     render(<CarePlan plan={plan} nickname="Delilah" />)
     expect(screen.getByText(/Care Plan for Delilah/i)).toBeInTheDocument()
-    expect(screen.getByText(/More care tips/i)).toBeInTheDocument()
 
     const iconMap: Record<string, string> = {
       overview: 'book-open',
@@ -35,11 +34,19 @@ describe('CarePlan', () => {
       pests: 'bug',
     }
     const labelMap: Record<string, string> = {
+      overview: 'Overview',
+      light: 'Light Needs',
+      water: 'Watering Frequency',
+      humidity: 'Humidity',
+      temperature: 'Temperature',
+      soil: 'Soil',
       fertilizer: 'Fertilizer',
+      pruning: 'Pruning',
+      pests: 'Pests',
     }
 
     for (const [key, text] of Object.entries(plan)) {
-      const label = labelMap[key] ?? key.charAt(0).toUpperCase() + key.slice(1)
+      const label = labelMap[key]
       const heading = screen.getByRole('heading', {
         name: new RegExp(label, 'i'),
       })
