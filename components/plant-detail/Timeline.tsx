@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Droplet, Sprout, FileText } from 'lucide-react'
 import { format, formatDistanceToNow, startOfWeek, parse } from 'date-fns'
 import type { PlantEvent } from './types'
@@ -8,14 +8,29 @@ import type { PlantEvent } from './types'
 const EVENT_TYPES = {
   water: {
     icon: Droplet,
+    label: 'Water',
+    badge: 'bg-blue-100 text-blue-700',
   },
   fertilize: {
     icon: Sprout,
+    label: 'Feed',
+    badge: 'bg-green-100 text-green-700',
   },
   note: {
     icon: FileText,
+    label: 'Note',
+    badge: 'bg-yellow-100 text-yellow-700',
   },
 } as const
+
+type FilterType = 'all' | keyof typeof EVENT_TYPES
+
+const FILTERS: { key: FilterType; label: string }[] = [
+  { key: 'all', label: 'All' },
+  { key: 'water', label: 'Water' },
+  { key: 'fertilize', label: 'Feed' },
+  { key: 'note', label: 'Notes' },
+]
 
 const eventDate = (s: string) => {
   const d = parse(s, 'MMM d', new Date())
@@ -24,9 +39,13 @@ const eventDate = (s: string) => {
 
 export default function Timeline({ events }: { events: PlantEvent[] }) {
   const [expandedId, setExpandedId] = useState<number | null>(null)
+  const [filter, setFilter] = useState<FilterType>('all')
+
+  useEffect(() => setExpandedId(null), [filter])
 
   const processed = events
     ?.filter((e): e is PlantEvent => e !== null && e !== undefined)
+    .filter((e) => filter === 'all' || e.type === filter)
     .sort(
       (a, b) => eventDate(b.date).getTime() - eventDate(a.date).getTime(),
     )
@@ -50,6 +69,21 @@ export default function Timeline({ events }: { events: PlantEvent[] }) {
   return (
     <section className="rounded-xl p-6 bg-gray-50 dark:bg-gray-800 space-y-4">
       <h2 className="h2">Timeline</h2>
+      <div className="flex gap-2">
+        {FILTERS.map((f) => (
+          <button
+            key={f.key}
+            onClick={() => setFilter(f.key)}
+            className={`px-3 py-1 rounded-full text-sm ${
+              filter === f.key
+                ? 'bg-green-600 text-white'
+                : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+            }`}
+          >
+            {f.label}
+          </button>
+        ))}
+      </div>
       {!weeks.length ? (
         <p className="text-sm text-gray-500 dark:text-gray-400">
           No activity yet.
@@ -77,13 +111,24 @@ export default function Timeline({ events }: { events: PlantEvent[] }) {
                       EVENT_TYPES.note
                     const Icon = type.icon
                     const open = expandedId === e.id
+                    const preview =
+                      e.note && e.note.length > 80
+                        ? `${e.note.slice(0, 80)}…`
+                        : e.note
                     return (
                       <li key={e.id} className="mb-6 ml-6">
-                        <span className="absolute -left-3 flex items-center justify-center w-6 h-6 text-gray-400">
+                        <span
+                          className={`absolute -left-3 flex items-center justify-center w-6 h-6 rounded-full ${type.badge}`}
+                        >
                           <Icon className="w-4 h-4" />
                         </span>
                         <button
-                          onClick={() => setExpandedId(open ? null : e.id)}
+                          type="button"
+                          onClick={
+                            e.type === 'note'
+                              ? () => setExpandedId(open ? null : e.id)
+                              : undefined
+                          }
                           className="text-left w-full"
                         >
                           <time className="text-sm text-gray-700 dark:text-gray-300">
@@ -91,12 +136,20 @@ export default function Timeline({ events }: { events: PlantEvent[] }) {
                               addSuffix: true,
                             })}
                           </time>
+                          <span
+                            className={`ml-2 px-2 py-0.5 rounded-full text-xs font-medium ${type.badge}`}
+                          >
+                            {type.label}
+                          </span>
+                          {e.type === 'note' && (
+                            <div
+                              className="mt-2 p-3 rounded-lg bg-gray-50 dark:bg-gray-800 text-sm overflow-hidden transition-all duration-300"
+                              style={{ maxHeight: open ? '200px' : '48px' }}
+                            >
+                              {open ? e.note : preview}
+                            </div>
+                          )}
                         </button>
-                        {open && e.type === 'note' && (
-                          <div className="mt-2 p-3 rounded-lg bg-gray-50 dark:bg-gray-800 text-sm">
-                            {e.note}
-                          </div>
-                        )}
                       </li>
                     )
                   })}
