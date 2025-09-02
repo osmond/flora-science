@@ -110,6 +110,8 @@ export interface StressFactors {
 export interface StressDatum {
   date: string
   stress: number
+  /** Rolling average of stress over the specified window */
+  avg?: number
   /** Breakdown of stress index contributions */
   factors: StressFactors
 }
@@ -147,8 +149,10 @@ export function calculateStressIndex({
  */
 export function stressTrend(
   readings: (StressInput & { date: string })[],
+  window: number = 3,
 ): StressDatum[] {
-  return readings.map((r) => {
+  const stresses: number[] = []
+  return readings.map((r, idx) => {
     // Recalculate individual factor scores so they can be exposed
     const overdue = Math.min(30, Math.max(0, r.overdueDays) * 10)
     const hydration = Math.min(40, Math.max(0, 40 * (1 - r.hydration / 100)))
@@ -157,10 +161,21 @@ export function stressTrend(
     const stress = Math.round(
       Math.max(0, Math.min(100, overdue + hydration + temperature + light)),
     )
+    stresses.push(stress)
+
+    let avg: number | undefined
+    if (window > 1) {
+      const start = Math.max(0, idx - window + 1)
+      const slice = stresses.slice(start)
+      avg = Number(
+        (slice.reduce((sum, s) => sum + s, 0) / slice.length).toFixed(2),
+      )
+    }
 
     return {
       date: r.date,
       stress,
+      avg,
       factors: { overdue, hydration, temperature, light },
     }
   })

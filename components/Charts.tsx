@@ -97,6 +97,7 @@ export function StressTooltip({ active, payload, label }: StressTooltipProps) {
       <div className="rounded border bg-white p-2 shadow text-xs">
         <p className="font-medium">{label}</p>
         <p>Stress: {datum.stress}</p>
+        {datum.avg !== undefined && <p>Avg: {datum.avg}</p>}
         <p className="mt-1">Factors</p>
         <p>Overdue: {overdue}</p>
         <p>Hydration: {hydration}</p>
@@ -507,9 +508,15 @@ export interface StressIndexChartProps {
    * visibility.
    */
   showFactors?: boolean
+  /** When true, displays the rolling average stress line. */
+  showAverage?: boolean
 }
 
-export function StressIndexChart({ data, showFactors = false }: StressIndexChartProps) {
+export function StressIndexChart({
+  data,
+  showFactors = false,
+  showAverage = false,
+}: StressIndexChartProps) {
   const [visible, setVisible] = useState({
     overdue: true,
     hydration: true,
@@ -550,6 +557,9 @@ export function StressIndexChart({ data, showFactors = false }: StressIndexChart
 
   const legendPayload = [
     { value: "Stress", type: "line", color: "#BD1212", id: "stress" },
+    ...(showAverage
+      ? [{ value: "Avg", type: "line", color: "#2563EB", id: "avg" }]
+      : []),
     ...stressTiers.map((t) => ({
       value: t.label,
       type: "square",
@@ -635,6 +645,16 @@ export function StressIndexChart({ data, showFactors = false }: StressIndexChart
               stroke={factorColors.light}
               strokeWidth={2}
               name="Light"
+            />
+          )}
+          {showAverage && (
+            <Line
+              type="monotone"
+              dataKey="avg"
+              stroke="#2563EB"
+              strokeWidth={2}
+              dot={false}
+              name="Avg"
             />
           )}
           <Line
