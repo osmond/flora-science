@@ -40,6 +40,7 @@ import type { Plant } from "@/lib/plants"
 import type { Weather } from "@/lib/weather"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
+import { useState } from "react"
 
 
 // Dummy dataset for environment over 7 days
@@ -501,9 +502,37 @@ export function StressIndexGauge({ value }: { value: number }) {
 export interface StressIndexChartProps {
   /** Trend data with total stress and factor breakdowns. */
   data: StressDatum[]
+  /**
+   * When true, renders individual factor lines with controls to toggle their
+   * visibility.
+   */
+  showFactors?: boolean
 }
 
-export function StressIndexChart({ data }: StressIndexChartProps) {
+export function StressIndexChart({ data, showFactors = false }: StressIndexChartProps) {
+  const [visible, setVisible] = useState({
+    overdue: true,
+    hydration: true,
+    temperature: true,
+    light: true,
+  })
+
+  const toggle = (key: keyof typeof visible) =>
+    setVisible((v) => ({ ...v, [key]: !v[key] }))
+
+  const factorColors = {
+    overdue: "#BD1212",
+    hydration: "#0950C4",
+    temperature: "#8E6B00",
+    light: "#EAB308",
+  }
+  const factorLabels = {
+    overdue: "Overdue",
+    hydration: "Hydration",
+    temperature: "Temperature",
+    light: "Light",
+  }
+
   if (data.length === 0) {
     return (
       <div className="flex h-[250px] w-full items-center justify-center text-sm text-gray-500">
@@ -535,34 +564,88 @@ export function StressIndexChart({ data }: StressIndexChartProps) {
   ]
 
   return (
-    <ResponsiveContainer width="100%" height={250}>
-      <LineChart data={data}>
-        <XAxis
-          dataKey="date"
-          tickLine={false}
-          axisLine={{ stroke: '#e5e7eb' }}
-          label={{ value: 'Date', position: 'insideBottom', offset: -5 }}
-        />
-        <YAxis
-          domain={[0, 100]}
-          tickLine={false}
-          axisLine={false}
-          label={{ value: 'Stress Index', angle: -90, position: 'insideLeft' }}
-        />
-        <Tooltip content={<StressTooltip />} />
-        <Legend payload={legendPayload} />
-        <ReferenceArea y1={0} y2={30} fill="#dcfce7" fillOpacity={0.5} />
-        <ReferenceArea y1={30} y2={60} fill="#fef9c3" fillOpacity={0.5} />
-        <ReferenceArea y1={60} y2={100} fill="#fee2e2" fillOpacity={0.5} />
-        <Line
-          type="monotone"
-          dataKey="stress"
-          stroke="#BD1212"
-          strokeWidth={3}
-          name="Stress"
-        />
-      </LineChart>
-    </ResponsiveContainer>
+    <div className="w-full">
+      {showFactors && (
+        <div className="mb-2 flex flex-wrap gap-4 text-xs">
+          {(Object.keys(visible) as (keyof typeof visible)[]).map((key) => (
+            <label key={key} className="flex items-center gap-1">
+              <input
+                type="checkbox"
+                checked={visible[key]}
+                onChange={() => toggle(key)}
+              />
+              <span style={{ color: factorColors[key] }}>
+                {factorLabels[key]}
+              </span>
+            </label>
+          ))}
+        </div>
+      )}
+      <ResponsiveContainer width="100%" height={250}>
+        <LineChart data={data}>
+          <XAxis
+            dataKey="date"
+            tickLine={false}
+            axisLine={{ stroke: '#e5e7eb' }}
+            label={{ value: 'Date', position: 'insideBottom', offset: -5 }}
+          />
+          <YAxis
+            domain={[0, 100]}
+            tickLine={false}
+            axisLine={false}
+            label={{ value: 'Stress Index', angle: -90, position: 'insideLeft' }}
+          />
+          <Tooltip content={<StressTooltip />} />
+          <Legend payload={legendPayload} />
+          <ReferenceArea y1={0} y2={30} fill="#dcfce7" fillOpacity={0.5} />
+          <ReferenceArea y1={30} y2={60} fill="#fef9c3" fillOpacity={0.5} />
+          <ReferenceArea y1={60} y2={100} fill="#fee2e2" fillOpacity={0.5} />
+          {showFactors && visible.overdue && (
+            <Line
+              type="monotone"
+              dataKey="factors.overdue"
+              stroke={factorColors.overdue}
+              strokeWidth={2}
+              name="Overdue"
+            />
+          )}
+          {showFactors && visible.hydration && (
+            <Line
+              type="monotone"
+              dataKey="factors.hydration"
+              stroke={factorColors.hydration}
+              strokeWidth={2}
+              name="Hydration"
+            />
+          )}
+          {showFactors && visible.temperature && (
+            <Line
+              type="monotone"
+              dataKey="factors.temperature"
+              stroke={factorColors.temperature}
+              strokeWidth={2}
+              name="Temperature"
+            />
+          )}
+          {showFactors && visible.light && (
+            <Line
+              type="monotone"
+              dataKey="factors.light"
+              stroke={factorColors.light}
+              strokeWidth={2}
+              name="Light"
+            />
+          )}
+          <Line
+            type="monotone"
+            dataKey="stress"
+            stroke="#BD1212"
+            strokeWidth={3}
+            name="Stress"
+          />
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
   )
 }
 

@@ -26,7 +26,9 @@ const meta = {
 }
 export default meta
 
-export const Default = () => <StressIndexChart data={sampleData} />
+export const Default = () => (
+  <StressIndexChart data={sampleData} showFactors />
+)
 
 export const Empty = () => <StressIndexChart data={[]} />
 
