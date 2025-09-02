@@ -19,9 +19,9 @@ describe('CarePlan', () => {
       pruning: 'Trim as needed',
       pests: 'Watch for aphids',
     }
-
-    render(<CarePlan plan={plan} nickname="Delilah" />)
+    render(<CarePlan plan={plan} nickname="Delilah" photo="/plant.jpg" />)
     expect(screen.getByText(/Care Plan for Delilah/i)).toBeInTheDocument()
+    expect(screen.getByAltText('Delilah')).toBeInTheDocument()
     const iconMap: Record<string, string> = {
       overview: 'book-open',
       light: 'sun',

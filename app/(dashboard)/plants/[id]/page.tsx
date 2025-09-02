@@ -286,7 +286,11 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
                   {carePlanError}
                 </div>
               ) : (
-                <CarePlan plan={carePlan} nickname={plant.nickname} />
+                <CarePlan
+                  plan={carePlan}
+                  nickname={plant.nickname}
+                  photo={plant.photos?.[0]}
+                />
               )}
             </div>
             <div className="mt-8">
