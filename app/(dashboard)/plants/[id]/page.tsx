@@ -313,14 +313,7 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
           </div>
         ) : (
           <>
-            <HeroSection
-              plant={plant}
-              weather={weather}
-              onWater={handleWater}
-              onFertilize={handleFertilize}
-              onAddNote={handleAddNote}
-              onEdit={handleEdit}
-            />
+            <HeroSection plant={plant} weather={weather} />
             <div className="mt-8">
               {carePlanLoading ? (
                 <div className="rounded-xl p-6 bg-green-50 dark:bg-gray-800 text-center text-sm text-gray-500">
@@ -355,6 +348,7 @@ export function PlantDetailContent({ params }: { params: { id: string } }) {
           onWater={handleWater}
           onFertilize={handleFertilize}
           onAddNote={handleAddNote}
+          onEdit={handleEdit}
         />
       )}
       <WaterModal

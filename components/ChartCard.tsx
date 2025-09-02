@@ -15,12 +15,11 @@ export default function ChartCard({
   children,
   variant = 'secondary',
 }: ChartCardProps) {
-  const base =
-    'snap-start rounded-lg p-4 border border-transparent dark:border-transparent'
+  const base = 'snap-start rounded-lg p-4 border shadow-sm'
   const variantClasses =
     variant === 'primary'
-      ? 'min-w-full md:min-w-0 bg-white dark:bg-gray-900'
-      : 'flex-shrink-0 min-w-[260px] md:min-w-0 bg-gray-50 dark:bg-gray-800'
+      ? 'min-w-full md:min-w-0 bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700'
+      : 'flex-shrink-0 min-w-[260px] md:min-w-0 bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700'
 
   return (
     <div className={`${base} ${variantClasses}`}>

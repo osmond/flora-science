@@ -58,6 +58,29 @@ export default function CarePlan({ plan, nickname }: CarePlanProps) {
 
   const hasPlan = !!planObj
 
+  const colorMap: Record<string, { card: string; icon: string }> = {
+    water: {
+      card: 'border-blue-200 bg-blue-50 dark:border-blue-900 dark:bg-blue-950',
+      icon: 'text-blue-600',
+    },
+    light: {
+      card: 'border-yellow-200 bg-yellow-50 dark:border-yellow-900 dark:bg-yellow-950',
+      icon: 'text-yellow-600',
+    },
+    humidity: {
+      card: 'border-green-200 bg-green-50 dark:border-green-900 dark:bg-green-950',
+      icon: 'text-green-600',
+    },
+    soil: {
+      card: 'border-emerald-200 bg-emerald-50 dark:border-emerald-900 dark:bg-emerald-950',
+      icon: 'text-emerald-600',
+    },
+  }
+
+  const primaryKeys = ['light', 'water', 'soil']
+  const primary = sections.filter((s) => primaryKeys.includes(s.key))
+  const secondary = sections.filter((s) => !primaryKeys.includes(s.key))
+
   return (
     <section className="rounded-xl p-6 bg-green-50 dark:bg-gray-800">
       <h2 className="h2 mb-6">Care Plan for {nickname}</h2>
@@ -66,19 +89,42 @@ export default function CarePlan({ plan, nickname }: CarePlanProps) {
           No care plan available
         </p>
       ) : sections.length > 0 ? (
-        <div
-          data-testid="care-tip-grid"
-          className="grid grid-cols-1 md:grid-cols-2 gap-6"
-        >
-          {sections.map(({ key, title, icon, text }) => (
-            <CareTipCard
-              key={key}
-              icon={icon}
-              title={title}
-              description={text}
-            />
-          ))}
-        </div>
+        <>
+          <div
+            data-testid="care-tip-grid"
+            className="grid grid-cols-1 md:grid-cols-2 gap-6"
+          >
+            {primary.map(({ key, title, icon, text }) => (
+              <CareTipCard
+                key={key}
+                icon={icon}
+                title={title}
+                description={text}
+                className={colorMap[key]?.card}
+                iconClass={colorMap[key]?.icon}
+              />
+            ))}
+          </div>
+          {secondary.length > 0 && (
+            <details className="mt-4">
+              <summary className="cursor-pointer text-sm text-gray-600 dark:text-gray-300">
+                More care tips
+              </summary>
+              <div className="mt-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+                {secondary.map(({ key, title, icon, text }) => (
+                  <CareTipCard
+                    key={key}
+                    icon={icon}
+                    title={title}
+                    description={text}
+                    className={colorMap[key]?.card}
+                    iconClass={colorMap[key]?.icon}
+                  />
+                ))}
+              </div>
+            </details>
+          )}
+        </>
       ) : (
         <pre className="whitespace-pre-line body-text">
           {typeof plan === 'string' ? plan : JSON.stringify(plan, null, 2)}

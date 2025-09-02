@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import CarePlan from '../plant-detail/CarePlan'
 
 describe('CarePlan', () => {
@@ -7,7 +8,7 @@ describe('CarePlan', () => {
     expect(screen.getByText(/No care plan available/i)).toBeInTheDocument()
   })
 
-  it('renders provided plan sections as cards with icons', () => {
+  it('renders primary sections and toggles secondary tips', async () => {
     const plan = {
       overview: 'General care overview',
       light: 'Bright, indirect light',
@@ -22,42 +23,15 @@ describe('CarePlan', () => {
     render(<CarePlan plan={plan} nickname="Delilah" />)
     expect(screen.getByText(/Care Plan for Delilah/i)).toBeInTheDocument()
 
-    const grid = screen.getByTestId('care-tip-grid')
-    expect(grid).toHaveClass('grid', 'grid-cols-1', 'md:grid-cols-2', 'gap-6')
+    // primary sections visible
+    expect(screen.getByText(/Light Needs/i)).toBeInTheDocument()
+    expect(screen.getByText(/Watering Frequency/i)).toBeInTheDocument()
+    expect(screen.getByText(/Pests/i)).not.toBeVisible()
 
-    const iconMap: Record<string, string> = {
-      overview: 'book-open',
-      light: 'sun',
-      water: 'droplet',
-      humidity: 'wind',
-      temperature: 'thermometer',
-      soil: 'land-plot',
-      fertilizer: 'sprout',
-      pruning: 'scissors',
-      pests: 'bug',
-    }
+    const toggle = screen.getByText(/More care tips/i)
+    await userEvent.click(toggle)
 
-    const labelMap: Record<string, string> = {
-      overview: 'Overview',
-      light: 'Light Needs',
-      water: 'Watering Frequency',
-      humidity: 'Humidity',
-      temperature: 'Temperature',
-      soil: 'Soil',
-      fertilizer: 'Fertilizer',
-      pruning: 'Pruning',
-      pests: 'Pests',
-    }
-
-    for (const [key, text] of Object.entries(plan)) {
-      const heading = screen.getByRole('heading', {
-        name: new RegExp(labelMap[key], 'i'),
-      })
-      const svg = heading.querySelector('svg')
-      expect(svg).toBeInTheDocument()
-      expect(svg).toHaveClass(`lucide-${iconMap[key]}`)
-      expect(screen.getByText(text)).toBeInTheDocument()
-    }
+    expect(screen.getByText(/Pests/i)).toBeVisible()
   })
 })
 

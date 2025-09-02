@@ -1,8 +1,8 @@
 'use client'
 
 import Image from 'next/image'
-import { Droplet, Sprout, FileText, Edit } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { motion } from 'framer-motion'
 import { formatDistanceToNow } from 'date-fns'
 import { getHydrationProgress } from '@/components/PlantCard'
 import QuickStats from './QuickStats'
@@ -12,27 +12,15 @@ import type { Weather } from '@/lib/weather'
 interface HeroSectionProps {
   plant: Plant
   weather: Weather | null
-  onWater: () => void
-  onFertilize: () => void
-  onAddNote: () => void
-  onEdit: () => void
 }
 
-export default function HeroSection({
-  plant,
-  weather,
-  onWater,
-  onFertilize,
-  onAddNote,
-  onEdit,
-}: HeroSectionProps) {
+export default function HeroSection({ plant, weather }: HeroSectionProps) {
   const progress = getHydrationProgress(plant.hydration)
   const [nextWaterDue, setNextWaterDue] = useState(plant.nextDue)
 
   useEffect(() => {
     setNextWaterDue(plant.nextDue)
   }, [plant.nextDue])
-
 
   const nextWaterDate = new Date(`${nextWaterDue} ${new Date().getFullYear()}`)
   const nextTaskText = `Needs water ${formatDistanceToNow(nextWaterDate, {
@@ -42,6 +30,8 @@ export default function HeroSection({
       ? ` (~${plant.recommendedWaterMl} ml)`
       : ''
   }`
+
+  const microDetails = `Last watered ${plant.lastWatered} • Pot ${plant.potSize}cm • ${plant.status}`
 
   return (
     <section className="space-y-6">
@@ -60,58 +50,17 @@ export default function HeroSection({
             <span className="text-gray-500 dark:text-gray-400">No photo</span>
           </div>
         )}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/0" />
         <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 via-black/0 p-4 sm:p-6">
           <h1 className="h1 font-serif text-white">{plant.nickname}</h1>
           <p className="text-lg italic text-white/80">{plant.species}</p>
-          <p className="mt-2 text-base text-white/90">{nextTaskText}</p>
+          <p className="mt-1 text-sm text-white/70">{microDetails}</p>
         </div>
       </div>
 
-      <QuickStats plant={plant} weather={weather} />
-
-      <div className="flex flex-wrap justify-center sm:justify-start gap-3">
-        <button
-          onClick={onWater}
-          aria-label="Water plant"
-          className="relative group flex items-center gap-1 px-4 py-1 rounded-full border border-blue-300 text-sm text-blue-700 bg-white/30 hover:bg-blue-50 dark:border-blue-400 dark:text-blue-400 transition-colors"
-        >
-          <span className="pointer-events-none absolute inset-0 rounded-full bg-blue-200/60 opacity-0 group-hover:opacity-40 group-hover:animate-[ping_0.6s_ease-out] group-focus:opacity-40 group-focus:animate-[ping_0.6s_ease-out]" />
-          <Droplet className="h-4 w-4" />
-          Water
-        </button>
-        <button
-          onClick={onFertilize}
-          aria-label="Fertilize plant"
-          className="relative group flex items-center gap-1 px-4 py-1 rounded-full border border-green-300 text-sm text-green-700 bg-white/30 hover:bg-green-50 dark:border-green-400 dark:text-green-400 transition-colors"
-        >
-          <span className="pointer-events-none absolute inset-0 rounded-full bg-green-200/60 opacity-0 group-hover:opacity-40 group-hover:animate-[ping_0.6s_ease-out] group-focus:opacity-40 group-focus:animate-[ping_0.6s_ease-out]" />
-          <Sprout className="h-4 w-4" />
-          Feed
-        </button>
-        <button
-          onClick={onAddNote}
-          aria-label="Add note to plant"
-          className="relative group flex items-center gap-1 px-4 py-1 rounded-full border border-purple-300 text-sm text-purple-700 bg-white/30 hover:bg-purple-50 dark:border-purple-400 dark:text-purple-400 transition-colors"
-        >
-          <span className="pointer-events-none absolute inset-0 rounded-full bg-purple-200/60 opacity-0 group-hover:opacity-40 group-hover:animate-[ping_0.6s_ease-out] group-focus:opacity-40 group-focus:animate-[ping_0.6s_ease-out]" />
-          <FileText className="h-4 w-4" />
-          Add Note
-        </button>
-        <button
-          onClick={onEdit}
-          aria-label="Edit plant"
-          className="relative group flex items-center gap-1 px-4 py-1 rounded-full border border-orange-300 text-sm text-orange-700 bg-white/30 hover:bg-orange-50 dark:border-orange-400 dark:text-orange-400 transition-colors"
-        >
-          <span className="pointer-events-none absolute inset-0 rounded-full bg-orange-200/60 opacity-0 group-hover:opacity-40 group-hover:animate-[ping_0.6s_ease-out] group-focus:opacity-40 group-focus:animate-[ping_0.6s_ease-out]" />
-          <Edit className="h-4 w-4" />
-          Edit
-        </button>
-      </div>
-      <div className="flex flex-wrap justify-center sm:justify-start gap-2 text-sm">
-        <span className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full font-medium">
-          {plant.status}
-        </span>
-      </div>
+      <p className="text-xl font-semibold" aria-live="polite">
+        {nextTaskText}
+      </p>
       <div className="flex items-center gap-2" aria-live="polite">
         <div
           className="w-full bg-gray-200 rounded-full h-2"
@@ -122,13 +71,17 @@ export default function HeroSection({
           aria-valuemax={100}
           aria-valuetext={`${progress.pct}% hydration`}
         >
-          <div
+          <motion.div
             className={`h-2 rounded-full ${progress.colorClass}`}
-            style={{ width: `${progress.pct}%` }}
+            animate={{ width: `${progress.pct}%` }}
+            transition={{ type: 'spring', stiffness: 120, damping: 20 }}
           />
         </div>
         <span className="text-sm text-gray-700 dark:text-gray-300">{progress.status}</span>
       </div>
+
+      <QuickStats plant={plant} weather={weather} />
     </section>
   )
 }
+
