@@ -13,6 +13,7 @@ import {
   RadialBar,
   Bar,
   ComposedChart,
+  Scatter,
   RadarChart,
   Radar,
   PolarGrid,
@@ -79,8 +80,8 @@ function CustomTooltip({ active, payload, label }: any) {
 export interface StressTooltipProps {
   /** Whether the tooltip is active (provided by Recharts). */
   active?: boolean
-  /** Data for the hovered point including factor scores. */
-  payload?: { payload: StressDatum }[]
+  /** Data for the hovered point including factor scores or events. */
+  payload?: any[]
   /** Label for the hovered entry, typically the date. */
   label?: string
 }
@@ -91,7 +92,20 @@ export interface StressTooltipProps {
  */
 export function StressTooltip({ active, payload, label }: StressTooltipProps) {
   if (active && payload?.length) {
-    const datum = payload[0].payload
+    const event = payload.find((p) => p.payload && p.payload.type && !p.payload.factors)
+    if (event) {
+      const type = event.payload.type as string
+      return (
+        <div className="rounded border bg-white p-2 shadow text-xs">
+          <p className="font-medium">{label}</p>
+          <p>Event: {type[0].toUpperCase() + type.slice(1)}</p>
+          {typeof event.payload.stress === "number" && (
+            <p>Stress: {event.payload.stress}</p>
+          )}
+        </div>
+      )
+    }
+    const datum = payload[0].payload as StressDatum
     const { overdue, hydration, temperature, light } = datum.factors
     return (
       <div className="rounded border bg-white p-2 shadow text-xs">
@@ -502,6 +516,8 @@ export function StressIndexGauge({ value }: { value: number }) {
 export interface StressIndexChartProps {
   /** Trend data with total stress and factor breakdowns. */
   data: StressDatum[]
+  /** Optional care events to mark on the chart. */
+  events?: { date: string; type: string }[]
   /**
    * When true, renders individual factor lines with controls to toggle their
    * visibility.
@@ -509,7 +525,11 @@ export interface StressIndexChartProps {
   showFactors?: boolean
 }
 
-export function StressIndexChart({ data, showFactors = false }: StressIndexChartProps) {
+export function StressIndexChart({
+  data,
+  events = [],
+  showFactors = false,
+}: StressIndexChartProps) {
   const [visible, setVisible] = useState({
     overdue: true,
     hydration: true,
@@ -548,6 +568,23 @@ export function StressIndexChart({ data, showFactors = false }: StressIndexChart
     { id: "high", label: "High (60-100)", range: [60, 100], color: "#fee2e2" },
   ]
 
+  const eventIcons: Record<string, string> = {
+    water: "💧",
+    fertilize: "🌿",
+  }
+  const eventColors: Record<string, string> = {
+    water: "#3b82f6",
+    fertilize: "#16a34a",
+  }
+  const eventData = events
+    .map((e) => {
+      const match = data.find((d) => d.date === e.date)
+      return match ? { date: e.date, stress: match.stress, type: e.type } : null
+    })
+    .filter((e): e is { date: string; stress: number; type: string } => e !== null)
+
+  const eventTypes = Array.from(new Set(eventData.map((e) => e.type)))
+
   const legendPayload = [
     { value: "Stress", type: "line", color: "#BD1212", id: "stress" },
     ...stressTiers.map((t) => ({
@@ -555,6 +592,12 @@ export function StressIndexChart({ data, showFactors = false }: StressIndexChart
       type: "square",
       color: t.color,
       id: t.id,
+    })),
+    ...eventTypes.map((t) => ({
+      value: `${eventIcons[t] ?? ""} ${t[0].toUpperCase()}${t.slice(1)}`,
+      type: "diamond",
+      color: eventColors[t] ?? "#6366f1",
+      id: `event-${t}`,
     })),
   ]
 
@@ -577,7 +620,7 @@ export function StressIndexChart({ data, showFactors = false }: StressIndexChart
         </div>
       )}
       <ResponsiveContainer width="100%" height={250}>
-        <LineChart data={data}>
+        <ComposedChart data={data}>
           <XAxis
             dataKey="date"
             tickLine={false}
@@ -644,7 +687,18 @@ export function StressIndexChart({ data, showFactors = false }: StressIndexChart
             strokeWidth={3}
             name="Stress"
           />
-        </LineChart>
+          {eventData.length > 0 && (
+            <Scatter
+              data={eventData}
+              name="Events"
+              shape={({ cx, cy, payload }) => (
+                <text x={cx} y={cy} textAnchor="middle" dy={4} fontSize={12}>
+                  {eventIcons[payload.type] ?? "⚑"}
+                </text>
+              )}
+            />
+          )}
+        </ComposedChart>
       </ResponsiveContainer>
     </div>
   )
