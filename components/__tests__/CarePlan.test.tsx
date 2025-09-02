@@ -7,7 +7,7 @@ describe('CarePlan', () => {
     expect(screen.getByText(/No care plan available/i)).toBeInTheDocument()
   })
 
-  it('renders provided plan sections with icons and collapsible details', () => {
+  it('renders provided plan sections with icons and secondary tip cards', () => {
     const plan = {
       overview: 'General care overview',
       light: 'Bright, indirect light',
@@ -21,7 +21,6 @@ describe('CarePlan', () => {
     }
     render(<CarePlan plan={plan} nickname="Delilah" />)
     expect(screen.getByText(/Care Plan for Delilah/i)).toBeInTheDocument()
-    expect(screen.getByText(/More care tips/i)).toBeInTheDocument()
 
     const iconMap: Record<string, string> = {
       overview: 'book-open',
@@ -48,6 +47,10 @@ describe('CarePlan', () => {
       expect(svg).toHaveClass(`lucide-${iconMap[key]}`)
       expect(screen.getByText(text)).toBeInTheDocument()
     }
+
+    const pestsHeading = screen.getByRole('heading', { name: /Pests/i })
+    const card = pestsHeading.closest('div')
+    expect(card).toHaveClass('border')
   })
 })
 
