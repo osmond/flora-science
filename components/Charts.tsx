@@ -39,6 +39,7 @@ import {
 } from "@/lib/plant-metrics"
 import type { Plant } from "@/lib/plants"
 import type { Weather } from "@/lib/weather"
+import { STRESS_LOW_MAX, STRESS_HIGH_MIN } from "@/lib/constants"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 import { useState } from "react"
@@ -491,9 +492,9 @@ export function WaterBalanceChart({
 export function StressIndexGauge({ value }: { value: number }) {
   const data = [{ name: 'stress', value }]
   const { label, color } =
-    value < 30
+    value <= STRESS_LOW_MAX
       ? { label: 'Low', color: '#1A7D1E' }
-      : value <= 70
+      : value < STRESS_HIGH_MIN
         ? { label: 'Moderate', color: '#8E6B00' }
         : { label: 'High', color: '#BD1212' }
   return (
@@ -605,22 +606,22 @@ export function StressIndexChart({
   const stressTiers = [
     {
       id: "low",
-      label: "Low (0-30)",
-      range: [0, 30],
+      label: `Low (0-${STRESS_LOW_MAX})`,
+      range: [0, STRESS_LOW_MAX],
       color: "#deebf7",
       patternId: "tierLow",
     },
     {
       id: "moderate",
-      label: "Moderate (30-60)",
-      range: [30, 60],
+      label: `Moderate (${STRESS_LOW_MAX}-${STRESS_HIGH_MIN})`,
+      range: [STRESS_LOW_MAX, STRESS_HIGH_MIN],
       color: "#fef3c7",
       patternId: "tierModerate",
     },
     {
       id: "high",
-      label: "High (60-100)",
-      range: [60, 100],
+      label: `High (${STRESS_HIGH_MIN}-100)`,
+      range: [STRESS_HIGH_MIN, 100],
       color: "#e9d5ff",
       patternId: "tierHigh",
     },
@@ -652,7 +653,7 @@ export function StressIndexChart({
   return (
     <div className="w-full">
       <p className="sr-only">
-        Stress tiers: Low 0–30, Moderate 30–60, High 60–100
+        {`Stress tiers: Low 0–${STRESS_LOW_MAX}, Moderate ${STRESS_LOW_MAX}-${STRESS_HIGH_MIN}, High ${STRESS_HIGH_MIN}-100`}
       </p>
       {showFactors && (
         <div className="mb-2 flex flex-wrap gap-4 text-xs">
