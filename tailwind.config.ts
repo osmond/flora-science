@@ -37,10 +37,6 @@ const config: Config = {
         xl: "1.25rem",
         "2xl": "1.5rem",
       },
-      fontFamily: {
-        sans: ["var(--font-sans)", "sans-serif"],
-        serif: ["var(--font-serif)", "serif"],
-      },
     },
   },
   plugins: [],
