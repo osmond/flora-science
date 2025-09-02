@@ -464,13 +464,48 @@ export function StressIndexGauge({ value }: { value: number }) {
 
 // Line chart for stress index trends
 export function StressIndexChart({ data }: { data: StressDatum[] }) {
+  const legendPayload = [
+    { value: "Stress", type: "line", color: "#BD1212", id: "stress" },
+    {
+      value: "Low (0-30)",
+      type: "square",
+      color: "#dcfce7",
+      id: "low",
+    },
+    {
+      value: "Moderate (30-60)",
+      type: "square",
+      color: "#fef9c3",
+      id: "moderate",
+    },
+    {
+      value: "High (60-100)",
+      type: "square",
+      color: "#fee2e2",
+      id: "high",
+    },
+  ]
+
   return (
     <ResponsiveContainer width="100%" height={250}>
       <LineChart data={data}>
-        <XAxis dataKey="date" tickLine={false} axisLine={{ stroke: '#e5e7eb' }} />
-        <YAxis domain={[0, 100]} tickLine={false} axisLine={false} />
+        <XAxis
+          dataKey="date"
+          tickLine={false}
+          axisLine={{ stroke: '#e5e7eb' }}
+          label={{ value: 'Date', position: 'insideBottom', offset: -5 }}
+        />
+        <YAxis
+          domain={[0, 100]}
+          tickLine={false}
+          axisLine={false}
+          label={{ value: 'Stress Index', angle: -90, position: 'insideLeft' }}
+        />
         <Tooltip content={<CustomTooltip />} />
+        <Legend payload={legendPayload} />
         <ReferenceArea y1={0} y2={30} fill="#dcfce7" fillOpacity={0.5} />
+        <ReferenceArea y1={30} y2={60} fill="#fef9c3" fillOpacity={0.5} />
+        <ReferenceArea y1={60} y2={100} fill="#fee2e2" fillOpacity={0.5} />
         <Line
           type="monotone"
           dataKey="stress"
