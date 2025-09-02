@@ -79,8 +79,8 @@ export default function PlantCard({
       )}
       <div className="flex items-start justify-between">
         <div>
-          <h3 className="h3 font-serif font-bold text-gray-900 dark:text-gray-100">{nickname}</h3>
-          <p className="text-base italic text-gray-500 dark:text-gray-400">{species}</p>
+          <h3 className="h3 font-bold text-gray-900 dark:text-gray-100">{nickname}</h3>
+          <p className="text-sm text-gray-500 dark:text-gray-400">{species}</p>
         </div>
         <span className={`text-xs font-semibold px-[var(--space-sm)] py-[calc(var(--space-xs)/2)] rounded-full ${statusColor}`}>{status}</span>
       </div>

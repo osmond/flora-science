@@ -60,7 +60,7 @@ export default function CarePlan({ plan, nickname }: CarePlanProps) {
 
   return (
     <section className="rounded-xl p-6 bg-green-50 dark:bg-gray-800">
-      <h2 className="section-heading mb-6">Care Plan for {nickname}</h2>
+      <h2 className="h2 mb-6">Care Plan for {nickname}</h2>
       {!hasPlan ? (
         <p className="body-text text-gray-600 dark:text-gray-400">
           No care plan available
