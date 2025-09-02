@@ -541,26 +541,20 @@ export function StressIndexChart({ data, showFactors = false }: StressIndexChart
     )
   }
 
+  const stressTiers = [
+    { id: "low", label: "Low (0-30)", range: [0, 30], color: "#dcfce7" },
+    { id: "moderate", label: "Moderate (30-60)", range: [30, 60], color: "#fef9c3" },
+    { id: "high", label: "High (60-100)", range: [60, 100], color: "#fee2e2" },
+  ]
+
   const legendPayload = [
     { value: "Stress", type: "line", color: "#BD1212", id: "stress" },
-    {
-      value: "Low (0-30)",
+    ...stressTiers.map((t) => ({
+      value: t.label,
       type: "square",
-      color: "#dcfce7",
-      id: "low",
-    },
-    {
-      value: "Moderate (30-60)",
-      type: "square",
-      color: "#fef9c3",
-      id: "moderate",
-    },
-    {
-      value: "High (60-100)",
-      type: "square",
-      color: "#fee2e2",
-      id: "high",
-    },
+      color: t.color,
+      id: t.id,
+    })),
   ]
 
   return (
@@ -597,9 +591,15 @@ export function StressIndexChart({ data, showFactors = false }: StressIndexChart
           />
           <Tooltip content={<StressTooltip />} />
           <Legend payload={legendPayload} />
-          <ReferenceArea y1={0} y2={30} fill="#dcfce7" fillOpacity={0.5} />
-          <ReferenceArea y1={30} y2={60} fill="#fef9c3" fillOpacity={0.5} />
-          <ReferenceArea y1={60} y2={100} fill="#fee2e2" fillOpacity={0.5} />
+          {stressTiers.map(({ id, range: [y1, y2], color }) => (
+            <ReferenceArea
+              key={id}
+              y1={y1}
+              y2={y2}
+              fill={color}
+              fillOpacity={0.5}
+            />
+          ))}
           {showFactors && visible.overdue && (
             <Line
               type="monotone"
