@@ -555,7 +555,7 @@ export function StressIndexChart({
     overdue: "#BD1212",
     hydration: "#0950C4",
     temperature: "#8E6B00",
-    light: "#EAB308",
+    light: "#B45309",
   }
   const factorLabels = {
     overdue: "Overdue",
@@ -565,9 +565,27 @@ export function StressIndexChart({
   }
 
   const stressTiers = [
-    { id: "low", label: "Low (0-30)", range: [0, 30], color: "#dcfce7" },
-    { id: "moderate", label: "Moderate (30-60)", range: [30, 60], color: "#fef9c3" },
-    { id: "high", label: "High (60-100)", range: [60, 100], color: "#fee2e2" },
+    {
+      id: "low",
+      label: "Low (0-30)",
+      range: [0, 30],
+      color: "#deebf7",
+      patternId: "tierLow",
+    },
+    {
+      id: "moderate",
+      label: "Moderate (30-60)",
+      range: [30, 60],
+      color: "#fef3c7",
+      patternId: "tierModerate",
+    },
+    {
+      id: "high",
+      label: "High (60-100)",
+      range: [60, 100],
+      color: "#e9d5ff",
+      patternId: "tierHigh",
+    },
   ]
 
   const eventPoints = events
@@ -595,6 +613,9 @@ export function StressIndexChart({
 
   return (
     <div className="w-full">
+      <p className="sr-only">
+        Stress tiers: Low 0–30, Moderate 30–60, High 60–100
+      </p>
       {showFactors && (
         <div className="mb-2 flex flex-wrap gap-4 text-xs">
           {(Object.keys(visible) as (keyof typeof visible)[]).map((key) => (
@@ -613,6 +634,27 @@ export function StressIndexChart({
       )}
       <ResponsiveContainer width="100%" height={250}>
         <LineChart data={data}>
+          <defs>
+            <pattern id="tierLow" patternUnits="userSpaceOnUse" width={8} height={8}>
+              <rect width="8" height="8" fill="#deebf7" />
+              <circle cx="2" cy="2" r="1" fill="#c7d2fe" />
+            </pattern>
+            <pattern
+              id="tierModerate"
+              patternUnits="userSpaceOnUse"
+              width={8}
+              height={8}
+              patternTransform="rotate(45)"
+            >
+              <rect width="8" height="8" fill="#fef3c7" />
+              <line x1="0" y1="0" x2="0" y2="8" stroke="#fde68a" strokeWidth="2" />
+            </pattern>
+            <pattern id="tierHigh" patternUnits="userSpaceOnUse" width={8} height={8}>
+              <rect width="8" height="8" fill="#e9d5ff" />
+              <line x1="0" y1="0" x2="8" y2="8" stroke="#d8b4fe" strokeWidth="1" />
+              <line x1="0" y1="8" x2="8" y2="0" stroke="#d8b4fe" strokeWidth="1" />
+            </pattern>
+          </defs>
           <XAxis
             dataKey="date"
             tickLine={false}
@@ -627,13 +669,14 @@ export function StressIndexChart({
           />
           <Tooltip content={<StressTooltip />} />
           <Legend payload={legendPayload} />
-          {stressTiers.map(({ id, range: [y1, y2], color }) => (
+          {stressTiers.map(({ id, label, range: [y1, y2], patternId }) => (
             <ReferenceArea
               key={id}
               y1={y1}
               y2={y2}
-              fill={color}
-              fillOpacity={0.5}
+              fill={`url(#${patternId})`}
+              aria-label={label}
+              role="img"
             />
           ))}
           {showFactors && visible.overdue && (

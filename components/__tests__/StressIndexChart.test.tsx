@@ -62,5 +62,19 @@ describe('StressIndexChart', () => {
     render(<StressIndexChart data={data} events={events} />)
     expect(screen.getByText('Event')).toBeInTheDocument()
   })
+
+  it('labels stress tiers for accessibility', () => {
+    const data = [
+      {
+        date: '2024-01-01',
+        stress: 20,
+        factors: { overdue: 5, hydration: 5, temperature: 5, light: 5 },
+      },
+    ]
+    render(<StressIndexChart data={data} />)
+    expect(screen.getByLabelText('Low (0-30)')).toBeInTheDocument()
+    expect(screen.getByLabelText('Moderate (30-60)')).toBeInTheDocument()
+    expect(screen.getByLabelText('High (60-100)')).toBeInTheDocument()
+  })
 })
 
