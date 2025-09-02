@@ -1,4 +1,4 @@
-import React from "react"
+import type { Meta, StoryObj } from "@storybook/react"
 import { StressIndexChart } from "./Charts"
 import type { StressDatum } from "@/lib/plant-metrics"
 
@@ -20,15 +20,23 @@ const sampleData: StressDatum[] = [
   },
 ]
 
-const meta = {
+const meta: Meta<typeof StressIndexChart> = {
   title: "Charts/StressIndexChart",
   component: StressIndexChart,
 }
 export default meta
+type Story = StoryObj<typeof StressIndexChart>
 
-export const Default = () => (
-  <StressIndexChart data={sampleData} showFactors />
-)
+export const Default: Story = {
+  args: {
+    data: sampleData,
+    showFactors: true,
+  },
+}
 
-export const Empty = () => <StressIndexChart data={[]} />
+export const Empty: Story = {
+  args: {
+    data: [],
+  },
+}
 

@@ -517,6 +517,15 @@ export function StressIndexChart({ data, showFactors = false }: StressIndexChart
     light: true,
   })
 
+  // Render a simple fallback when there is no data to chart
+  if (data.length === 0) {
+    return (
+      <div className="flex h-[250px] w-full items-center justify-center text-sm text-gray-500">
+        No stress readings available
+      </div>
+    )
+  }
+
   const toggle = (key: keyof typeof visible) =>
     setVisible((v) => ({ ...v, [key]: !v[key] }))
 
@@ -531,14 +540,6 @@ export function StressIndexChart({ data, showFactors = false }: StressIndexChart
     hydration: "Hydration",
     temperature: "Temperature",
     light: "Light",
-  }
-
-  if (data.length === 0) {
-    return (
-      <div className="flex h-[250px] w-full items-center justify-center text-sm text-gray-500">
-        No stress readings available
-      </div>
-    )
   }
 
   const stressTiers = [
