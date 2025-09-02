@@ -7,7 +7,7 @@ describe('CarePlan', () => {
     expect(screen.getByText(/No care plan available/i)).toBeInTheDocument()
   })
 
-  it('renders provided plan sections with icons and secondary tip cards', () => {
+  it('renders provided plan sections as cards with icons', () => {
     const plan = {
       overview: 'General care overview',
       light: 'Bright, indirect light',
@@ -22,6 +22,9 @@ describe('CarePlan', () => {
     render(<CarePlan plan={plan} nickname="Delilah" />)
     expect(screen.getByText(/Care Plan for Delilah/i)).toBeInTheDocument()
 
+    const grid = screen.getByTestId('care-tip-grid')
+    expect(grid).toHaveClass('grid', 'grid-cols-1', 'md:grid-cols-2', 'gap-6')
+
     const iconMap: Record<string, string> = {
       overview: 'book-open',
       light: 'sun',
@@ -33,24 +36,28 @@ describe('CarePlan', () => {
       pruning: 'scissors',
       pests: 'bug',
     }
+
     const labelMap: Record<string, string> = {
+      overview: 'Overview',
+      light: 'Light Needs',
+      water: 'Watering Frequency',
+      humidity: 'Humidity',
+      temperature: 'Temperature',
+      soil: 'Soil',
       fertilizer: 'Fertilizer',
+      pruning: 'Pruning',
+      pests: 'Pests',
     }
 
     for (const [key, text] of Object.entries(plan)) {
-      const label = labelMap[key] ?? key.charAt(0).toUpperCase() + key.slice(1)
       const heading = screen.getByRole('heading', {
-        name: new RegExp(label, 'i'),
+        name: new RegExp(labelMap[key], 'i'),
       })
       const svg = heading.querySelector('svg')
       expect(svg).toBeInTheDocument()
       expect(svg).toHaveClass(`lucide-${iconMap[key]}`)
       expect(screen.getByText(text)).toBeInTheDocument()
     }
-
-    const pestsHeading = screen.getByRole('heading', { name: /Pests/i })
-    const card = pestsHeading.closest('div')
-    expect(card).toHaveClass('border')
   })
 })
 
