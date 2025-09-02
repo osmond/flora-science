@@ -43,6 +43,44 @@ import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 import { useState } from "react"
 
+/**
+ * Content describing how the stress index is calculated along with mitigation tips.
+ * This can be rendered inside a modal or tooltip when users request help.
+ */
+export function StressHelpContent() {
+  return (
+    <div>
+      <h3 className="text-lg font-semibold mb-2">Stress Index Guide</h3>
+      <p className="mb-2">
+        The stress index combines several factors into a 0–100 score. Lower values mean a healthier plant.
+      </p>
+      <ul className="list-disc pl-5 mb-2 text-sm">
+        <li>Overdue watering: up to 30 points</li>
+        <li>Low hydration: up to 40 points</li>
+        <li>Temperature deviation: up to 15 points</li>
+        <li>Light imbalance: up to 15 points</li>
+      </ul>
+      <p className="mb-2 text-sm">
+        Keep a consistent care schedule, adjust lighting, and maintain stable temperatures to reduce stress.
+      </p>
+      <p className="text-sm">
+        <Link href="/docs/stress-index" className="text-blue-600 underline" target="_blank" rel="noreferrer">
+          Full stress documentation
+        </Link>
+        {' '}|
+        <a
+          href="https://en.wikipedia.org/wiki/Plant_stress"
+          target="_blank"
+          rel="noreferrer"
+          className="text-blue-600 underline"
+        >
+          Plant stress overview
+        </a>
+      </p>
+    </div>
+  )
+}
+
 
 // Dummy dataset for environment over 7 days
 const defaultEnvData = [
