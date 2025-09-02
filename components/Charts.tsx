@@ -76,7 +76,7 @@ function CustomTooltip({ active, payload, label }: any) {
   return null
 }
 
-interface StressTooltipProps {
+export interface StressTooltipProps {
   /** Whether the tooltip is active (provided by Recharts). */
   active?: boolean
   /** Data for the hovered point including factor scores. */
@@ -89,7 +89,7 @@ interface StressTooltipProps {
  * Tooltip for stress charts that displays each factor's contribution to the
  * overall stress index.
  */
-function StressTooltip({ active, payload, label }: StressTooltipProps) {
+export function StressTooltip({ active, payload, label }: StressTooltipProps) {
   if (active && payload?.length) {
     const datum = payload[0].payload
     const { overdue, hydration, temperature, light } = datum.factors
