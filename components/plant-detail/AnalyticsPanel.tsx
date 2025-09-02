@@ -113,9 +113,7 @@ export default function AnalyticsPanel({ plant, weather }: AnalyticsPanelProps) 
     {
       key: 'plant' as const,
       label: 'Plant Health',
-      content: (
-        <StressBlock plant={plant} weather={weather} stressData={stressData} />
-      ),
+      content: <StressBlock stressData={stressData} />,
     },
     {
       key: 'environment' as const,

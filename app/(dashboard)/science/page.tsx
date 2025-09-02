@@ -24,6 +24,10 @@ const StressIndexChart = dynamic(
   () => import("@/components/Charts").then((m) => m.StressIndexChart),
   { ssr: false, loading: () => <p>Loading chart...</p> }
 )
+const PlantHealthRadar = dynamic(
+  () => import("@/components/Charts").then((m) => m.PlantHealthRadar),
+  { ssr: false, loading: () => <p>Loading chart...</p> }
+)
 const TaskCompletionChart = dynamic(
   () => import("@/components/Charts").then((m) => m.TaskCompletionChart),
   { ssr: false, loading: () => <p>Loading chart...</p> }
@@ -126,6 +130,8 @@ export default function SciencePanel() {
   })
   const stressData = stressTrend(stressReadings)
   const currentStress = stressData[stressData.length - 1]?.stress ?? 0
+  const plant = samplePlants["1"]
+  const currentWeather = weather[weather.length - 1]
 
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -203,9 +209,19 @@ export default function SciencePanel() {
 
       <section className="mt-4 md:mt-6">
         <h3 className="h3 text-gray-800">Plant Stress</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="mb-4">
           <StressIndexGauge value={currentStress} />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <StressIndexChart data={stressData} />
+          <PlantHealthRadar
+            hydration={plant.hydration}
+            lastFertilized={plant.lastFertilized}
+            nutrientLevel={plant.nutrientLevel ?? 100}
+            events={plant.events}
+            status={plant.status}
+            weather={currentWeather}
+          />
         </div>
       </section>
 
