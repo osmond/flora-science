@@ -504,6 +504,14 @@ export interface StressIndexChartProps {
 }
 
 export function StressIndexChart({ data }: StressIndexChartProps) {
+  if (data.length === 0) {
+    return (
+      <div className="flex h-[250px] w-full items-center justify-center text-sm text-gray-500">
+        No stress readings available
+      </div>
+    )
+  }
+
   const legendPayload = [
     { value: "Stress", type: "line", color: "#BD1212", id: "stress" },
     {
