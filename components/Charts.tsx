@@ -235,9 +235,7 @@ export function VPDGauge({ value = 1.2 }: { value?: number }) {
           tickLine={false}
         />
         <RadialBar
-          minAngle={15}
           background
-          clockWise
           dataKey="value"
           data-testid="vpd-bar"
           isAnimationActive={false}
@@ -521,7 +519,6 @@ export function StressIndexGauge({ value }: { value: number }) {
           cornerRadius={8}
           fill="url(#stressGradient)"
           background
-          clockWise
         />
         <text
           x="50%"
@@ -563,6 +560,7 @@ export interface StressIndexChartProps {
   showAverage?: boolean
   /** Care events to mark on the stress line. */
   events?: { date: string; type: string }[]
+  metricExplanation?: string
 }
 
 export function StressIndexChart({
@@ -570,6 +568,7 @@ export function StressIndexChart({
   showFactors = false,
   showAverage = false,
   events = [],
+  metricExplanation,
 }: StressIndexChartProps) {
   const [visible, setVisible] = useState({
     overdue: true,
@@ -651,10 +650,23 @@ export function StressIndexChart({
   ]
 
   return (
-    <div className="w-full">
-      <p className="sr-only">
-        {`Stress tiers: Low 0–${STRESS_LOW_MAX}, Moderate ${STRESS_LOW_MAX}-${STRESS_HIGH_MIN}, High ${STRESS_HIGH_MIN}-100`}
-      </p>
+    <div className="w-full" role="region" aria-label="Stress Index Chart">
+      <div className="flex items-center mb-2">
+        <span className="sr-only">
+          {`Stress tiers: Low 0–${STRESS_LOW_MAX}, Moderate ${STRESS_LOW_MAX}-${STRESS_HIGH_MIN}, High ${STRESS_HIGH_MIN}-100`}
+        </span>
+        {metricExplanation && (
+          <button
+            type="button"
+            aria-label="What does Stress Index measure?"
+            title="Metric explanation for Stress Index"
+            className="text-blue-500 hover:underline focus:outline-none focus:ring ml-1"
+            onClick={() => window.alert(metricExplanation)}
+          >
+            ℹ️
+          </button>
+        )}
+      </div>
       {showFactors && (
         <div className="mb-2 flex flex-wrap gap-4 text-xs">
           {(Object.keys(visible) as (keyof typeof visible)[]).map((key) => (
@@ -707,7 +719,20 @@ export function StressIndexChart({
             label={{ value: 'Stress Index', angle: -90, position: 'insideLeft' }}
           />
           <Tooltip content={<StressTooltip />} />
-          <Legend payload={legendPayload} />
+          {/* Custom legend rendering to avoid payload type error */}
+          <Legend content={() => (
+            <ul className="flex flex-wrap gap-4 text-xs">
+              {legendPayload.map((entry) => (
+                <li key={entry.id} className="flex items-center">
+                  <span
+                    className="w-3 h-3 mr-1"
+                    style={{ backgroundColor: entry.color }}
+                  />
+                  {entry.value}
+                </li>
+              ))}
+            </ul>
+          )} />
           {stressTiers.map(({ id, label, range: [y1, y2], patternId }) => (
             <ReferenceArea
               key={id}
@@ -903,13 +928,13 @@ export function TimelineHeatmap({ activity }: { activity: DailyActivity }) {
   const max = Math.max(1, ...counts, 1)
 
   return (
-    <div className="overflow-x-auto">
-      <table className="border-collapse">
+    <div className="overflow-x-auto" role="region" aria-label="Timeline Heatmap">
+      <table className="border-collapse" aria-label="Care activity heatmap">
         <thead>
           <tr>
             <th className="p-1 text-xs"></th>
             {dates.map((date) => (
-              <th key={date} className="p-1 text-xs">
+              <th key={date} className="p-1 text-xs" scope="col">
                 {new Date(date).toLocaleDateString(undefined, {
                   month: "short",
                   day: "numeric",
@@ -921,23 +946,19 @@ export function TimelineHeatmap({ activity }: { activity: DailyActivity }) {
         <tbody>
           {types.map((type) => (
             <tr key={type}>
-              <td className="p-1 text-xs">{type}</td>
+              <td className="p-1 text-xs" scope="row">{type}</td>
               {dates.map((date) => {
                 const count = activity[date]?.[type] ?? 0
                 const intensity = count / max
+                // Use CSS classes for color and size, set intensity via CSS variable
                 return (
                   <td
                     key={date}
                     data-testid="heatmap-cell"
                     data-count={count}
                     title={`${type} on ${date}: ${count}`}
-                    style={{
-                      backgroundColor: count
-                        ? `rgba(26,125,30,${intensity})`
-                        : "#e5e7eb",
-                      width: "1rem",
-                      height: "1rem",
-                    }}
+                    className={`heatmap-cell ${count ? 'heatmap-green' : 'heatmap-gray'}`}
+                    style={count ? { '--intensity': intensity } as React.CSSProperties : undefined}
                   />
                 )
               })}

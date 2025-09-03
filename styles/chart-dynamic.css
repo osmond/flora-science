@@ -1,0 +1,18 @@
+/* Dynamic chart colors for accessibility and lint compliance */
+.heatmap-cell {
+  width: 1rem;
+  height: 1rem;
+  transition: background-color 0.2s;
+}
+.heatmap-green {
+  background-color: rgba(26,125,30,var(--intensity,1));
+}
+.heatmap-gray {
+  background-color: #e5e7eb;
+}
+.legend-color {
+  width: 0.75rem;
+  height: 0.75rem;
+  display: inline-block;
+  margin-right: 0.25rem;
+}

@@ -19,8 +19,12 @@ export default function WaterModal({ isOpen, onClose, onSubmit }: Props) {
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <h2 className="h2 mb-4">Water Plant</h2>
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Water Plant"
+      description="Enter the amount of water (in milliliters) to log for this plant. Press Esc to close. Tab to navigate."
+    >
       <form onSubmit={handleSubmit} className="space-y-4">
         <label className="block text-sm">
           Amount (ml)

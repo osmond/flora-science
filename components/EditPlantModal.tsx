@@ -31,8 +31,12 @@ export default function EditPlantModal({ isOpen, onClose, plant, onSubmit }: Pro
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <h2 className="h2 mb-4">Edit Plant</h2>
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Edit Plant"
+      description="Update the nickname, species, or photo for this plant. Press Esc to close. Tab to navigate."
+    >
       <form onSubmit={handleSubmit} className="space-y-4">
         <label className="block text-sm">
           Nickname

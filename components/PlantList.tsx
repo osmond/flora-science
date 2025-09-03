@@ -22,7 +22,10 @@ export default function PlantList({ plants, groupBy }: PlantListProps) {
 
   if (groupBy === "none") {
     return (
-      <section className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      <section className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" aria-label="Plant list">
+        <div className="col-span-full mb-2 text-xs text-gray-500 dark:text-gray-400" aria-live="polite">
+          <span><strong>Plants:</strong> Click a plant to view details. Tab to navigate. Status and hydration shown on each card.</span>
+        </div>
         {plants.map(([id, p]) => {
           const s = p.status.toLowerCase()
           const tasks = {
@@ -31,7 +34,7 @@ export default function PlantList({ plants, groupBy }: PlantListProps) {
             notes: s.includes("note") ? 1 : 0,
           }
           return (
-            <Link key={id} href={`/plants/${id}`} className="block">
+            <Link key={id} href={`/plants/${id}`} className="block" tabIndex={0} aria-label={`View details for ${p.nickname}, status: ${p.status}, hydration: ${p.hydration}%`} title={`View details for ${p.nickname}, status: ${p.status}, hydration: ${p.hydration}%`}>
               <PlantCard
                 nickname={p.nickname}
                 species={p.species}
@@ -50,12 +53,15 @@ export default function PlantList({ plants, groupBy }: PlantListProps) {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" aria-label="Grouped plant list">
+      <div className="mb-2 text-xs text-gray-500 dark:text-gray-400" aria-live="polite">
+        <span><strong>Plants:</strong> Grouped by {groupBy}. Click a plant to view details. Tab to navigate.</span>
+      </div>
       {Object.entries(grouped)
         .filter(([group]) => group !== "All")
         .sort((a, b) => a[0].localeCompare(b[0]))
         .map(([group, items]) => (
-          <details key={group} open>
+          <details key={group} open aria-label={`Group: ${group}`}> 
             <summary className="cursor-pointer font-semibold">
               {group} ({items.length})
             </summary>
@@ -72,7 +78,7 @@ export default function PlantList({ plants, groupBy }: PlantListProps) {
                   notes: s.includes("note") ? 1 : 0,
                 }
                 return (
-                  <Link key={id} href={`/plants/${id}`} className="block">
+                  <Link key={id} href={`/plants/${id}`} className="block" tabIndex={0} aria-label={`View details for ${p.nickname}, status: ${p.status}, hydration: ${p.hydration}%`} title={`View details for ${p.nickname}, status: ${p.status}, hydration: ${p.hydration}%`}>
                     <PlantCard
                       nickname={p.nickname}
                       species={p.species}

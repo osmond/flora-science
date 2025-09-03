@@ -19,8 +19,12 @@ export default function FertilizeModal({ isOpen, onClose, onSubmit }: Props) {
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <h2 className="h2 mb-4">Fertilize Plant</h2>
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Fertilize Plant"
+      description="Enter the fertilizer type or product name to log for this plant. Press Esc to close. Tab to navigate."
+    >
       <form onSubmit={handleSubmit} className="space-y-4">
         <label className="block text-sm">
           Fertilizer

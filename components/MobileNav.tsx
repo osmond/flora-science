@@ -14,6 +14,9 @@ export default function MobileNav() {
       role="navigation"
       aria-label="Mobile navigation"
     >
+      <div className="sr-only" aria-live="polite">
+        Mobile navigation: Use Tab to navigate. Current page is highlighted.
+      </div>
       {navItems.map(({ href, label, icon: Icon }) => {
         const active = href === "/" ? pathname === "/" : pathname.startsWith(href)
         return (
@@ -28,6 +31,8 @@ export default function MobileNav() {
               className={`flex flex-col items-center gap-1 px-3 py-1 ${active ? "text-flora-leaf" : "text-gray-700 dark:text-gray-200"}`}
               aria-current={active ? "page" : undefined}
               aria-label={label}
+              tabIndex={0}
+              title={label}
             >
               <Icon className="h-5 w-5" aria-hidden="true" />
               <span>{label}</span>

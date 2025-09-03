@@ -86,19 +86,25 @@ export default function RoomCard({
         aria-valuenow={pct}
         aria-valuemin={0}
         aria-valuemax={100}
+        title={`Avg Hydration: ${pct}%`}
+        aria-label={`Avg Hydration: ${pct}%`}
       >
         <div
           className={`h-2 rounded-full ${barColor}`}
           style={{ width: `${pct}%` }}
+          aria-label={`Hydration bar: ${pct}%`}
         />
       </div>
       <div className="flex items-center justify-between mt-2">
-        <p className="text-sm text-gray-700 dark:text-gray-300">Avg Hydration: {pct}%</p>
+        <p className="text-sm text-gray-700 dark:text-gray-300" aria-live="polite">
+          <strong>Avg Hydration:</strong> {pct}% (progress bar above)
+        </p>
         <div className="flex items-center gap-1">
           <span className="text-xs text-gray-500 dark:text-gray-400">Tasks</span>
           <span
             className={`text-xs font-semibold px-2 py-0.5 rounded-full ${badgeColor}`}
             aria-label={`${tasksDue} tasks due`}
+            title={`${tasksDue} tasks due`}
           >
             {tasksDue}
           </span>
