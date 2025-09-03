@@ -20,7 +20,7 @@ export default function ChartCard({
   onHelp,
   metricExplanation,
 }: ChartCardProps) {
-  const base = 'snap-start rounded-lg p-4 border shadow-sm'
+  const base = 'snap-start rounded-[var(--radius-lg)] p-[var(--space-lg)] border shadow-sm focus-within:shadow-lg transition'
   const variantClasses =
     variant === 'primary'
       ? 'min-w-full md:min-w-0 bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700'
@@ -28,14 +28,14 @@ export default function ChartCard({
 
   return (
     <div className={`${base} ${variantClasses}`} role="region" aria-label={`Chart: ${title}`}> 
-      <div className="mb-2 flex items-center gap-1">
-        <h4 className="h4 font-semibold flex-1 text-gray-900 dark:text-gray-100" id={`chart-title-${title}`}>{title}</h4>
+      <div className="mb-[var(--space-sm)] flex items-center gap-2">
+        <h4 className="h4 font-semibold flex-1 text-gray-900 dark:text-gray-100 leading-tight" id={`chart-title-${title}`}>{title}</h4>
         {metricExplanation && (
           <button
             type="button"
             aria-label={`What does ${title} measure?`}
             title={`Metric explanation for ${title}`}
-            className="text-blue-500 hover:underline focus:outline-none focus:ring ml-1"
+            className="text-blue-500 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-full ml-1 shadow-sm"
             onClick={() => window.alert(metricExplanation)}
           >
             ℹ️
@@ -46,13 +46,13 @@ export default function ChartCard({
             type="button"
             onClick={onHelp}
             aria-label={`Help for ${title}`}
-            className="text-gray-500 hover:text-gray-700"
+            className="text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-flora-leaf rounded-full ml-1 shadow-sm"
           >
             <HelpCircle className="h-4 w-4" />
           </button>
         )}
       </div>
-      <p className="text-sm text-gray-500 dark:text-gray-400 mb-4" aria-live="polite">{insight}</p>
+      <p className="text-sm text-gray-500 dark:text-gray-400 mb-[var(--space-sm)]" aria-live="polite">{insight}</p>
       {children}
     </div>
   )

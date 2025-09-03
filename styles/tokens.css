@@ -1,3 +1,11 @@
+/* Hydration bar dynamic width */
+.hydration-bar {
+  width: 0;
+  transition: width 0.3s;
+}
+.hydration-bar[data-width] {
+  width: attr(data-width % 100);
+}
 /* Design Tokens: colors, spacing, typography, radii */
 :root {
   --color-primary: #4ade80;

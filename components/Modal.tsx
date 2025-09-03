@@ -71,7 +71,7 @@ export default function Modal({ isOpen, onClose, children, title, description }:
         >
           <motion.div
             ref={dialogRef}
-            className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg max-w-sm w-full relative"
+            className="bg-white dark:bg-gray-900 rounded-[var(--radius-lg)] p-[var(--space-xl)] shadow-lg max-w-sm w-full relative border border-gray-200 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-flora-leaf focus:ring-offset-2"
             variants={modalContentVariants}
             initial="initial"
             animate="animate"
@@ -86,7 +86,7 @@ export default function Modal({ isOpen, onClose, children, title, description }:
               <span>{description || 'Press '}<kbd>Esc</kbd>{description ? '' : ' to close. Tab to navigate.'}</span>
             </div>
             {children}
-            <button aria-label="Close modal" title="Close modal" onClick={onClose} className="absolute top-2 right-2">×</button>
+            <button aria-label="Close modal" title="Close modal" onClick={onClose} className="absolute top-2 right-2 px-2 py-1 rounded-[var(--radius-md)] bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 shadow focus:outline-none focus:ring-2 focus:ring-flora-leaf">×</button>
           </motion.div>
         </motion.div>
       )}

@@ -21,7 +21,7 @@ export default function RoomModal({ room, onClose }: Props) {
           {room.tags.map((tag) => (
             <span
               key={tag}
-              className="px-2 py-0.5 text-xs rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300"
+              className="px-2 py-0.5 text-xs rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700"
             >
               {tag}
             </span>
@@ -35,7 +35,7 @@ export default function RoomModal({ room, onClose }: Props) {
       <div className="flex justify-end">
         <button
           onClick={onClose}
-          className="px-3 py-1 rounded border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+          className="px-3 py-1 rounded-[var(--radius-md)] border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 shadow focus:outline-none focus:ring-2 focus:ring-flora-leaf"
         >
           Close
         </button>

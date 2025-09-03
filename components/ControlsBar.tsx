@@ -9,11 +9,11 @@ interface ControlsBarProps {
 
 export default function ControlsBar({ groupBy, sortBy, onGroupChange, onSortChange }: ControlsBarProps) {
   return (
-    <div className="flex gap-4 mb-4 items-center">
+    <div className="flex gap-[var(--space-lg)] mb-[var(--space-md)] items-center">
       <select
         value={groupBy}
         onChange={(e) => onGroupChange(e.target.value as GroupBy)}
-        className="border rounded p-2"
+        className="border border-gray-200 dark:border-gray-700 rounded-[var(--radius-md)] p-[var(--space-sm)] bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 shadow focus:outline-none focus:ring-2 focus:ring-flora-leaf"
       >
         <option value="none">No grouping</option>
         <option value="status">Group by status</option>
@@ -22,7 +22,7 @@ export default function ControlsBar({ groupBy, sortBy, onGroupChange, onSortChan
       <select
         value={sortBy}
         onChange={(e) => onSortChange(e.target.value as SortBy)}
-        className="border rounded p-2"
+        className="border border-gray-200 dark:border-gray-700 rounded-[var(--radius-md)] p-[var(--space-sm)] bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 shadow focus:outline-none focus:ring-2 focus:ring-flora-leaf"
       >
         <option value="alpha">Alphabetical</option>
         <option value="hydration">Hydration</option>

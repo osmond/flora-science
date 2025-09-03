@@ -40,6 +40,8 @@ export default function QuickStats({ plant, weather }: QuickStatsProps) {
       light: 50,
     }),
   )
+  const stressLabel =
+    stressValue < 30 ? 'Low' : stressValue <= 70 ? 'Moderate' : 'High'
 
   const metricExplanations = [
     "Last watered: The most recent date you logged watering for this plant.",
