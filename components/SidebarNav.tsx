@@ -15,14 +15,14 @@ export default function SidebarNav() {
         <div className="mb-2 text-xs text-gray-500 dark:text-gray-400" aria-live="polite">
           <span>Sidebar: Use Tab to navigate. Current page is highlighted.</span>
         </div>
-        <ul className="flex flex-col gap-3 text-sm text-gray-700 dark:text-gray-200 items-center">
+        <ul className="flex flex-col gap-3 text-sm text-gray-700 dark:text-gray-200 items-center" role="list">
           {navItems.map(({ href, label, icon: Icon }) => {
             const active = href === "/" ? pathname === "/" : pathname.startsWith(href)
             return (
-              <li key={href}>
+              <li key={href} role="listitem">
                 <Link
                   href={href}
-                  className={`flex items-center gap-2 justify-center p-2 rounded transition-colors duration-200 hover:bg-gradient-to-r hover:from-gray-100 hover:to-gray-50 dark:hover:from-gray-800 dark:hover:to-gray-700 ${active ? "bg-gradient-to-r from-gray-100 to-gray-50 dark:from-gray-800 dark:to-gray-700 text-flora-leaf" : ""}`}
+                  className={`flex items-center gap-2 justify-center p-2 rounded transition-colors duration-200 hover:bg-gradient-to-r hover:from-gray-100 hover:to-gray-50 dark:hover:from-gray-800 dark:hover:to-gray-700 focus:outline-none focus:ring-2 focus:ring-flora-leaf ${active ? "bg-gradient-to-r from-gray-100 to-gray-50 dark:from-gray-800 dark:to-gray-700 text-flora-leaf" : ""}`}
                   aria-current={active ? "page" : undefined}
                   aria-label={label}
                   tabIndex={0}

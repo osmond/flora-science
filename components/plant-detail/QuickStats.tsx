@@ -7,6 +7,7 @@ import {
   Activity,
   Battery,
 } from 'lucide-react'
+import { useState } from 'react'
 import {
   calculateNutrientAvailability,
   calculateStressIndex,
@@ -40,12 +41,15 @@ export default function QuickStats({ plant, weather }: QuickStatsProps) {
     }),
   )
 
-  const stressLabel =
-    stressValue < 30
-      ? 'Low'
-      : stressValue <= 70
-        ? 'Moderate'
-        : 'High'
+  const metricExplanations = [
+    "Last watered: The most recent date you logged watering for this plant.",
+    "Next due: The recommended next watering date and amount based on plant needs.",
+    "Next feed: When to fertilize next, calculated from last fertilization and nutrient level.",
+    "Hydration: Current soil moisture percentage, estimated from logs and environment.",
+    "Stress: Calculated index based on hydration, overdue care, and environment. Lower is better.",
+  ];
+
+  const [infoIdx, setInfoIdx] = useState<number | null>(null);
 
   const stats = [
     {
@@ -75,7 +79,7 @@ export default function QuickStats({ plant, weather }: QuickStatsProps) {
       icon: Activity,
       text: `${stressLabel} Stress`,
     },
-  ]
+  ];
 
   return (
     <ul
@@ -85,7 +89,7 @@ export default function QuickStats({ plant, weather }: QuickStatsProps) {
     >
       {/* Metric explanations for scientific clarity */}
       <li className="w-full text-xs text-gray-500 dark:text-gray-400 mb-1" aria-live="polite">
-        <span><strong>Stats:</strong> Last watered, next feed, hydration, and stress are calculated from your plant’s data and environment.</span>
+        <span><strong>Stats:</strong> Last watered, next feed, hydration, and stress are calculated from your plant’s data and environment. Click ℹ️ for more info.</span>
       </li>
       {stats.map(({ icon: Icon, text }, idx) => (
         <li
@@ -95,6 +99,21 @@ export default function QuickStats({ plant, weather }: QuickStatsProps) {
         >
           <Icon className="h-4 w-4" aria-hidden="true" />
           <span tabIndex={0} aria-label={text} title={text}>{text}</span>
+          <button
+            type="button"
+            aria-label={`Explain ${text}`}
+            title="Metric explanation"
+            className="ml-1 text-blue-500 hover:underline focus:outline-none focus:ring"
+            onClick={() => setInfoIdx(idx)}
+          >
+            ℹ️
+          </button>
+          {infoIdx === idx && (
+            <span className="ml-2 text-xs text-gray-600 dark:text-gray-400" role="alert">
+              {metricExplanations[idx]}
+              <button className="ml-2 text-blue-500 underline" onClick={() => setInfoIdx(null)} aria-label="Close info">Close</button>
+            </span>
+          )}
         </li>
       ))}
     </ul>
