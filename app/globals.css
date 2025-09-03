@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Flora-Science custom styles */
+:root {
+  --flora-leaf: #1A7D1E;
+  --flora-soil: #6B4226;
+  --flora-sky: #0950C4;
+  --flora-light: #F0FDF4;
+}
+
+body {
+  font-family: 'Inter', 'Roboto Mono', sans-serif;
+}

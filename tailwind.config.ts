@@ -1,7 +1,7 @@
-import type { Config } from "tailwindcss"
+import type { Config } from "tailwindcss";
 
 const config: Config = {
-  darkMode: ["class"],
+  darkMode: "class",
   content: [
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -29,16 +29,29 @@ const config: Config = {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
       },
-      fontSize: {
-        xs: "0.75rem",
-        sm: "0.875rem",
-        base: "1rem",
-        lg: "1.125rem",
-        xl: "1.25rem",
-        "2xl": "1.5rem",
+      fontFamily: {
+        scientific: ['Inter', 'Roboto Mono', 'sans-serif'],
+      },
+      spacing: {
+        xs: '0.25rem',
+        sm: '0.5rem',
+        md: '1rem',
+        lg: '2rem',
+        xl: '4rem',
+      },
+      borderRadius: {
+        md: '0.375rem',
+        lg: '0.5rem',
+      },
+      boxShadow: {
+        soft: '0 2px 8px rgba(60,60,60,0.08)',
+      },
+      transitionProperty: {
+        calm: 'background-color, box-shadow, color',
       },
     },
   },
   plugins: [],
-}
-export default config
+};
+
+export default config;
